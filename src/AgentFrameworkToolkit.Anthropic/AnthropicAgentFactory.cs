@@ -23,6 +23,18 @@ public class AnthropicAgentFactory
         _connection = connection;
     }
 
+    public AnthropicAgent CreateAgent(string model, int maxTokenCount, string? instructions = null, string? name = null, AITool[]? tools = null)
+    {
+        return CreateAgent(new AnthropicAgentOptions
+        {
+            DeploymentModelName = model,
+            MaxOutputTokens = maxTokenCount,
+            Name = name,
+            Instructions = instructions,
+            Tools = tools
+        });
+    }
+
     public AnthropicAgent CreateAgent(AnthropicAgentOptions options)
     {
         IChatClient client = GetClient(options);

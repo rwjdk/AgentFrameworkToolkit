@@ -21,6 +21,17 @@ public class MistralAgentFactory
         _connection = connection;
     }
 
+    public MistralAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    {
+        return CreateAgent(new MistralAgentOptions
+        {
+            DeploymentModelName = model,
+            Name = name,
+            Instructions = instructions,
+            Tools = tools
+        });
+    }
+
     public MistralAgent CreateAgent(MistralAgentOptions options)
     {
         IChatClient client = GetClient(options);
