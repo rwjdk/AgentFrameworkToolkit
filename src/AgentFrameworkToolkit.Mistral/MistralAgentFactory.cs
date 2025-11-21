@@ -80,10 +80,10 @@ public class MistralAgentFactory
             httpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails)); //todo - antipattern to new up a new httpClient Here
         }
 
-        if (options.NetworkTimeout.HasValue)
+        if (_connection.NetworkTimeout.HasValue)
         {
             httpClient ??= new HttpClient();
-            httpClient.Timeout = options.NetworkTimeout.Value;
+            httpClient.Timeout = _connection.NetworkTimeout.Value;
         }
 
         MistralClient mistralClient = new(new APIAuthentication(_connection.ApiKey), httpClient);

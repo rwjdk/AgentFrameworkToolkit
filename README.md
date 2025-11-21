@@ -16,15 +16,15 @@ An opinionated C# Toolkit for Microsoft Agent Framework that makes life easier
 ```cs
 OpenAIAgentFactory factory = new OpenAIAgentFactory(new OpenAIConnection
 {
-    ApiKey = configuration.OpenAiApiKey
+    ApiKey = configuration.OpenAiApiKey,
+    NetworkTimeout = TimeSpan.FromMinutes(5)
 });
 
 OpenAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForResponseApiWithReasoning
 {
     DeploymentModelName = "gpt-5",
     ReasoningEffort = ResponseReasoningEffortLevel.High,
-    ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
-    NetworkTimeout = TimeSpan.FromMinutes(5),
+    ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,    
 });
 ```
 
@@ -90,7 +90,6 @@ AzureOpenAIAgent fullBlownAgent = azureOpenAIAgentFactory.CreateAgent(new OpenAI
     DeploymentModelName = "gpt-5-mini",
     ReasoningEffort = ResponseReasoningEffortLevel.Low,
     ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
-    NetworkTimeout = TimeSpan.FromMinutes(5),
     Tools = [AIFunctionFactory.Create(GetWeather)],
     RawToolCallDetails = details => { Console.WriteLine(details.ToString()); },
     RawHttpCallDetails = details =>

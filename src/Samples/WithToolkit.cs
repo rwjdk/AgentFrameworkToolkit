@@ -123,7 +123,6 @@ public class WithToolkit
             DeploymentModelName = "gpt-5-mini",
             ReasoningEffort = ResponseReasoningEffortLevel.Low,
             ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
-            NetworkTimeout = TimeSpan.FromMinutes(5),
             Tools = [AIFunctionFactory.Create(GetWeather)],
             RawToolCallDetails = details => { Console.WriteLine(details.ToString()); },
             RawHttpCallDetails = details =>

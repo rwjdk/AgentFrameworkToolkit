@@ -19,8 +19,8 @@ public class WithoutToolkit
 {
     public static async Task Run()
     {
-        using var handler = new CustomClientHttpHandler();
-        using var httpClient = new HttpClient(handler);
+        using CustomClientHttpHandler handler = new();
+        using HttpClient httpClient = new(handler);
         Configuration configuration = ConfigurationManager.GetConfiguration();
 
         AzureOpenAIClient client = new(

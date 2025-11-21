@@ -129,7 +129,7 @@ public class AzureOpenAIAgentFactory
         //todo - support RBAC
         AzureOpenAIClientOptions azureOpenAIClientOptions = new()
         {
-            NetworkTimeout = options.NetworkTimeout
+            NetworkTimeout = _connection.NetworkTimeout
         };
 
         // ReSharper disable once InvertIf

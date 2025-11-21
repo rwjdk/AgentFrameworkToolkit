@@ -10,5 +10,7 @@ public class AzureOpenAIConnection
 
     public Action<AzureOpenAIClientOptions>? AdditionalAzureOpenAIClientOptions { get; set; }
 
+    public TimeSpan? NetworkTimeout { get; set; }
+
     //todo - Support RBAC
 }
