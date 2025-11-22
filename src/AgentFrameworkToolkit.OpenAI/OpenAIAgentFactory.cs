@@ -137,7 +137,7 @@ public class OpenAIAgentFactory
     {
         OpenAIClientOptions openAIClientOptions = new()
         {
-            NetworkTimeout = options.NetworkTimeout
+            NetworkTimeout = _connection.NetworkTimeout
         };
 
         if (!string.IsNullOrWhiteSpace(_connection.Endpoint))

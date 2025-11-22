@@ -11,7 +11,6 @@ public class MistralAgentOptions
     public string? Description { get; set; }
     public string? Instructions { get; set; }
     public IList<AITool>? Tools { get; set; }
-    public TimeSpan? NetworkTimeout { get; set; }
     public Action<RawCallDetails>? RawHttpCallDetails { get; set; }
     public Action<ToolCallingDetails>? RawToolCallDetails { get; set; }
     public Action<ChatClientAgentOptions>? AdditionalChatClientAgentOptions { get; set; }

@@ -8,5 +8,7 @@ public class OpenAIConnection
 
     public string? Endpoint { get; set; }
 
+    public TimeSpan? NetworkTimeout { get; set; }
+
     public Action<OpenAIClientOptions>? AdditionalOpenAIClientOptions { get; set; }
 }

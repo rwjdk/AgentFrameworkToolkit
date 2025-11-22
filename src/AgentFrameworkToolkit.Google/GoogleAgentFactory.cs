@@ -32,6 +32,17 @@ public class GoogleAgentFactory
         _connection = connection;
     }
 
+    public GoogleAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    {
+        return CreateAgent(new GoogleAgentOptions
+        {
+            DeploymentModelName = model,
+            Name = name,
+            Instructions = instructions,
+            Tools = tools
+        });
+    }
+
     /// <summary>
     /// Create an agent with the specified options
     /// </summary>

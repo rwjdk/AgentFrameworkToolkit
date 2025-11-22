@@ -23,6 +23,18 @@ public class AnthropicAgentFactory
         _connection = connection;
     }
 
+    public AnthropicAgent CreateAgent(string model, int maxTokenCount, string? instructions = null, string? name = null, AITool[]? tools = null)
+    {
+        return CreateAgent(new AnthropicAgentOptions
+        {
+            DeploymentModelName = model,
+            MaxOutputTokens = maxTokenCount,
+            Name = name,
+            Instructions = instructions,
+            Tools = tools
+        });
+    }
+
     public AnthropicAgent CreateAgent(AnthropicAgentOptions options)
     {
         IChatClient client = GetClient(options);
@@ -91,10 +103,10 @@ public class AnthropicAgentFactory
             httpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails)); //todo - antipattern to new up a new httpClient Here
         }
 
-        if (options.NetworkTimeout.HasValue)
+        if (_connection.NetworkTimeout.HasValue)
         {
             httpClient ??= new HttpClient();
-            httpClient.Timeout = options.NetworkTimeout.Value;
+            httpClient.Timeout = _connection.NetworkTimeout.Value;
         }
 
         AnthropicClient anthropicClient = new(new APIAuthentication(_connection.ApiKey), httpClient);

@@ -9,4 +9,6 @@ public class MistralConnection
     /// The API Key for connecting to Mistral
     /// </summary>
     public required string ApiKey { get; set; }
+
+    public TimeSpan? NetworkTimeout { get; set; }
 }
