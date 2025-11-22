@@ -23,39 +23,37 @@ string? googleApiKey = builder.Configuration[SecretKeys.GoogleApiKey];
 string? anthropicApiKey = builder.Configuration[SecretKeys.AnthropicApiKey];
 string? xAIApiKey = builder.Configuration[SecretKeys.XAIApiKey];
 
-//todo - check for "-"
-
-if (!string.IsNullOrWhiteSpace(azureOpenAiEndpoint) && !string.IsNullOrWhiteSpace(azureOpenAiApiKey))
+if (HasValidValues(azureOpenAiEndpoint, azureOpenAiApiKey))
 {
     const string agentName = "Azure OpenAI Agent";
     builder.AddAIAgent(agentName, (_, _) => new AzureOpenAIAgentFactory(azureOpenAiEndpoint, azureOpenAiApiKey).CreateAgent(deploymentModelName: "gpt-4.1-mini", name: agentName));
 }
 
-if (!string.IsNullOrWhiteSpace(openAIApiKey))
+if (HasValidValues(openAIApiKey))
 {
     const string agentName = "OpenAI Agent";
     builder.AddAIAgent(agentName, (_, _) => new OpenAIAgentFactory(openAIApiKey).CreateAgent(model: "gpt-4.1-mini", name: agentName));
 }
 
-if (!string.IsNullOrWhiteSpace(googleApiKey))
+if (HasValidValues(googleApiKey))
 {
     const string agentName = "Google Agent";
     builder.AddAIAgent(agentName, (_, _) => new GoogleAgentFactory(googleApiKey).CreateAgent(model: GoogleAIModels.Gemini25Flash, name: agentName));
 }
 
-if (!string.IsNullOrWhiteSpace(mistralApiKey))
+if (HasValidValues(mistralApiKey))
 {
     const string agentName = "Mistral Agent";
     builder.AddAIAgent(agentName, (_, _) => new MistralAgentFactory(mistralApiKey).CreateAgent(model: ModelDefinitions.MistralSmall, name: agentName));
 }
 
-if (!string.IsNullOrWhiteSpace(anthropicApiKey))
+if (HasValidValues(anthropicApiKey))
 {
     const string agentName = "Anthropic Agent";
     builder.AddAIAgent(agentName, (_, _) => new AnthropicAgentFactory(anthropicApiKey).CreateAgent(model: AnthropicModels.Claude35Haiku, maxTokenCount: 1000, name: agentName));
 }
 
-if (!string.IsNullOrWhiteSpace(xAIApiKey))
+if (HasValidValues(xAIApiKey))
 {
     const string agentName = "XAI Agent";
     builder.AddAIAgent(agentName, (_, _) => new XAIAgentFactory(xAIApiKey).CreateAgent(model: "grok-4-1-fast-non-reasoning", name: agentName));
@@ -78,3 +76,16 @@ if (builder.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.Run();
+
+bool HasValidValues(params string?[] values)
+{
+    foreach (string value in values)
+    {
+        if (value?.ToUpperInvariant() is null or "" or "-" or "NONE")
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
