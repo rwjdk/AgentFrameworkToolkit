@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<!-- Central version prefix - applies to all nuget packages. -->
-		<PackageVersion>1.0.0-preview.251123.1</PackageVersion>
+		<PackageVersion>1.0.0-preview.251126.1</PackageVersion>
 		<Configurations>Debug;Release;Publish</Configurations>
 		<IsPackable>true</IsPackable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -13,7 +13,7 @@
 		<Copyright>2025</Copyright>
 		<PackageProjectUrl>https://github.com/rwjdk/AgentFrameworkToolkit</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<PackageTags>microsoft-agent-framework agent-framework-toolkit toolkit microsoft agent framework</PackageTags>
+		<PackageTags>microsoft-agent-framework agent-framework-toolkit toolkit microsoft agent framework microsoft.agents.ai</PackageTags>
 		<Company>RWJDK</Company>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>

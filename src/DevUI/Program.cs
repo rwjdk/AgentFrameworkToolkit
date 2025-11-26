@@ -5,11 +5,11 @@ using AgentFrameworkToolkit.Mistral;
 using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.OpenRouter;
 using AgentFrameworkToolkit.XAI;
-using GenerativeAI;
 using Microsoft.Agents.AI.DevUI;
 using Microsoft.Agents.AI.Hosting;
-using Mistral.SDK;
 using ServiceDefaults;
+
+#pragma warning disable OPENAI001
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -27,43 +27,72 @@ string? openRouterApiKey = builder.Configuration[SecretKeys.OpenRouterApiKey];
 if (HasValidValues(azureOpenAiEndpoint, azureOpenAiApiKey))
 {
     const string agentName = "Azure OpenAI Agent";
-    builder.AddAIAgent(agentName, (_, _) => new AzureOpenAIAgentFactory(azureOpenAiEndpoint!, azureOpenAiApiKey!).CreateAgent(deploymentModelName: OpenAIChatModels.Gpt41Mini, name: agentName));
+    builder.AddAIAgent(agentName, (_, _) => new AzureOpenAIAgentFactory(azureOpenAiEndpoint!, azureOpenAiApiKey!).CreateAgent(new OpenAIAgentOptionsForResponseApiWithoutReasoning()
+    {
+        Name = agentName,
+        DeploymentModelName = OpenAIChatModels.Gpt41Mini
+    }));
 }
 
 if (HasValidValues(openAIApiKey))
 {
     const string agentName = "OpenAI Agent";
-    builder.AddAIAgent(agentName, (_, _) => new OpenAIAgentFactory(openAIApiKey!).CreateAgent(model: OpenAIChatModels.Gpt41Mini, name: agentName));
+    builder.AddAIAgent(agentName, (_, _) => new OpenAIAgentFactory(openAIApiKey!).CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
+    {
+        Name = agentName,
+        DeploymentModelName = OpenAIChatModels.Gpt41Mini,
+    }));
 }
 
 if (HasValidValues(googleApiKey))
 {
     const string agentName = "Google Agent";
-    builder.AddAIAgent(agentName, (_, _) => new GoogleAgentFactory(googleApiKey!).CreateAgent(model: GoogleChatModels.Gemini25Flash, name: agentName));
+    builder.AddAIAgent(agentName, (_, _) => new GoogleAgentFactory(googleApiKey!).CreateAgent(new GoogleAgentOptions
+    {
+        Name = agentName,
+        DeploymentModelName = GoogleChatModels.Gemini25Flash
+    }));
 }
 
 if (HasValidValues(mistralApiKey))
 {
     const string agentName = "Mistral Agent";
-    builder.AddAIAgent(agentName, (_, _) => new MistralAgentFactory(mistralApiKey!).CreateAgent(model: MistalChatModels.MistralSmall, name: agentName));
+    builder.AddAIAgent(agentName, (_, _) => new MistralAgentFactory(mistralApiKey!).CreateAgent(new MistralAgentOptions
+    {
+        Name = agentName,
+        DeploymentModelName = MistalChatModels.MistralSmall
+    }));
 }
 
 if (HasValidValues(anthropicApiKey))
 {
     const string agentName = "Anthropic Agent";
-    builder.AddAIAgent(agentName, (_, _) => new AnthropicAgentFactory(anthropicApiKey!).CreateAgent(model: AnthropicChatModels.ClaudeHaiku45, maxTokenCount: 1000, name: agentName));
+    builder.AddAIAgent(agentName, (_, _) => new AnthropicAgentFactory(anthropicApiKey!).CreateAgent(new AnthropicAgentOptions
+    {
+        DeploymentModelName = AnthropicChatModels.ClaudeHaiku45,
+        MaxOutputTokens = 1000,
+        Name = agentName
+    }));
 }
 
 if (HasValidValues(xAIApiKey))
 {
     const string agentName = "XAI Agent";
-    builder.AddAIAgent(agentName, (_, _) => new XAIAgentFactory(xAIApiKey!).CreateAgent(model: XAIChatModels.Grok41FastNonReasoning, name: agentName));
+    builder.AddAIAgent(agentName, (_, _) => new XAIAgentFactory(xAIApiKey!).CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
+    {
+        Name = agentName,
+        DeploymentModelName = XAIChatModels.Grok41FastNonReasoning
+    }));
 }
 
 if (HasValidValues(openRouterApiKey))
 {
     const string agentName = "OpenRouter Agent";
-    builder.AddAIAgent(agentName, (_, _) => new OpenRouterAgentFactory(openRouterApiKey!).CreateAgent(model: OpenRouterChatModels.OpenAI.Gpt41Mini, name: agentName));
+    builder.AddAIAgent(agentName, (_, _) => new OpenRouterAgentFactory(openRouterApiKey!).CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
+    {
+        Name = agentName,
+        DeploymentModelName = OpenRouterChatModels.OpenAI.Gpt41Mini
+    }));
 }
 
 // Register Services needed to run DevUI

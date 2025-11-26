@@ -18,6 +18,10 @@ public class WithToolkit
     public static async Task Run()
     {
         Configuration configuration = ConfigurationManager.GetConfiguration();
+        bool addTool = false;
+
+        AnthropicAgent x = GetAnthropicAgent();
+        await x.RunAsync("Hello");
 
         MistralAgentFactory mistralAgentFactory = new MistralAgentFactory(configuration.MistralApiKey);
         MistralAgent mistralAgent = mistralAgentFactory.CreateAgent(new MistralAgentOptions
@@ -51,17 +55,17 @@ public class WithToolkit
 
 
         /**/
-        bool addTool = false;
+
         ChatClientAgentRunResponse<Weather> commonResponse = await commonAgent.RunAsync<Weather>("What is the weather like in Paris?");
         Weather commonWeather = commonResponse.Result;
 
 
-        AnthropicAgent anthropicAgent = GetAnthropicAgent();
+        AnthropicAgent anthropicAgent = x;
 
         AIAgent[] agents =
         [
             GetGrokAgent(),
-            GetAnthropicAgent(),
+            x,
             GetGoogleAgent(),
             GetAzureOpenAIAgent(),
             GetOpenAIAgent()
@@ -193,6 +197,7 @@ public class WithToolkit
             {
                 DeploymentModelName = "claude-sonnet-4-5-20250929",
                 MaxOutputTokens = 1000,
+                RawHttpCallDetails = details => { Console.WriteLine(details.RequestJson); },
                 Tools = addTool ? [AIFunctionFactory.Create(GetWeather)] : []
             });
             return agent;

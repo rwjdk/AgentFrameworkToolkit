@@ -11,7 +11,7 @@
 	<Import Project="..\nuget-package.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251114.1" />
+		<PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251125.1" />
 	</ItemGroup>
 	
 	  <ItemGroup>

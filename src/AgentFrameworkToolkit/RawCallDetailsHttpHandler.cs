@@ -20,8 +20,16 @@ public class RawCallDetailsHttpHandler(Action<RawCallDetails> rawCallDetails) : 
 
         static string MakePretty(string input)
         {
-            JsonElement jsonElement = JsonSerializer.Deserialize<JsonElement>(input);
-            return JsonSerializer.Serialize(jsonElement, new JsonSerializerOptions { WriteIndented = true });
+            try
+            {
+                JsonElement jsonElement = JsonSerializer.Deserialize<JsonElement>(input);
+                return JsonSerializer.Serialize(jsonElement, new JsonSerializerOptions { WriteIndented = true });
+            }
+            catch
+            {
+                //Input is not JSON so treat as is
+                return input;
+            }
         }
     }
 }

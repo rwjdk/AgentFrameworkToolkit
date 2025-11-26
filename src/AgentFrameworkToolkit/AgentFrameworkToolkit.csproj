@@ -12,7 +12,7 @@
 	<Import Project="..\nuget-package.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-preview.251114.1" />
+		<PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-preview.251125.1" />
 		<PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
 	</ItemGroup>
 </Project>

@@ -1,5 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.251126.1
+- Bumped `Microsoft.Agents.AI` version to latest (1.0.0-preview.251125.1)
+- Fixed that RawCallDetail would fail if input or output was not JSON (like the output of an Anthropic call)
+
+---
+
 ## Version 1.0.0-preview.251123.0
 - Added OpenRouter NuGet Package
 - [OpenAI] Added `OpenAIChatModels` of the most common models
