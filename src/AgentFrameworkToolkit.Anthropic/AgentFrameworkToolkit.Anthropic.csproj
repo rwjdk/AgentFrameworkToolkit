@@ -11,8 +11,7 @@
 	<Import Project="..\nuget-package.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Anthropic.SDK" Version="5.8.0" />
-		<PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-preview.251125.1" />
+		<PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.251125.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />

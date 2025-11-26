@@ -32,9 +32,4 @@ public class AnthropicAgentOptions
     /// Reasoning effort knob, in tokens. Higher value --> more internal reasoning.
     /// </summary>
     public int BudgetTokens { get; set; }
-
-    /// <summary>
-    /// If you want the advanced "interleaved thinking" mode where the thinking budget can exceed MaxOutputTokens
-    /// </summary>
-    public bool UseInterleavedThinking { get; set; }
 }

@@ -2,7 +2,7 @@
 using Microsoft.Agents.AI;
 using Shared;
 
-namespace Samples;
+namespace Samples.Providers;
 
 public static class OpenAI
 {
@@ -13,7 +13,7 @@ public static class OpenAI
 
         OpenAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForResponseApiWithoutReasoning
         {
-            DeploymentModelName = "gpt-4.1-mini"
+            DeploymentModelName = OpenAIChatModels.Gpt41Mini
         });
 
         AgentRunResponse response = await agent.RunAsync("Hello");

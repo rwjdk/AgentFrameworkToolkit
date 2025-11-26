@@ -1,5 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.251126.2
+- Anthropic: Replaced the unofficial `Anthropic.SDK` nuget package with the official `Microsoft.Agents.AI.Anthropic` nuget package instead.
+- [BREAKING] Removed the `UseInterleavedThinking` option, as it actually did not do anything.
+
+---
+
 ## Version 1.0.0-preview.251126.1
 - Bumped `Microsoft.Agents.AI` version to latest (1.0.0-preview.251125.1)
 - Fixed that RawCallDetail would fail if input or output was not JSON (like the output of an Anthropic call)

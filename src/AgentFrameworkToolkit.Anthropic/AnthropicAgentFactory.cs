@@ -1,8 +1,10 @@
-﻿using Anthropic.SDK;
-using Anthropic.SDK.Extensions;
-using Anthropic.SDK.Messaging;
+﻿using Anthropic;
+using Anthropic.Core;
+using Anthropic.Models.Beta.Messages;
+using Anthropic.Models.Messages;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using MessageCreateParams = Anthropic.Models.Messages.MessageCreateParams;
 
 namespace AgentFrameworkToolkit.Anthropic;
 
@@ -78,13 +80,15 @@ public class AnthropicAgentFactory
             chatOptions.Temperature = options.Temperature;
         }
 
-        if (options.BudgetTokens > 0 || options.UseInterleavedThinking)
+        if (options.BudgetTokens > 0)
         {
-            chatOptions = chatOptions.WithThinking(new ThinkingParameters
+            chatOptions.RawRepresentationFactory = _ => new MessageCreateParams
             {
-                BudgetTokens = options.BudgetTokens,
-                UseInterleavedThinking = options.UseInterleavedThinking
-            });
+                MaxTokens = options.MaxOutputTokens,
+                Messages = [],
+                Model = options.DeploymentModelName,
+                Thinking = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens }),
+            };
         }
 
         ChatClientAgentOptions chatClientAgentOptions = new()
@@ -118,8 +122,19 @@ public class AnthropicAgentFactory
             httpClient.Timeout = _connection.NetworkTimeout.Value;
         }
 
-        AnthropicClient anthropicClient = new(new APIAuthentication(_connection.ApiKey), httpClient);
-        IChatClient client = anthropicClient.Messages.AsBuilder().Build();
+        ClientOptions clientOptions = new ClientOptions
+        {
+            APIKey = _connection.ApiKey,
+            Timeout = _connection.NetworkTimeout
+        };
+        if (httpClient != null)
+        {
+            clientOptions.HttpClient = httpClient;
+        }
+
+        AnthropicClient anthropicClient = new AnthropicClient(clientOptions);
+
+        IChatClient client = anthropicClient.AsIChatClient();
         return client;
     }
 }
