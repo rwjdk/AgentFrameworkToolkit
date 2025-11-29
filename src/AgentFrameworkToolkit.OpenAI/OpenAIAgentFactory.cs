@@ -3,15 +3,13 @@ using System.ClientModel.Primitives;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using OpenAI;
-using OpenAI.Chat;
-using OpenAI.Responses;
 
 #pragma warning disable OPENAI001
 
 namespace AgentFrameworkToolkit.OpenAI;
 
 /// <summary>
-/// Create an OpenAI Agent Factory
+/// Factory for creating OpenAI Agents
 /// </summary>
 public class OpenAIAgentFactory
 {
@@ -20,7 +18,7 @@ public class OpenAIAgentFactory
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="apiKey">API Key for your OpenAI API Account (for more advanced connections use the constructor overload)</param>
+    /// <param name="apiKey">Your OpenAI API Key (if you need a more advanced connection use the constructor overload)</param>
     public OpenAIAgentFactory(string apiKey)
     {
         _connection = new OpenAIConnection
@@ -32,7 +30,7 @@ public class OpenAIAgentFactory
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="connection">The OpenAI Connection details</param>
+    /// <param name="connection">Connection Details</param>
     public OpenAIAgentFactory(OpenAIConnection connection)
     {
         _connection = connection;
@@ -50,13 +48,18 @@ public class OpenAIAgentFactory
     {
         return CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
         {
-            DeploymentModelName = model,
+            Model = model,
             Name = name,
             Instructions = instructions,
             Tools = tools
         });
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithoutReasoning options)
     {
         OpenAIClient client = CreateClient(options);
@@ -64,7 +67,7 @@ public class OpenAIAgentFactory
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, options, null, null);
 
         ChatClientAgent innerAgent = client
-            .GetOpenAIResponseClient(options.DeploymentModelName)
+            .GetOpenAIResponseClient(options.Model)
             .CreateAIAgent(chatClientAgentOptions);
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
@@ -76,6 +79,11 @@ public class OpenAIAgentFactory
         return new OpenAIAgent(innerAgent);
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithReasoning options)
     {
         OpenAIClient client = CreateClient(options);
@@ -83,7 +91,7 @@ public class OpenAIAgentFactory
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, null, options, null);
 
         AIAgent innerAgent = client
-            .GetOpenAIResponseClient(options.DeploymentModelName)
+            .GetOpenAIResponseClient(options.Model)
             .CreateAIAgent(chatClientAgentOptions);
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
@@ -95,6 +103,11 @@ public class OpenAIAgentFactory
         return new OpenAIAgent(innerAgent);
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForChatClientWithoutReasoning options)
     {
         OpenAIClient client = CreateClient(options);
@@ -102,7 +115,7 @@ public class OpenAIAgentFactory
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, options, null, null, null);
 
         AIAgent innerAgent = client
-            .GetChatClient(options.DeploymentModelName)
+            .GetChatClient(options.Model)
             .CreateAIAgent(chatClientAgentOptions);
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
@@ -114,6 +127,11 @@ public class OpenAIAgentFactory
         return new OpenAIAgent(innerAgent);
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForChatClientWithReasoning options)
     {
         OpenAIClient client = CreateClient(options);
@@ -121,7 +139,7 @@ public class OpenAIAgentFactory
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, null, null, options);
 
         AIAgent innerAgent = client
-            .GetChatClient(options.DeploymentModelName)
+            .GetChatClient(options.Model)
             .CreateAIAgent(chatClientAgentOptions);
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
@@ -157,7 +175,7 @@ public class OpenAIAgentFactory
         return new OpenAIClient(new ApiKeyCredential(_connection.ApiKey), openAIClientOptions);
     }
 
-    public static ChatClientAgentOptions CreateChatClientAgentOptions(OpenAIAgentOptions options, OpenAIAgentOptionsForChatClientWithoutReasoning? chatClientWithoutReasoning, OpenAIAgentOptionsForResponseApiWithoutReasoning? responseWithoutReasoning, OpenAIAgentOptionsForResponseApiWithReasoning? responsesApiReasoningOptions, OpenAIAgentOptionsForChatClientWithReasoning? chatClientReasoningOptions)
+    private ChatClientAgentOptions CreateChatClientAgentOptions(OpenAIAgentOptions options, OpenAIAgentOptionsForChatClientWithoutReasoning? chatClientWithoutReasoning, OpenAIAgentOptionsForResponseApiWithoutReasoning? responseWithoutReasoning, OpenAIAgentOptionsForResponseApiWithReasoning? responsesApiReasoningOptions, OpenAIAgentOptionsForChatClientWithReasoning? chatClientReasoningOptions)
     {
         bool anyOptionsSet = false;
         ChatOptions chatOptions = new();
@@ -179,33 +197,25 @@ public class OpenAIAgentFactory
             chatOptions.Temperature = chatClientWithoutReasoning.Temperature;
         }
 
+        if (responseWithoutReasoning?.Temperature != null)
+        {
+            anyOptionsSet = true;
+            chatOptions.Temperature = responseWithoutReasoning.Temperature;
+        }
+
         if (responsesApiReasoningOptions != null)
         {
             if (responsesApiReasoningOptions.ReasoningEffort != null || responsesApiReasoningOptions.ReasoningSummaryVerbosity.HasValue)
             {
                 anyOptionsSet = true;
-                chatOptions.RawRepresentationFactory = _ =>
-                {
-                    ResponseCreationOptions responseCreationOptions = new()
-                    {
-                        ReasoningOptions = new ResponseReasoningOptions
-                        {
-                            ReasoningEffortLevel = responsesApiReasoningOptions.ReasoningEffort,
-                            ReasoningSummaryVerbosity = responsesApiReasoningOptions.ReasoningSummaryVerbosity
-                        }
-                    };
-                    return responseCreationOptions;
-                };
+                chatOptions = chatOptions.WithOpenAIResponsesApiReasoning(responsesApiReasoningOptions.ReasoningEffort, responsesApiReasoningOptions.ReasoningSummaryVerbosity);
             }
         }
 
         if (chatClientReasoningOptions?.ReasoningEffort != null)
         {
             anyOptionsSet = true;
-            chatOptions.RawRepresentationFactory = _ => new ChatCompletionOptions
-            {
-                ReasoningEffortLevel = chatClientReasoningOptions.ReasoningEffort
-            };
+            chatOptions = chatOptions.WithOpenAIChatClientReasoning(chatClientReasoningOptions.ReasoningEffort);
         }
 
         ChatClientAgentOptions chatClientAgentOptions = new()

@@ -2,6 +2,7 @@
   <Folder Name="/Packages/">
     <Project Path="src/AgentFrameworkToolkit.Anthropic/AgentFrameworkToolkit.Anthropic.csproj" />
     <Project Path="src/AgentFrameworkToolkit.AzureOpenAI/AgentFrameworkToolkit.AzureOpenAI.csproj" />
+    <Project Path="src/AgentFrameworkToolkit.GitHub/AgentFrameworkToolkit.GitHub.csproj" Id="cb22229e-b96d-4643-89fd-87f43929f117" />
     <Project Path="src/AgentFrameworkToolkit.Google/AgentFrameworkToolkit.Google.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Mistral/AgentFrameworkToolkit.Mistral.csproj" />
     <Project Path="src/AgentFrameworkToolkit.OpenAI/AgentFrameworkToolkit.OpenAI.csproj" />

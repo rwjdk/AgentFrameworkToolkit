@@ -8,10 +8,17 @@ using MessageCreateParams = Anthropic.Models.Messages.MessageCreateParams;
 
 namespace AgentFrameworkToolkit.Anthropic;
 
+/// <summary>
+/// Factory for creating Anthropic Agents
+/// </summary>
 public class AnthropicAgentFactory
 {
     private readonly AnthropicConnection _connection;
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="apiKey">Your Anthropic API Key (if you need a more advanced connection use the constructor overload)</param>
     public AnthropicAgentFactory(string apiKey)
     {
         _connection = new AnthropicConnection
@@ -20,25 +27,29 @@ public class AnthropicAgentFactory
         };
     }
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="connection">Connection Details</param>
     public AnthropicAgentFactory(AnthropicConnection connection)
     {
         _connection = connection;
     }
 
     /// <summary>
-    /// 
+    /// Create a simple Agent (using the ChatClient) with default settings (For more advanced agents use the options overloads)
     /// </summary>
-    /// <param name="model">Name of the model to use (See AnthropicChatModels constants)</param>
-    /// <param name="maxTokenCount"></param>
-    /// <param name="instructions"></param>
-    /// <param name="name"></param>
-    /// <param name="tools"></param>
-    /// <returns></returns>
+    /// <param name="model">Name of the Model to use</param>
+    /// <param name="maxTokenCount">Max Token Count this Agent may use per call</param>
+    /// <param name="instructions">Instructions for the Agent to follow (aka Developer Message)</param>
+    /// <param name="name">Name of the Agent</param>
+    /// <param name="tools">Tools for the Agent</param>
+    /// <returns>An Agent</returns>
     public AnthropicAgent CreateAgent(string model, int maxTokenCount, string? instructions = null, string? name = null, AITool[]? tools = null)
     {
         return CreateAgent(new AnthropicAgentOptions
         {
-            DeploymentModelName = model,
+            Model = model,
             MaxOutputTokens = maxTokenCount,
             Name = name,
             Instructions = instructions,
@@ -46,6 +57,11 @@ public class AnthropicAgentFactory
         });
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public AnthropicAgent CreateAgent(AnthropicAgentOptions options)
     {
         IChatClient client = GetClient(options);
@@ -65,7 +81,7 @@ public class AnthropicAgentFactory
     {
         ChatOptions chatOptions = new()
         {
-            ModelId = options.DeploymentModelName
+            ModelId = options.Model
         };
 
         if (options.Tools != null)
@@ -86,7 +102,7 @@ public class AnthropicAgentFactory
             {
                 MaxTokens = options.MaxOutputTokens,
                 Messages = [],
-                Model = options.DeploymentModelName,
+                Model = options.Model,
                 Thinking = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens }),
             };
         }

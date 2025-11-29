@@ -1,11 +1,6 @@
-﻿using AgentFrameworkToolkit.Anthropic;
-using AgentFrameworkToolkit.Google;
-using AgentFrameworkToolkit.Mistral;
-using AgentFrameworkToolkit.OpenAI;
+﻿using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.OpenRouter;
 using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
-using Shared;
 
 namespace Samples.Providers;
 
@@ -21,7 +16,7 @@ public static class Mistral
 
         OpenRouterAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
         {
-            DeploymentModelName = OpenRouterChatModels.OpenAI.Gpt41Mini,
+            Model = OpenRouterChatModels.OpenAI.Gpt41Mini,
         });
 
         AgentRunResponse response = await agent.RunAsync("Hello");

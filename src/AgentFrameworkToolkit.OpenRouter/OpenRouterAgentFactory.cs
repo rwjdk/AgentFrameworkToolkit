@@ -3,11 +3,18 @@ using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.OpenRouter;
 
+/// <summary>
+/// Factory for creating OpenAI Agents
+/// </summary>
 public class OpenRouterAgentFactory
 {
     private const string Endpoint = "https://openrouter.ai/api/v1";
     private readonly OpenAIAgentFactory _openAIAgentFactory;
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="apiKey">Your OpenRouter API Key (if you need a more advanced connection use the constructor overload)</param>
     public OpenRouterAgentFactory(string apiKey)
     {
         _openAIAgentFactory = new OpenAIAgentFactory(new OpenAIConnection
@@ -17,6 +24,10 @@ public class OpenRouterAgentFactory
         });
     }
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="connection">Connection Details</param>
     public OpenRouterAgentFactory(OpenRouterConnection connection)
     {
         _openAIAgentFactory = new OpenAIAgentFactory(new OpenAIConnection
@@ -40,28 +51,48 @@ public class OpenRouterAgentFactory
     {
         return CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
         {
-            DeploymentModelName = model,
+            Model = model,
             Name = name,
             Instructions = instructions,
             Tools = tools
         });
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenRouterAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithoutReasoning options)
     {
         return new OpenRouterAgent(_openAIAgentFactory.CreateAgent(options));
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenRouterAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithReasoning options)
     {
         return new OpenRouterAgent(_openAIAgentFactory.CreateAgent(options));
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenRouterAgent CreateAgent(OpenAIAgentOptionsForChatClientWithoutReasoning options)
     {
         return new OpenRouterAgent(_openAIAgentFactory.CreateAgent(options));
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public OpenRouterAgent CreateAgent(OpenAIAgentOptionsForChatClientWithReasoning options)
     {
         return new OpenRouterAgent(_openAIAgentFactory.CreateAgent(options));

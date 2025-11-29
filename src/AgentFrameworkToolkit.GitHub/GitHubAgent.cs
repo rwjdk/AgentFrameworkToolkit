@@ -1,16 +1,16 @@
-﻿using JetBrains.Annotations;
-using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
+﻿using Microsoft.Agents.AI;
 using System.Text.Json;
+using JetBrains.Annotations;
+using Microsoft.Extensions.AI;
 
-namespace AgentFrameworkToolkit.OpenAI;
+namespace AgentFrameworkToolkit.GitHub;
 
 /// <summary>
-/// An Agent targeting OpenAI
+/// An Agent targeting GitHub Models
 /// </summary>
 /// <param name="innerAgent">The inner generic Agent</param>
 [PublicAPI]
-public class OpenAIAgent(AIAgent innerAgent) : AIAgent
+public class GitHubAgent(AIAgent innerAgent) : AIAgent
 {
     /// <summary>
     /// The inner generic Agent

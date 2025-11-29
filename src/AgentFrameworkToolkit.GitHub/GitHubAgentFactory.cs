@@ -1,25 +1,27 @@
-﻿using GenerativeAI.Microsoft;
+﻿using Azure;
+using Azure.AI.Inference;
+using Azure.Core.Pipeline;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
-namespace AgentFrameworkToolkit.Google;
+namespace AgentFrameworkToolkit.GitHub;
 
 /// <summary>
-/// Factory for creating Google Agents
+/// Factory for creating GitHub Model Agents
 /// </summary>
-public class GoogleAgentFactory
+public class GitHubAgentFactory
 {
-    private readonly GoogleConnection? _connection;
+    private readonly GitHubConnection _connection;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="apiKey">Your Google API Key (if you need a more advanced connection use the constructor overload)</param>
-    public GoogleAgentFactory(string apiKey)
+    /// <param name="personalAccessToken">The GitHub Personal Access Token with Models Access</param>
+    public GitHubAgentFactory(string personalAccessToken)
     {
-        _connection = new GoogleConnection
+        _connection = new GitHubConnection
         {
-            ApiKey = apiKey
+            PersonalAccessToken = personalAccessToken
         };
     }
 
@@ -27,7 +29,7 @@ public class GoogleAgentFactory
     /// Constructor
     /// </summary>
     /// <param name="connection">Connection Details</param>
-    public GoogleAgentFactory(GoogleConnection connection)
+    public GitHubAgentFactory(GitHubConnection connection)
     {
         _connection = connection;
     }
@@ -40,9 +42,9 @@ public class GoogleAgentFactory
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public GoogleAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public GitHubAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
     {
-        return CreateAgent(new GoogleAgentOptions
+        return CreateAgent(new GitHubAgentOptions
         {
             Model = model,
             Name = name,
@@ -56,22 +58,21 @@ public class GoogleAgentFactory
     /// </summary>
     /// <param name="options">Options for the agent</param>
     /// <returns>The Agent</returns>
-    public GoogleAgent CreateAgent(GoogleAgentOptions options)
+    public GitHubAgent CreateAgent(GitHubAgentOptions options)
     {
-        IChatClient client = GetClient(options.Model);
-
+        IChatClient client = GetClient(options);
         AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options));
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (options.RawToolCallDetails != null)
         {
-            return new GoogleAgent(options.ApplyMiddleware(innerAgent));
+            return new GitHubAgent(options.ApplyMiddleware(innerAgent));
         }
 
-        return new GoogleAgent(innerAgent);
+        return new GitHubAgent(innerAgent);
     }
 
-    private static ChatClientAgentOptions CreateChatClientAgentOptions(GoogleAgentOptions options)
+    private ChatClientAgentOptions CreateChatClientAgentOptions(GitHubAgentOptions options)
     {
         bool anyOptionsSet = false;
         ChatOptions chatOptions = new();
@@ -86,16 +87,6 @@ public class GoogleAgentFactory
             anyOptionsSet = true;
             chatOptions.MaxOutputTokens = options.MaxOutputTokens.Value;
         }
-
-        if (options.ThinkingBudget > 0)
-        {
-            anyOptionsSet = true;
-            chatOptions.AdditionalProperties = new AdditionalPropertiesDictionary
-            {
-                ["ThinkingBudget"] = options.ThinkingBudget,
-            };
-        }
-
 
         if (options.Temperature != null)
         {
@@ -120,26 +111,35 @@ public class GoogleAgentFactory
         return chatClientAgentOptions;
     }
 
-
-    private IChatClient GetClient(string model)
+    private IChatClient GetClient(GitHubAgentOptions options)
     {
-        IChatClient client;
-        if (_connection?.Adapter != null)
+        AzureAIInferenceClientOptions clientOptions = new();
+
+        if (options.RawHttpCallDetails != null)
         {
-            client = new GenerativeAIChatClient(_connection.Adapter, model);
+            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails)); //todo - antipattern to new up a new httpClient Here
+            if (_connection.NetworkTimeout != null)
+            {
+                inspectingHttpClient.Timeout = _connection.NetworkTimeout.Value;
+            }
+
+            clientOptions.Transport = new HttpClientTransport(inspectingHttpClient);
         }
-        else if (_connection?.ApiKey != null)
+        else if (_connection.NetworkTimeout != null)
         {
-            client = new GenerativeAIChatClient(_connection.ApiKey, model);
-        }
-        else
-        {
-            throw new Exception("Missing Configuration"); //todo - custom exception + better message
+            clientOptions.Transport = new HttpClientTransport(new HttpClient
+            {
+                Timeout = _connection.NetworkTimeout.Value
+            });
         }
 
-        //todo - Timeout???
-        //Todo - Can RawHttpCallDetails somehow be supported?
+        _connection.AdditionalAzureAIInferenceClientOptions?.Invoke(clientOptions);
 
-        return client;
+        ChatCompletionsClient client = new(
+            new Uri("https://models.github.ai/inference"),
+            new AzureKeyCredential(_connection.PersonalAccessToken),
+            clientOptions);
+
+        return client.AsIChatClient(options.Model);
     }
 }

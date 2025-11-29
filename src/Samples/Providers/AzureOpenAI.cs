@@ -1,7 +1,6 @@
 ﻿using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Agents.AI;
-using Shared;
 
 namespace Samples.Providers;
 
@@ -18,10 +17,10 @@ public static class AzureOpenAI
 
         AzureOpenAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
         {
-            DeploymentModelName = OpenAIChatModels.Gpt41Mini,
+            Model = OpenAIChatModels.Gpt41Mini,
         });
 
-        AgentRunResponse response = await agent.RunAsync("Hello");
+        AgentRunResponse response = await agent.RunAsync<string>("Hello");
         Console.WriteLine(response);
     }
 }

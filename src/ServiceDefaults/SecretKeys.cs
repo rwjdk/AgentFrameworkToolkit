@@ -10,4 +10,5 @@ public static class SecretKeys
     public const string XAIApiKey = "XAIApiKey";
     public const string GoogleApiKey = "GoogleApiKey";
     public const string OpenRouterApiKey = "OpenRouterApiKey";
+    public const string GitHubPatToken = "GitHubPatToken";
 }

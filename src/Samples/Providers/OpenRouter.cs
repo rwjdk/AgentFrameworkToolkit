@@ -1,6 +1,5 @@
 ﻿using AgentFrameworkToolkit.Google;
 using Microsoft.Agents.AI;
-using Shared;
 
 namespace Samples.Providers;
 
@@ -16,7 +15,7 @@ public static class OpenRouter
 
         GoogleAgent agent = factory.CreateAgent(new GoogleAgentOptions
         {
-            DeploymentModelName = GoogleChatModels.Gemini25Flash,
+            Model = GoogleChatModels.Gemini25Flash,
         });
 
         AgentRunResponse response = await agent.RunAsync("Hello");

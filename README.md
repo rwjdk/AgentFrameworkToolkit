@@ -23,7 +23,7 @@ OpenAIAgentFactory factory = new OpenAIAgentFactory(new OpenAIConnection
 
 OpenAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForResponseApiWithReasoning
 {
-    DeploymentModelName = "gpt-5",
+    Model = "gpt-5",
     ReasoningEffort = ResponseReasoningEffortLevel.High,
     ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,    
 });
@@ -38,7 +38,7 @@ GoogleAgentFactory factory = new(new GoogleConnection
 
 GoogleAgent agent = factory.CreateAgent(new GoogleAgentOptions
 {
-    DeploymentModelName = GenerativeAI.GoogleAIModels.Gemini25Pro,
+    Model = GenerativeAI.GoogleAIModels.Gemini25Pro,
     Tools = [AIFunctionFactory.Create(GetWeather)]
 });
 
@@ -50,7 +50,7 @@ AnthropicAgentFactory factory = new AnthropicAgentFactory("<AnthropicApiKey">);
 
 factory.CreateAgent(new AnthropicAgentOptions
 {
-    DeploymentModelName = "claude-sonnet-4-5",
+    Model = "claude-sonnet-4-5",
     MaxOutputTokens = 10000, // <-- Force the MaxToken property I always forget
     BudgetTokens = 5000
 });
@@ -65,7 +65,7 @@ XAIAgentFactory factory = new(new XAIConnection
 
 XAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
 {
-    DeploymentModelName = "grok-4-fast-non-reasoning",
+    Model = "grok-4-fast-non-reasoning",
     Tools = [AIFunctionFactory.Create(GetWeather)]
 });
 ```
@@ -75,7 +75,7 @@ XAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForChatClientWithoutR
 MistralAgentFactory mistralAgentFactory = new MistralAgentFactory("<MistralApiKey>");
 MistralAgent mistralAgent = mistralAgentFactory.CreateAgent(new MistralAgentOptions
 {
-    DeploymentModelName = Mistral.SDK.ModelDefinitions.MistralSmall
+    Model = Mistral.SDK.ModelDefinitions.MistralSmall
 });
 ```
 
@@ -88,7 +88,7 @@ AzureOpenAIAgent fullBlownAgent = azureOpenAIAgentFactory.CreateAgent(new OpenAI
     Name = "MyAgent",
     Description = "The description of my agent",
     Instructions = "Speak like a pirate",
-    DeploymentModelName = "gpt-5-mini",
+    Model = "gpt-5-mini",
     ReasoningEffort = ResponseReasoningEffortLevel.Low,
     ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
     Tools = [AIFunctionFactory.Create(GetWeather)],

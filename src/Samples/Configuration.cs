@@ -1,4 +1,4 @@
-﻿namespace Shared;
+﻿namespace Samples;
 
 public record Configuration(
     string OpenAiApiKey,

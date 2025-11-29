@@ -4,10 +4,17 @@ using Mistral.SDK;
 
 namespace AgentFrameworkToolkit.Mistral;
 
+/// <summary>
+/// Factory for creating Mistral Agents
+/// </summary>
 public class MistralAgentFactory
 {
     private readonly MistralConnection _connection;
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="apiKey">Your Mistral API Key (if you need a more advanced connection use the constructor overload)</param>
     public MistralAgentFactory(string apiKey)
     {
         _connection = new MistralConnection
@@ -16,22 +23,39 @@ public class MistralAgentFactory
         };
     }
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="connection">Connection Details</param>
     public MistralAgentFactory(MistralConnection connection)
     {
         _connection = connection;
     }
 
+    /// <summary>
+    /// Create a simple Agent (using the ChatClient) with default settings (For more advanced agents use the options overloads)
+    /// </summary>
+    /// <param name="model">Name of the Model to use</param>
+    /// <param name="instructions">Instructions for the Agent to follow (aka Developer Message)</param>
+    /// <param name="name">Name of the Agent</param>
+    /// <param name="tools">Tools for the Agent</param>
+    /// <returns>An Agent</returns>
     public MistralAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
     {
         return CreateAgent(new MistralAgentOptions
         {
-            DeploymentModelName = model,
+            Model = model,
             Name = name,
             Instructions = instructions,
             Tools = tools
         });
     }
 
+    /// <summary>
+    /// Create a new Agent
+    /// </summary>
+    /// <param name="options">Options for the agent</param>
+    /// <returns>The Agent</returns>
     public MistralAgent CreateAgent(MistralAgentOptions options)
     {
         IChatClient client = GetClient(options);
@@ -51,7 +75,7 @@ public class MistralAgentFactory
     {
         ChatOptions chatOptions = new()
         {
-            ModelId = options.DeploymentModelName
+            ModelId = options.Model
         };
 
         if (options.Tools != null)

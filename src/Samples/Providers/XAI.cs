@@ -4,7 +4,6 @@ using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.XAI;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using Shared;
 
 namespace Samples.Providers;
 
@@ -20,7 +19,7 @@ public static class XAI
 
         XAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
         {
-            DeploymentModelName = XAIChatModels.Grok4FastNonReasoning,
+            Model = XAIChatModels.Grok4FastNonReasoning,
         });
 
         AgentRunResponse response = await agent.RunAsync("Hello");

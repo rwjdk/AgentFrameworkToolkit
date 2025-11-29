@@ -2,7 +2,6 @@
 using AgentFrameworkToolkit.Google;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using Shared;
 
 namespace Samples.Providers;
 
@@ -18,7 +17,7 @@ public static class Google
 
         GoogleAgent agent = factory.CreateAgent(new GoogleAgentOptions
         {
-            DeploymentModelName = GoogleChatModels.Gemini25Flash,
+            Model = GoogleChatModels.Gemini25Flash,
         });
 
         AgentRunResponse response = await agent.RunAsync("Hello");

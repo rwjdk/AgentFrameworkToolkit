@@ -1,12 +1,12 @@
 ﻿using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
-namespace AgentFrameworkToolkit.Anthropic;
+namespace AgentFrameworkToolkit.GitHub;
 
 /// <summary>
-/// Options for an Anthropic Agent
+/// Options for an GitHub Models Agent
 /// </summary>
-public class AnthropicAgentOptions
+public class GitHubAgentOptions
 {
     /// <summary>
     /// Model to use
@@ -49,14 +49,14 @@ public class AnthropicAgentOptions
     public Action<ToolCallingDetails>? RawToolCallDetails { get; set; }
 
     /// <summary>
+    /// The maximum number of tokens in the generated chat response.
+    /// </summary>
+    public int? MaxOutputTokens { get; set; }
+
+    /// <summary>
     /// An Action that allow you to inject additional ChatClientAgentOptions settings beyond what these options can do
     /// </summary>
     public Action<ChatClientAgentOptions>? AdditionalChatClientAgentOptions { get; set; }
-
-    /// <summary>
-    /// The maximum number of tokens in the generated chat response.
-    /// </summary>
-    public required int MaxOutputTokens { get; set; }
 
     /// <summary>The temperature for generating chat responses.</summary>
     /// <remarks>
@@ -79,9 +79,4 @@ public class AnthropicAgentOptions
 
         return innerAgent;
     }
-
-    /// <summary>
-    /// Reasoning effort knob, in tokens. Higher value --> more internal reasoning.
-    /// </summary>
-    public int BudgetTokens { get; set; }
 }

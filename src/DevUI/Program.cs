@@ -1,5 +1,6 @@
 using AgentFrameworkToolkit.Anthropic;
 using AgentFrameworkToolkit.AzureOpenAI;
+using AgentFrameworkToolkit.GitHub;
 using AgentFrameworkToolkit.Google;
 using AgentFrameworkToolkit.Mistral;
 using AgentFrameworkToolkit.OpenAI;
@@ -23,6 +24,7 @@ string? googleApiKey = builder.Configuration[SecretKeys.GoogleApiKey];
 string? anthropicApiKey = builder.Configuration[SecretKeys.AnthropicApiKey];
 string? xAIApiKey = builder.Configuration[SecretKeys.XAIApiKey];
 string? openRouterApiKey = builder.Configuration[SecretKeys.OpenRouterApiKey];
+string? gitHubPatToken = builder.Configuration[SecretKeys.GitHubPatToken];
 
 if (HasValidValues(azureOpenAiEndpoint, azureOpenAiApiKey))
 {
@@ -30,7 +32,7 @@ if (HasValidValues(azureOpenAiEndpoint, azureOpenAiApiKey))
     builder.AddAIAgent(agentName, (_, _) => new AzureOpenAIAgentFactory(azureOpenAiEndpoint!, azureOpenAiApiKey!).CreateAgent(new OpenAIAgentOptionsForResponseApiWithoutReasoning()
     {
         Name = agentName,
-        DeploymentModelName = OpenAIChatModels.Gpt41Mini
+        Model = OpenAIChatModels.Gpt41Mini
     }));
 }
 
@@ -40,7 +42,7 @@ if (HasValidValues(openAIApiKey))
     builder.AddAIAgent(agentName, (_, _) => new OpenAIAgentFactory(openAIApiKey!).CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
     {
         Name = agentName,
-        DeploymentModelName = OpenAIChatModels.Gpt41Mini,
+        Model = OpenAIChatModels.Gpt41Mini,
     }));
 }
 
@@ -50,7 +52,7 @@ if (HasValidValues(googleApiKey))
     builder.AddAIAgent(agentName, (_, _) => new GoogleAgentFactory(googleApiKey!).CreateAgent(new GoogleAgentOptions
     {
         Name = agentName,
-        DeploymentModelName = GoogleChatModels.Gemini25Flash
+        Model = GoogleChatModels.Gemini25Flash
     }));
 }
 
@@ -60,7 +62,7 @@ if (HasValidValues(mistralApiKey))
     builder.AddAIAgent(agentName, (_, _) => new MistralAgentFactory(mistralApiKey!).CreateAgent(new MistralAgentOptions
     {
         Name = agentName,
-        DeploymentModelName = MistalChatModels.MistralSmall
+        Model = MistalChatModels.MistralSmall
     }));
 }
 
@@ -69,7 +71,7 @@ if (HasValidValues(anthropicApiKey))
     const string agentName = "Anthropic Agent";
     builder.AddAIAgent(agentName, (_, _) => new AnthropicAgentFactory(anthropicApiKey!).CreateAgent(new AnthropicAgentOptions
     {
-        DeploymentModelName = AnthropicChatModels.ClaudeHaiku45,
+        Model = AnthropicChatModels.ClaudeHaiku45,
         MaxOutputTokens = 1000,
         Name = agentName
     }));
@@ -81,7 +83,7 @@ if (HasValidValues(xAIApiKey))
     builder.AddAIAgent(agentName, (_, _) => new XAIAgentFactory(xAIApiKey!).CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
     {
         Name = agentName,
-        DeploymentModelName = XAIChatModels.Grok41FastNonReasoning
+        Model = XAIChatModels.Grok41FastNonReasoning
     }));
 }
 
@@ -91,7 +93,17 @@ if (HasValidValues(openRouterApiKey))
     builder.AddAIAgent(agentName, (_, _) => new OpenRouterAgentFactory(openRouterApiKey!).CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
     {
         Name = agentName,
-        DeploymentModelName = OpenRouterChatModels.OpenAI.Gpt41Mini
+        Model = OpenRouterChatModels.OpenAI.Gpt41Mini
+    }));
+}
+
+if (HasValidValues(gitHubPatToken))
+{
+    const string agentName = "GitHub Models Agent";
+    builder.AddAIAgent(agentName, (_, _) => new GitHubAgentFactory(gitHubPatToken!).CreateAgent(new GitHubAgentOptions
+    {
+        Name = agentName,
+        Model = "microsoft/Phi-4-mini-instruct"
     }));
 }
 

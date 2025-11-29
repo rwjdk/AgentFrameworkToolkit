@@ -12,6 +12,7 @@ IResourceBuilder<ParameterResource> anthropicApiKey = builder.AddParameter(Secre
 IResourceBuilder<ParameterResource> xaiApiKey = builder.AddParameter(SecretKeys.XAIApiKey, secret: true).WithDescription(description);
 IResourceBuilder<ParameterResource> openAiApiKey = builder.AddParameter(SecretKeys.OpenAIApiKey, secret: true).WithDescription(description);
 IResourceBuilder<ParameterResource> openRouterApiKey = builder.AddParameter(SecretKeys.OpenRouterApiKey, secret: true).WithDescription(description);
+IResourceBuilder<ParameterResource> gitHubPatToken = builder.AddParameter(SecretKeys.GitHubPatToken, secret: true).WithDescription(description);
 
 builder.AddProject<DevUI>("DevUI")
     .WithEnvironment(SecretKeys.AzureOpenAIEndpoint, azureOpenAiEndpoint)
@@ -21,6 +22,7 @@ builder.AddProject<DevUI>("DevUI")
     .WithEnvironment(SecretKeys.AnthropicApiKey, anthropicApiKey)
     .WithEnvironment(SecretKeys.XAIApiKey, xaiApiKey)
     .WithEnvironment(SecretKeys.OpenAIApiKey, openAiApiKey)
-    .WithEnvironment(SecretKeys.OpenRouterApiKey, openRouterApiKey);
+    .WithEnvironment(SecretKeys.OpenRouterApiKey, openRouterApiKey)
+    .WithEnvironment(SecretKeys.GitHubPatToken, gitHubPatToken);
 
 builder.Build().Run();

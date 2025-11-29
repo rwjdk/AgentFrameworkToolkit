@@ -1,20 +1,23 @@
-﻿using AgentFrameworkToolkit.Anthropic;
+﻿using AgentFrameworkToolkit.GitHub;
+using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
+using OpenAI.Chat;
+
+#pragma warning disable OPENAI001
 
 namespace Samples.Providers;
 
-public static class Anthropic
+public static class GitHub
 {
     public static async Task Run()
     {
         Configuration configuration = ConfigurationManager.GetConfiguration();
-        AnthropicAgentFactory factory = new(configuration.AnthropicApiKey);
+        GitHubAgentFactory factory = new(configuration.GitHubPatToken);
 
-        AnthropicAgent agent = factory.CreateAgent(new AnthropicAgentOptions
+        GitHubAgent agent = factory.CreateAgent(new GitHubAgentOptions
         {
-            Model = AnthropicChatModels.ClaudeHaiku45,
-            MaxOutputTokens = 2000,
-            BudgetTokens = 1500,
+            Model = "microsoft/Phi-4-mini-instruct",
             RawHttpCallDetails = details => { Console.WriteLine(details.RequestData); }
         });
 

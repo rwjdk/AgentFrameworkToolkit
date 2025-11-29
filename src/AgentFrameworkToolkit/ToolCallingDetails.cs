@@ -3,11 +3,18 @@ using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit;
 
+/// <summary>
+/// Object represent Tool Call Details
+/// </summary>
 public class ToolCallingDetails
 {
+    /// <summary>
+    /// The Context of a Function Call
+    /// </summary>
     public required FunctionInvocationContext Context { get; set; }
     //Todo - more easy info
 
+    /// <inheritdoc />
     public override string ToString()
     {
         StringBuilder toolDetails = new();

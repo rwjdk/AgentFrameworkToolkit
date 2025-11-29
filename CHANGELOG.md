@@ -1,8 +1,18 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.251129.1
+- Added GitHub provider NuGet Package
+- [BREAKING] Renamed `DeploymentModelName` to `Model` to make it simpler to understand (Sorry to exiting users, but better now than later)
+- [BREAKING] Renamed `RequestJson` and `ResponseJson` to `RequestData` and `ResponseData` as not all LLMs you JSON for communication (example Anthropic Data back is not JSON)
+- OpenAI: Added `WithOpenAIResponsesApiReasoning` and `WithOpenAIChatClientReasoning` Extension Methods for `ChatOptions` (if you do not wish to use AgentFactory, but still wish to have an easier time to set OpenAI Reasoning)
+- Fixed that `ServiceCollectionExtensions` for Google was in the wrong namespace
+- Fixed that Mistral had an `AddAnthropicAgentFactory` method (wrong name)
+- Fixed that OpenAI ResponseAPI without reasoning Agents did not get their Temperature set
+---
+
 ## Version 1.0.0-preview.251126.2
 - Anthropic: Replaced the unofficial `Anthropic.SDK` nuget package with the official `Microsoft.Agents.AI.Anthropic` nuget package instead.
-- [BREAKING] Removed the `UseInterleavedThinking` option, as it actually did not do anything.
+- [BREAKING] Removed the `UseInterleavedThinking` option form the Anthropic Package, as it actually did not do anything.
 
 ---
 
@@ -13,7 +23,7 @@
 ---
 
 ## Version 1.0.0-preview.251123.0
-- Added OpenRouter NuGet Package
+- Added OpenRouter provider NuGet Package
 - [OpenAI] Added `OpenAIChatModels` of the most common models
 - [Anthropic] Added `AnthropicChatModels` of the most common models
 - [XAI] Added `XAIChatModels` of the most common models
@@ -31,7 +41,7 @@
 ---
 
 ## Version 1.0.0-preview.251121.2
-- Added Mistral NuGet Package
+- Added Mistral provider NuGet Package
 - Gave each package its own Description
 
 ---

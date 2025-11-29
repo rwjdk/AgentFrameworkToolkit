@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace AgentFrameworkToolkit.Anthropic;
+namespace AgentFrameworkToolkit.GitHub;
 
 /// <summary>
 /// Extension Methods for IServiceCollection
@@ -8,24 +8,24 @@ namespace AgentFrameworkToolkit.Anthropic;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Register an AnthropicAgentFactory as a Singleton
+    /// Register an GitHubAgentFactory as a Singleton
     /// </summary>
     /// <param name="services">The IServiceCollection collection</param>
     /// <param name="connection">Connection Details</param>
     /// <returns>The ServiceCollection</returns>
-    public static IServiceCollection AddAnthropicAgentFactory(this IServiceCollection services, AnthropicConnection connection)
+    public static IServiceCollection AddGitHubAgentFactory(this IServiceCollection services, GitHubConnection connection)
     {
-        return services.AddSingleton(new AnthropicAgentFactory(connection));
+        return services.AddSingleton(new GitHubAgentFactory(connection));
     }
 
     /// <summary>
-    /// Register an AnthropicAgentFactory as a Singleton
+    /// Register an GitHubAgentFactory as a Singleton
     /// </summary>
     /// <param name="services">The IServiceCollection collection</param>
     /// <param name="apiKey">The API Key</param>
     /// <returns>The ServiceCollection</returns>
-    public static IServiceCollection AddAnthropicAgentFactory(this IServiceCollection services, string apiKey)
+    public static IServiceCollection AddGitHubAgentFactory(this IServiceCollection services, string apiKey)
     {
-        return services.AddSingleton(new AnthropicAgentFactory(apiKey));
+        return services.AddSingleton(new GitHubAgentFactory(apiKey));
     }
 }
