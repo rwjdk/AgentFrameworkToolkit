@@ -1,8 +1,9 @@
-﻿using System.ClientModel;
-using System.ClientModel.Primitives;
+﻿using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using OpenAI;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 
 #pragma warning disable OPENAI001
 
@@ -11,6 +12,7 @@ namespace AgentFrameworkToolkit.OpenAI;
 /// <summary>
 /// Factory for creating OpenAI Agents
 /// </summary>
+[PublicAPI]
 public class OpenAIAgentFactory
 {
     private readonly OpenAIConnection _connection;

@@ -1,13 +1,17 @@
-﻿namespace AgentFrameworkToolkit.OpenRouter;
+﻿using JetBrains.Annotations;
+
+namespace AgentFrameworkToolkit.OpenRouter;
 
 /// <summary>
 /// A List of the most common OpenRouter Models
 /// </summary>
+[PublicAPI]
 public static class OpenRouterChatModels
 {
     /// <summary>
     /// XAI Models
     /// </summary>
+    [PublicAPI]
     public static class XAI
     {
         /// <summary>
@@ -59,6 +63,7 @@ public static class OpenRouterChatModels
     /// <summary>
     /// Anthropic Models
     /// </summary>
+    [PublicAPI]
     public static class Anthropic
     {
         /// <summary>
@@ -110,6 +115,7 @@ public static class OpenRouterChatModels
     /// <summary>
     /// OpenAI Models
     /// </summary>
+    [PublicAPI]
     public static class OpenAI
     {
         /// <summary>
@@ -166,6 +172,7 @@ public static class OpenRouterChatModels
     /// <summary>
     /// Google
     /// </summary>
+    [PublicAPI]
     public static class Google
     {
         /// <summary>
@@ -187,6 +194,7 @@ public static class OpenRouterChatModels
     /// <summary>
     /// Mistral Models
     /// </summary>
+    [PublicAPI]
     public static class Mistral
     {
         /// <summary>

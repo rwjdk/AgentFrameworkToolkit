@@ -1,5 +1,6 @@
 ﻿using AgentFrameworkToolkit.OpenAI;
 using Azure.AI.OpenAI;
+using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using OpenAI;
@@ -13,6 +14,7 @@ namespace AgentFrameworkToolkit.AzureOpenAI;
 /// <summary>
 /// Factory for creating AzureOpenAI Agents
 /// </summary>
+[PublicAPI]
 public class AzureOpenAIAgentFactory
 {
     private readonly AzureOpenAIConnection _connection;

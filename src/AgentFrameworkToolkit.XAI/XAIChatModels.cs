@@ -1,8 +1,11 @@
-﻿namespace AgentFrameworkToolkit.XAI;
+﻿using JetBrains.Annotations;
+
+namespace AgentFrameworkToolkit.XAI;
 
 /// <summary>
 /// A List of the most common XAI Models
 /// </summary>
+[PublicAPI]
 public static class XAIChatModels
 {
     /// <summary>

@@ -1,4 +1,5 @@
-﻿using Microsoft.Agents.AI;
+﻿using JetBrains.Annotations;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Mistral.SDK;
 
@@ -7,6 +8,7 @@ namespace AgentFrameworkToolkit.Mistral;
 /// <summary>
 /// Factory for creating Mistral Agents
 /// </summary>
+[PublicAPI]
 public class MistralAgentFactory
 {
     private readonly MistralConnection _connection;

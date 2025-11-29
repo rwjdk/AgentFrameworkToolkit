@@ -1,4 +1,5 @@
 ﻿using AgentFrameworkToolkit.OpenAI;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.XAI;
@@ -6,6 +7,7 @@ namespace AgentFrameworkToolkit.XAI;
 /// <summary>
 /// Factory for creating X AI Agents
 /// </summary>
+[PublicAPI]
 public class XAIAgentFactory
 {
     private const string Endpoint = "https://api.x.ai/v1";

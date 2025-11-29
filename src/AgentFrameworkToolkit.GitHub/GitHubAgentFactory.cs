@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Azure.AI.Inference;
 using Azure.Core.Pipeline;
+using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
@@ -9,6 +10,7 @@ namespace AgentFrameworkToolkit.GitHub;
 /// <summary>
 /// Factory for creating GitHub Model Agents
 /// </summary>
+[PublicAPI]
 public class GitHubAgentFactory
 {
     private readonly GitHubConnection _connection;

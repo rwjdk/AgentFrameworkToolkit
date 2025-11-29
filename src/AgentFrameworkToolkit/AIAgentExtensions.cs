@@ -1,4 +1,5 @@
-﻿using Microsoft.Agents.AI;
+﻿using JetBrains.Annotations;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,6 +10,7 @@ namespace AgentFrameworkToolkit;
 /// <summary>
 /// Various Extensions for an AI Agent
 /// </summary>
+[PublicAPI]
 public static class AIAgentExtensions
 {
     /// <summary>

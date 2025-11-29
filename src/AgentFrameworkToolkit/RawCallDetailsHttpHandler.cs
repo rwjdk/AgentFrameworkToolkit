@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using JetBrains.Annotations;
+using System.Text.Json;
 
 namespace AgentFrameworkToolkit;
 
@@ -6,6 +7,7 @@ namespace AgentFrameworkToolkit;
 /// HTTP Handler for allowing Raw Call Details
 /// </summary>
 /// <param name="rawCallDetails">Action on how to consume the Raw Call Details</param>
+[PublicAPI]
 public class RawCallDetailsHttpHandler(Action<RawCallDetails> rawCallDetails) : HttpClientHandler
 {
     /// <inheritdoc />

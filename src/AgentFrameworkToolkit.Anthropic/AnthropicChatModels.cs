@@ -1,8 +1,11 @@
-﻿namespace AgentFrameworkToolkit.Anthropic;
+﻿using JetBrains.Annotations;
+
+namespace AgentFrameworkToolkit.Anthropic;
 
 /// <summary>
 /// A List of the most common Anthropic Models
 /// </summary>
+[PublicAPI]
 public static class AnthropicChatModels
 {
     /// <summary>

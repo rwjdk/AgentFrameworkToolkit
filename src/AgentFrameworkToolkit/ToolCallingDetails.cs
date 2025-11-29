@@ -1,11 +1,13 @@
-﻿using System.Text;
+﻿using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
+using System.Text;
 
 namespace AgentFrameworkToolkit;
 
 /// <summary>
 /// Object represent Tool Call Details
 /// </summary>
+[PublicAPI]
 public class ToolCallingDetails
 {
     /// <summary>

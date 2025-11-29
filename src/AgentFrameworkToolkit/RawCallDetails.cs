@@ -1,8 +1,11 @@
-﻿namespace AgentFrameworkToolkit;
+﻿using JetBrains.Annotations;
+
+namespace AgentFrameworkToolkit;
 
 /// <summary>
 /// Represent the data of a raw Call to an LLM
 /// </summary>
+[PublicAPI]
 public class RawCallDetails
 {
     /// <summary>

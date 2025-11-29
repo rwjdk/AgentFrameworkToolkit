@@ -1,8 +1,5 @@
 ﻿using AgentFrameworkToolkit.GitHub;
-using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
-using OpenAI.Chat;
 
 #pragma warning disable OPENAI001
 

@@ -2,6 +2,7 @@
 
 ## Version 1.0.0-preview.251129.1
 - Added GitHub provider NuGet Package
+- Everything now have XML Summaries
 - [BREAKING] Renamed `DeploymentModelName` to `Model` to make it simpler to understand (Sorry to exiting users, but better now than later)
 - [BREAKING] Renamed `RequestJson` and `ResponseJson` to `RequestData` and `ResponseData` as not all LLMs you JSON for communication (example Anthropic Data back is not JSON)
 - OpenAI: Added `WithOpenAIResponsesApiReasoning` and `WithOpenAIChatClientReasoning` Extension Methods for `ChatOptions` (if you do not wish to use AgentFactory, but still wish to have an easier time to set OpenAI Reasoning)

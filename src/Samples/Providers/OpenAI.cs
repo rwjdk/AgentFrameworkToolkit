@@ -2,7 +2,6 @@
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using OpenAI.Chat;
-using OpenAI.Responses;
 
 #pragma warning disable OPENAI001
 

@@ -1,8 +1,11 @@
-﻿namespace AgentFrameworkToolkit.OpenAI;
+﻿using JetBrains.Annotations;
+
+namespace AgentFrameworkToolkit.OpenAI;
 
 /// <summary>
 /// A List of the most common OpenAI Models
 /// </summary>
+[PublicAPI]
 public static class OpenAIChatModels
 {
     /// <summary>

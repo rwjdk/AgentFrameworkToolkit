@@ -1,4 +1,5 @@
-﻿using Microsoft.Agents.AI;
+﻿using JetBrains.Annotations;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit;
@@ -7,6 +8,7 @@ namespace AgentFrameworkToolkit;
 /// Handler for a Tool Call
 /// </summary>
 /// <param name="toolCallDetails">Action to Handle the Tool Call Details</param>
+[PublicAPI]
 public class ToolCallsHandler(Action<ToolCallingDetails> toolCallDetails)
 {
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using GenerativeAI.Microsoft;
+using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
@@ -7,6 +8,7 @@ namespace AgentFrameworkToolkit.Google;
 /// <summary>
 /// Factory for creating Google Agents
 /// </summary>
+[PublicAPI]
 public class GoogleAgentFactory
 {
     private readonly GoogleConnection? _connection;

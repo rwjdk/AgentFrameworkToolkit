@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.AI;
+﻿using JetBrains.Annotations;
+using Microsoft.Extensions.AI;
 using OpenAI.Chat;
 using OpenAI.Responses;
 
@@ -9,6 +10,7 @@ namespace AgentFrameworkToolkit.OpenAI;
 /// <summary>
 /// OpenAI Specific Extensions for ChatOptions
 /// </summary>
+[PublicAPI]
 public static class ChatOptionsExtensions
 {
     /// <summary>

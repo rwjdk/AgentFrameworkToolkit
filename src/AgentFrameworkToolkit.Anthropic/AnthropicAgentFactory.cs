@@ -1,7 +1,7 @@
 ﻿using Anthropic;
 using Anthropic.Core;
-using Anthropic.Models.Beta.Messages;
 using Anthropic.Models.Messages;
+using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using MessageCreateParams = Anthropic.Models.Messages.MessageCreateParams;
@@ -11,6 +11,7 @@ namespace AgentFrameworkToolkit.Anthropic;
 /// <summary>
 /// Factory for creating Anthropic Agents
 /// </summary>
+[PublicAPI]
 public class AnthropicAgentFactory
 {
     private readonly AnthropicConnection _connection;
@@ -138,7 +139,7 @@ public class AnthropicAgentFactory
             httpClient.Timeout = _connection.NetworkTimeout.Value;
         }
 
-        ClientOptions clientOptions = new ClientOptions
+        ClientOptions clientOptions = new()
         {
             APIKey = _connection.ApiKey,
             Timeout = _connection.NetworkTimeout
@@ -148,7 +149,7 @@ public class AnthropicAgentFactory
             clientOptions.HttpClient = httpClient;
         }
 
-        AnthropicClient anthropicClient = new AnthropicClient(clientOptions);
+        AnthropicClient anthropicClient = new(clientOptions);
 
         IChatClient client = anthropicClient.AsIChatClient();
         return client;

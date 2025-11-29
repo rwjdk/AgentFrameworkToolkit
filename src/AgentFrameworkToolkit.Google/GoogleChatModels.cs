@@ -1,8 +1,11 @@
-﻿namespace AgentFrameworkToolkit.Google;
+﻿using JetBrains.Annotations;
+
+namespace AgentFrameworkToolkit.Google;
 
 /// <summary>
 /// A List of the most common Google Models
 /// </summary>
+[PublicAPI]
 public static class GoogleChatModels
 {
     /// <summary>

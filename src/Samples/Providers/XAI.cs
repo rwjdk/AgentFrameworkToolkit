@@ -1,9 +1,6 @@
-﻿using AgentFrameworkToolkit.Anthropic;
-using AgentFrameworkToolkit.Google;
-using AgentFrameworkToolkit.OpenAI;
+﻿using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.XAI;
 using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
 
 namespace Samples.Providers;
 

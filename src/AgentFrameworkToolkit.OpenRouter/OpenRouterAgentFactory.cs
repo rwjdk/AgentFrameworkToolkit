@@ -1,4 +1,5 @@
 ﻿using AgentFrameworkToolkit.OpenAI;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.OpenRouter;
@@ -6,6 +7,7 @@ namespace AgentFrameworkToolkit.OpenRouter;
 /// <summary>
 /// Factory for creating OpenAI Agents
 /// </summary>
+[PublicAPI]
 public class OpenRouterAgentFactory
 {
     private const string Endpoint = "https://openrouter.ai/api/v1";
