@@ -8,7 +8,8 @@ An opinionated C# Toolkit for Microsoft Agent Framework that makes life easier
 [Anthropic (Claude)](https://www.nuget.org/packages/AgentFrameworkToolkit.Anthropic) | 
 [XAI (Grok)](https://www.nuget.org/packages/AgentFrameworkToolkit.XAI) |
 [Mistral](https://www.nuget.org/packages/AgentFrameworkToolkit.Mistral) | 
-[OpenRouter](https://www.nuget.org/packages/AgentFrameworkToolkit.OpenRouter)
+[OpenRouter](https://www.nuget.org/packages/AgentFrameworkToolkit.OpenRouter) |
+[GitHub](https://www.nuget.org/packages/AgentFrameworkToolkit.GitHub)
 
 ## Examples of use
 > All agents have AIAgent as base, fully work the  rest of Microsoft Agent Framework)
