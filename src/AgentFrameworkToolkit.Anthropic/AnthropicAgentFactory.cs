@@ -130,7 +130,7 @@ public class AnthropicAgentFactory
         // ReSharper disable once InvertIf
         if (options.RawHttpCallDetails != null)
         {
-            httpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails)); //todo - antipattern to new up a new httpClient Here
+            httpClient = new HttpClient(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
         }
 
         if (_connection.NetworkTimeout.HasValue)

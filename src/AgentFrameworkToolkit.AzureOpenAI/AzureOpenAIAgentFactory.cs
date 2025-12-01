@@ -235,7 +235,6 @@ public class AzureOpenAIAgentFactory
 
     private AzureOpenAIClient CreateClient(OpenAIAgentOptions options)
     {
-        //todo - support RBAC
         AzureOpenAIClientOptions azureOpenAIClientOptions = new()
         {
             NetworkTimeout = _connection.NetworkTimeout
@@ -244,7 +243,7 @@ public class AzureOpenAIAgentFactory
         // ReSharper disable once InvertIf
         if (options.RawHttpCallDetails != null)
         {
-            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails)); //todo - antipattern to new up a new httpClient Here
+            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
             azureOpenAIClientOptions.Transport = new HttpClientPipelineTransport(inspectingHttpClient);
         }
 

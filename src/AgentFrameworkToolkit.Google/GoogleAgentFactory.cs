@@ -1,4 +1,5 @@
-﻿using GenerativeAI.Microsoft;
+﻿using GenerativeAI;
+using GenerativeAI.Microsoft;
 using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
@@ -136,11 +137,8 @@ public class GoogleAgentFactory
         }
         else
         {
-            throw new Exception("Missing Configuration"); //todo - custom exception + better message
+            throw new AgentFrameworkToolkitException("You need to provide either an APIKey or Adapter to make a Google Connection");
         }
-
-        //todo - Timeout???
-        //Todo - Can RawHttpCallDetails somehow be supported?
 
         return client;
     }

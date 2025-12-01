@@ -14,7 +14,6 @@ public class ToolCallingDetails
     /// The Context of a Function Call
     /// </summary>
     public required FunctionInvocationContext Context { get; set; }
-    //Todo - more easy info
 
     /// <inheritdoc />
     public override string ToString()

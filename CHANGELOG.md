@@ -1,9 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleases
-- Added RBAC (TokenCredentials) support for Azure OpenAI
-- Enabled Treat Warnings as Errors
+## Version 1.0.0-preview.251201.1
+- AzureOpenAI: Added RBAC Support (TokenCredentials)
+- Enabled "Treat Warnings as Errors"
 - Added .editorconfig 
+- Removed all todo's in the code.
 
 ---
 

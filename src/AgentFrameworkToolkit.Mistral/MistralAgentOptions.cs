@@ -71,7 +71,6 @@ public class MistralAgentOptions
     /// <returns>The Agent back with applied middleware</returns>
     public AIAgent ApplyMiddleware(AIAgent innerAgent)
     {
-        //todo - more middleware options
         if (RawToolCallDetails != null)
         {
             innerAgent = innerAgent.AsBuilder().Use(new ToolCallsHandler(RawToolCallDetails).ToolCallingMiddleware).Build();

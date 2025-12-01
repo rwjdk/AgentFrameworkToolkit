@@ -168,7 +168,7 @@ public class OpenAIAgentFactory
         // ReSharper disable once InvertIf
         if (options.RawHttpCallDetails != null)
         {
-            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails)); //todo - antipattern to new up a new httpClient Here
+            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
             openAIClientOptions.Transport = new HttpClientPipelineTransport(inspectingHttpClient);
         }
 
