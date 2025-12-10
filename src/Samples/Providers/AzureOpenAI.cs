@@ -2,6 +2,8 @@
 using AgentFrameworkToolkit.OpenAI;
 using Azure.Identity;
 using Microsoft.Agents.AI;
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
 
 namespace Samples.Providers;
 
@@ -16,10 +18,12 @@ public static class AzureOpenAI
             Credentials = new AzureCliCredential()
         });
 
-        AzureOpenAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForChatClientWithoutReasoning
+        AzureOpenAIAgent agent = factory.CreateAgent(new OpenAIAgentOptionsForChatClientWithReasoning
         {
             Model = OpenAIChatModels.Gpt41Mini,
-            Instructions = "Speak like a pirate"
+            ReasoningEffort = ChatReasoningEffortLevel.Low,
+            Instructions = "Speak like a pirate",
+            RawHttpCallDetails = details => Console.WriteLine(details.RequestData)
         });
 
         AgentRunResponse response = await agent.RunAsync<string>("Hello");
