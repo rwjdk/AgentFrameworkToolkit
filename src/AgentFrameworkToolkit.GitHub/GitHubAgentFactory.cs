@@ -1,7 +1,4 @@
-﻿using Azure;
-using Azure.AI.Inference;
-using Azure.Core.Pipeline;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
@@ -62,7 +59,7 @@ public class GitHubAgentFactory
     /// <returns>The Agent</returns>
     public GitHubAgent CreateAgent(GitHubAgentOptions options)
     {
-        IChatClient client = GetClient(options);
+        IChatClient client = _connection.GetClient(options.RawHttpCallDetails).AsIChatClient(options.Model);
         AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options));
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
@@ -116,37 +113,5 @@ public class GitHubAgentFactory
         options.AdditionalChatClientAgentOptions?.Invoke(chatClientAgentOptions);
 
         return chatClientAgentOptions;
-    }
-
-    private IChatClient GetClient(GitHubAgentOptions options)
-    {
-        AzureAIInferenceClientOptions clientOptions = new();
-
-        if (options.RawHttpCallDetails != null)
-        {
-            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
-            if (_connection.NetworkTimeout != null)
-            {
-                inspectingHttpClient.Timeout = _connection.NetworkTimeout.Value;
-            }
-
-            clientOptions.Transport = new HttpClientTransport(inspectingHttpClient);
-        }
-        else if (_connection.NetworkTimeout != null)
-        {
-            clientOptions.Transport = new HttpClientTransport(new HttpClient
-            {
-                Timeout = _connection.NetworkTimeout.Value
-            });
-        }
-
-        _connection.AdditionalAzureAIInferenceClientOptions?.Invoke(clientOptions);
-
-        ChatCompletionsClient client = new(
-            new Uri("https://models.github.ai/inference"),
-            new AzureKeyCredential(_connection.PersonalAccessToken),
-            clientOptions);
-
-        return client.AsIChatClient(options.Model);
     }
 }

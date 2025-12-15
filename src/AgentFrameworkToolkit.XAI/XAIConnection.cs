@@ -1,19 +1,16 @@
-﻿using OpenAI;
+﻿using AgentFrameworkToolkit.OpenAI;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.XAI;
 
 /// <summary>
 /// Represents a connection for XAI
 /// </summary>
-public class XAIConnection
+[PublicAPI]
+public class XAIConnection : OpenAIConnection
 {
     /// <summary>
-    /// The API Key to be used
+    /// The Default XAI Endpoint
     /// </summary>
-    public required string ApiKey { get; set; }
-
-    /// <summary>
-    /// An Action that allow you to set additional options on the OpenAIClientOptions
-    /// </summary>
-    public Action<OpenAIClientOptions>? AdditionalOpenAIClientOptions { get; set; }
+    public const string DefaultEndpoint = "https://api.x.ai/v1";
 }

@@ -4,8 +4,6 @@ using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using OpenAI;
-using System.ClientModel;
-using System.ClientModel.Primitives;
 using Azure.Core;
 
 #pragma warning disable OPENAI001
@@ -84,7 +82,7 @@ public class AzureOpenAIAgentFactory
     /// <returns>The Agent</returns>
     public AzureOpenAIAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithoutReasoning options)
     {
-        AzureOpenAIClient client = CreateClient(options);
+        AzureOpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, options, null, null);
 
@@ -108,7 +106,7 @@ public class AzureOpenAIAgentFactory
     /// <returns>The Agent</returns>
     public AzureOpenAIAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithReasoning options)
     {
-        AzureOpenAIClient client = CreateClient(options);
+        AzureOpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, null, options, null);
 
@@ -132,7 +130,7 @@ public class AzureOpenAIAgentFactory
     /// <returns>The Agent</returns>
     public AzureOpenAIAgent CreateAgent(OpenAIAgentOptionsForChatClientWithoutReasoning options)
     {
-        AzureOpenAIClient client = CreateClient(options);
+        AzureOpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, options, null, null, null);
 
@@ -156,7 +154,7 @@ public class AzureOpenAIAgentFactory
     /// <returns>The Agent</returns>
     public AzureOpenAIAgent CreateAgent(OpenAIAgentOptionsForChatClientWithReasoning options)
     {
-        AzureOpenAIClient client = CreateClient(options);
+        AzureOpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, null, null, options);
 
@@ -237,36 +235,5 @@ public class AzureOpenAIAgentFactory
         options.AdditionalChatClientAgentOptions?.Invoke(chatClientAgentOptions);
 
         return chatClientAgentOptions;
-    }
-
-    private AzureOpenAIClient CreateClient(OpenAIAgentOptions options)
-    {
-        AzureOpenAIClientOptions azureOpenAIClientOptions = new()
-        {
-            NetworkTimeout = _connection.NetworkTimeout
-        };
-
-        // ReSharper disable once InvertIf
-        if (options.RawHttpCallDetails != null)
-        {
-            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
-            azureOpenAIClientOptions.Transport = new HttpClientPipelineTransport(inspectingHttpClient);
-        }
-
-        _connection.AdditionalAzureOpenAIClientOptions?.Invoke(azureOpenAIClientOptions);
-
-        Uri endpoint = new(_connection.Endpoint);
-        if (!string.IsNullOrWhiteSpace(_connection.ApiKey))
-        {
-            return new AzureOpenAIClient(endpoint, new ApiKeyCredential(_connection.ApiKey!), azureOpenAIClientOptions);
-        }
-
-        // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (_connection.Credentials != null)
-        {
-            return new AzureOpenAIClient(endpoint, _connection.Credentials, azureOpenAIClientOptions);
-        }
-
-        throw new AgentFrameworkToolkitException("Neither APIKey nor TokenCredentials was provided in the AzureConnection");
     }
 }

@@ -1,22 +1,19 @@
-﻿using AgentFrameworkToolkit.Google;
+﻿using AgentFrameworkToolkit.OpenRouter;
 using Microsoft.Agents.AI;
 
 namespace Samples.Providers;
 
 public static class OpenRouter
 {
-    public static async Task Run()
+    public static async Task RunAsync()
     {
         Configuration configuration = ConfigurationManager.GetConfiguration();
-        GoogleAgentFactory factory = new(new GoogleConnection
+        OpenRouterAgentFactory factory = new(new OpenRouterConnection 
         {
-            ApiKey = configuration.GoogleGeminiApiKey
+            ApiKey = configuration.OpenRouterApiKey
         });
 
-        GoogleAgent agent = factory.CreateAgent(new GoogleAgentOptions
-        {
-            Model = GoogleChatModels.Gemini25Flash,
-        });
+        OpenRouterAgent agent = factory.CreateAgent(OpenRouterChatModels.Google.Gemini25Flash);
 
         AgentRunResponse response = await agent.RunAsync("Hello");
         Console.WriteLine(response);

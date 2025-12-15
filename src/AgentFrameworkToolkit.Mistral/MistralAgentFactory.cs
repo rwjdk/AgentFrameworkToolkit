@@ -1,7 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using Mistral.SDK;
 
 namespace AgentFrameworkToolkit.Mistral;
 
@@ -60,7 +59,7 @@ public class MistralAgentFactory
     /// <returns>The Agent</returns>
     public MistralAgent CreateAgent(MistralAgentOptions options)
     {
-        IChatClient client = GetClient(options);
+        IChatClient client = _connection.GetClient(options.RawHttpCallDetails).Completions;
 
         AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options));
 
@@ -104,26 +103,5 @@ public class MistralAgentFactory
         options.AdditionalChatClientAgentOptions?.Invoke(chatClientAgentOptions);
 
         return chatClientAgentOptions;
-    }
-
-
-    private IChatClient GetClient(MistralAgentOptions options)
-    {
-        HttpClient? httpClient = null;
-
-        // ReSharper disable once InvertIf
-        if (options.RawHttpCallDetails != null)
-        {
-            httpClient = new HttpClient(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
-        }
-
-        if (_connection.NetworkTimeout.HasValue)
-        {
-            httpClient ??= new HttpClient();
-            httpClient.Timeout = _connection.NetworkTimeout.Value;
-        }
-
-        MistralClient mistralClient = new(new APIAuthentication(_connection.ApiKey), httpClient);
-        return mistralClient.Completions;
     }
 }

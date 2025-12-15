@@ -1,19 +1,16 @@
-﻿using OpenAI;
+﻿using AgentFrameworkToolkit.OpenAI;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.OpenRouter;
 
 /// <summary>
 /// Represents a connection for OpenRouter
 /// </summary>
-public class OpenRouterConnection
+[PublicAPI]
+public class OpenRouterConnection : OpenAIConnection
 {
     /// <summary>
-    /// The API Key to be used
+    /// The Default OpenRouter Endpoint
     /// </summary>
-    public required string ApiKey { get; set; }
-
-    /// <summary>
-    /// An Action that allow you to set additional options on the OpenAIClientOptions
-    /// </summary>
-    public Action<OpenAIClientOptions>? AdditionalOpenAIClientOptions { get; set; }
+    public const string DefaultEndpoint = "https://openrouter.ai/api/v1";
 }

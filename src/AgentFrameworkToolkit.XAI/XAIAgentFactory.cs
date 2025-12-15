@@ -10,7 +10,6 @@ namespace AgentFrameworkToolkit.XAI;
 [PublicAPI]
 public class XAIAgentFactory
 {
-    private const string Endpoint = "https://api.x.ai/v1";
     private readonly OpenAIAgentFactory _openAIAgentFactory;
 
     /// <summary>
@@ -22,7 +21,7 @@ public class XAIAgentFactory
         _openAIAgentFactory = new OpenAIAgentFactory(new OpenAIConnection
         {
             ApiKey = apiKey,
-            Endpoint = Endpoint
+            Endpoint = XAIConnection.DefaultEndpoint
         });
     }
 
@@ -36,7 +35,8 @@ public class XAIAgentFactory
         {
             ApiKey = connection.ApiKey,
             AdditionalOpenAIClientOptions = connection.AdditionalOpenAIClientOptions,
-            Endpoint = Endpoint
+            Endpoint = connection.Endpoint ?? XAIConnection.DefaultEndpoint,
+            NetworkTimeout = connection.NetworkTimeout
         });
     }
 

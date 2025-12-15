@@ -2,8 +2,6 @@
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using OpenAI;
-using System.ClientModel;
-using System.ClientModel.Primitives;
 
 #pragma warning disable OPENAI001
 
@@ -64,7 +62,7 @@ public class OpenAIAgentFactory
     /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithoutReasoning options)
     {
-        OpenAIClient client = CreateClient(options);
+        OpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, options, null, null);
 
@@ -88,7 +86,7 @@ public class OpenAIAgentFactory
     /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForResponseApiWithReasoning options)
     {
-        OpenAIClient client = CreateClient(options);
+        OpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, null, options, null);
 
@@ -112,7 +110,7 @@ public class OpenAIAgentFactory
     /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForChatClientWithoutReasoning options)
     {
-        OpenAIClient client = CreateClient(options);
+        OpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, options, null, null, null);
 
@@ -136,7 +134,7 @@ public class OpenAIAgentFactory
     /// <returns>The Agent</returns>
     public OpenAIAgent CreateAgent(OpenAIAgentOptionsForChatClientWithReasoning options)
     {
-        OpenAIClient client = CreateClient(options);
+        OpenAIClient client = _connection.GetClient(options.RawHttpCallDetails);
 
         ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, null, null, null, options);
 
@@ -152,31 +150,7 @@ public class OpenAIAgentFactory
 
         return new OpenAIAgent(innerAgent);
     }
-
-    private OpenAIClient CreateClient(OpenAIAgentOptions options)
-    {
-        OpenAIClientOptions openAIClientOptions = new()
-        {
-            NetworkTimeout = _connection.NetworkTimeout
-        };
-
-        if (!string.IsNullOrWhiteSpace(_connection.Endpoint))
-        {
-            openAIClientOptions.Endpoint = new Uri(_connection.Endpoint);
-        }
-
-        // ReSharper disable once InvertIf
-        if (options.RawHttpCallDetails != null)
-        {
-            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
-            openAIClientOptions.Transport = new HttpClientPipelineTransport(inspectingHttpClient);
-        }
-
-        _connection.AdditionalOpenAIClientOptions?.Invoke(openAIClientOptions);
-
-        return new OpenAIClient(new ApiKeyCredential(_connection.ApiKey), openAIClientOptions);
-    }
-
+    
     private ChatClientAgentOptions CreateChatClientAgentOptions(OpenAIAgentOptions options, OpenAIAgentOptionsForChatClientWithoutReasoning? chatClientWithoutReasoning, OpenAIAgentOptionsForResponseApiWithoutReasoning? responseWithoutReasoning, OpenAIAgentOptionsForResponseApiWithReasoning? responsesApiReasoningOptions, OpenAIAgentOptionsForChatClientWithReasoning? chatClientReasoningOptions)
     {
         bool anyOptionsSet = false;

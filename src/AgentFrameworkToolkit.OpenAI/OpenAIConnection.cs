@@ -1,10 +1,15 @@
-﻿using OpenAI;
+﻿using JetBrains.Annotations;
+using OpenAI;
+using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Data.Common;
 
 namespace AgentFrameworkToolkit.OpenAI;
 
 /// <summary>
 /// Represents a connection for OpenAI
 /// </summary>
+[PublicAPI]
 public class OpenAIConnection
 {
     /// <summary>
@@ -26,4 +31,33 @@ public class OpenAIConnection
     /// An Action that allow you to set additional options on the OpenAIClientOptions
     /// </summary>
     public Action<OpenAIClientOptions>? AdditionalOpenAIClientOptions { get; set; }
+    
+    /// <summary>
+    /// Get a Raw Client
+    /// </summary>
+    /// <param name="rawHttpCallDetails">An Action, if set, will attach an HTTP Message Handler so you can see the raw HTTP Calls that are sent to the LLM</param>
+    /// <returns>The Raw Client</returns>
+    public OpenAIClient GetClient(Action<RawCallDetails>? rawHttpCallDetails = null)
+    {
+        OpenAIClientOptions openAIClientOptions = new()
+        {
+            NetworkTimeout = NetworkTimeout
+        };
+
+        if (!string.IsNullOrWhiteSpace(Endpoint))
+        {
+            openAIClientOptions.Endpoint = new Uri(Endpoint);
+        }
+
+        // ReSharper disable once InvertIf
+        if (rawHttpCallDetails != null)
+        {
+            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(rawHttpCallDetails));
+            openAIClientOptions.Transport = new HttpClientPipelineTransport(inspectingHttpClient);
+        }
+
+        AdditionalOpenAIClientOptions?.Invoke(openAIClientOptions);
+
+        return new OpenAIClient(new ApiKeyCredential(ApiKey), openAIClientOptions);
+    }
 }

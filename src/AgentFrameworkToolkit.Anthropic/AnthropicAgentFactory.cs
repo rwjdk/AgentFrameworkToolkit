@@ -1,6 +1,4 @@
-﻿using Anthropic;
-using Anthropic.Core;
-using Anthropic.Models.Messages;
+﻿using Anthropic.Models.Messages;
 using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
@@ -65,7 +63,7 @@ public class AnthropicAgentFactory
     /// <returns>The Agent</returns>
     public AnthropicAgent CreateAgent(AnthropicAgentOptions options)
     {
-        IChatClient client = GetClient(options);
+        IChatClient client = _connection.GetClient(options.RawHttpCallDetails).AsIChatClient();
 
         AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options));
 
@@ -123,35 +121,5 @@ public class AnthropicAgentFactory
     }
 
 
-    private IChatClient GetClient(AnthropicAgentOptions options)
-    {
-        HttpClient? httpClient = null;
-
-        // ReSharper disable once InvertIf
-        if (options.RawHttpCallDetails != null)
-        {
-            httpClient = new HttpClient(new RawCallDetailsHttpHandler(options.RawHttpCallDetails));
-        }
-
-        if (_connection.NetworkTimeout.HasValue)
-        {
-            httpClient ??= new HttpClient();
-            httpClient.Timeout = _connection.NetworkTimeout.Value;
-        }
-
-        ClientOptions clientOptions = new()
-        {
-            APIKey = _connection.ApiKey,
-            Timeout = _connection.NetworkTimeout
-        };
-        if (httpClient != null)
-        {
-            clientOptions.HttpClient = httpClient;
-        }
-
-        AnthropicClient anthropicClient = new(clientOptions);
-
-        IChatClient client = anthropicClient.AsIChatClient();
-        return client;
-    }
+    
 }

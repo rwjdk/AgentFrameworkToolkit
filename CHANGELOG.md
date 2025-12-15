@@ -1,5 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.251215.1
+- Added option to get Raw Client from the various Connection Objects (Except for the Google Connection as switch to the new official Google Nuget is expected soon)
+- OpenRouter and XAI Connection are now inherited from OpenAI Connections
+
+---
+
 ## Version 1.0.0-preview.251204.1
 - Bumped `Microsoft.Agents.AI` version to latest (1.0.0-preview.251204.1) to be compatible with [latest breaking change around Instructions](https://github.com/microsoft/agent-framework/pull/1517)
 

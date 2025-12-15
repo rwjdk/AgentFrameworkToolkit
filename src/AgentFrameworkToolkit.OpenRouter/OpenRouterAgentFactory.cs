@@ -10,7 +10,6 @@ namespace AgentFrameworkToolkit.OpenRouter;
 [PublicAPI]
 public class OpenRouterAgentFactory
 {
-    private const string Endpoint = "https://openrouter.ai/api/v1";
     private readonly OpenAIAgentFactory _openAIAgentFactory;
 
     /// <summary>
@@ -22,7 +21,7 @@ public class OpenRouterAgentFactory
         _openAIAgentFactory = new OpenAIAgentFactory(new OpenAIConnection
         {
             ApiKey = apiKey,
-            Endpoint = Endpoint
+            Endpoint = OpenRouterConnection.DefaultEndpoint
         });
     }
 
@@ -36,7 +35,8 @@ public class OpenRouterAgentFactory
         {
             ApiKey = connection.ApiKey,
             AdditionalOpenAIClientOptions = connection.AdditionalOpenAIClientOptions,
-            Endpoint = Endpoint
+            Endpoint = connection.Endpoint ?? OpenRouterConnection.DefaultEndpoint,
+            NetworkTimeout = connection.NetworkTimeout
         });
     }
 
