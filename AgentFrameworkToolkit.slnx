@@ -5,6 +5,7 @@
     <Project Path="src/AgentFrameworkToolkit.GitHub/AgentFrameworkToolkit.GitHub.csproj" Id="cb22229e-b96d-4643-89fd-87f43929f117" />
     <Project Path="src/AgentFrameworkToolkit.Google/AgentFrameworkToolkit.Google.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Mistral/AgentFrameworkToolkit.Mistral.csproj" />
+    <Project Path="src/AgentFrameworkToolkit.ModelContextProtocol/AgentFrameworkToolkit.ModelContextProtocol.csproj" Id="94997d49-3c7a-4e44-bae7-897c55668ad4" />
     <Project Path="src/AgentFrameworkToolkit.OpenAI/AgentFrameworkToolkit.OpenAI.csproj" />
     <Project Path="src/AgentFrameworkToolkit.OpenRouter/AgentFrameworkToolkit.OpenRouter.csproj" />
     <Project Path="src/AgentFrameworkToolkit.XAI/AgentFrameworkToolkit.XAI.csproj" />
@@ -16,6 +17,7 @@
     <File Path="src/.editorconfig" />
     <File Path="src/nuget-package.props" />
   </Folder>
+  <Project Path="src/AgentFrameworkToolkit.Tests/AgentFrameworkToolkit.Tests.csproj" Id="d1f79e64-c224-438d-8c5c-a850db30ac39" />
   <Project Path="src/AppHost/AppHost.csproj" Id="a0ecbf7c-4fea-48a7-8163-8041495a2fa7" />
   <Project Path="src/DevUI/DevUI.csproj" Id="26cf87fd-fe9f-473a-a16c-92187054d0c2" />
   <Project Path="src/Samples/Samples.csproj" />
