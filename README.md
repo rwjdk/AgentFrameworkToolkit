@@ -18,6 +18,8 @@ An opinionated C# Toolkit for Microsoft Agent Framework that makes life easier
 - [tools/DevUI](tools/DevUI) – Web UI to try all agents with your own keys.
 - [tools/ServiceDefaults](tools/ServiceDefaults) – Shared dev infra (health checks, telemetry defaults).
 
+> **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development guidelines.
+
 ## Examples of use
 > All agents have AIAgent as base, fully work the  rest of Microsoft Agent Framework)
 

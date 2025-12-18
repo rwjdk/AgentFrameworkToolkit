@@ -16,7 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="../DevUI/DevUI.csproj" />
-    <ProjectReference Include="../ServiceDefaults/ServiceDefaults.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="../ServiceDefaults/ServiceDefaults.csproj"
+      IsAspireProjectResource="false" />
   </ItemGroup>
 
 </Project>

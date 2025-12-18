@@ -1,0 +1,34 @@
+<Project>
+    <!-- Shared build properties for all src projects -->
+
+    <PropertyGroup>
+        <!-- Default target framework -->
+        <TargetFramework>net8.0</TargetFramework>
+
+        <!-- C# language settings -->
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+
+        <!-- Code quality -->
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors>true</WarningsAsErrors>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisLevel>latest</AnalysisLevel>
+
+        <!-- By default, don't package projects (libraries will override) -->
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <!-- Library projects: enable packaging -->
+    <PropertyGroup Condition="'$(MSBuildProjectName)' != 'AgentFrameworkToolkit.Tests'">
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <!-- Test project specific settings -->
+    <PropertyGroup Condition="'$(MSBuildProjectName)' == 'AgentFrameworkToolkit.Tests'">
+        <IsPackable>false</IsPackable>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+</Project>
