@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e71f81cc-8e79-4933-bc56-cb1a87fcfeda</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.Anthropic/AgentFrameworkToolkit.Anthropic.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.AzureOpenAI/AgentFrameworkToolkit.AzureOpenAI.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.GitHub/AgentFrameworkToolkit.GitHub.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.Google/AgentFrameworkToolkit.Google.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.Mistral/AgentFrameworkToolkit.Mistral.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.OpenAI/AgentFrameworkToolkit.OpenAI.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.OpenRouter/AgentFrameworkToolkit.OpenRouter.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.XAI/AgentFrameworkToolkit.XAI.csproj" />
+    <ProjectReference Include="../ServiceDefaults/ServiceDefaults.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Agents.AI.DevUI" Version="1.0.0-preview.251204.1" />
+	</ItemGroup>
+
+</Project>

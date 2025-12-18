@@ -15,11 +15,19 @@
     <File Path="CHANGELOG.md" />
     <File Path="README.md" />
     <File Path="src/.editorconfig" />
+    <File Path="examples/.editorconfig" />
+    <File Path="tools/.editorconfig" />
     <File Path="src/nuget-package.props" />
   </Folder>
-  <Project Path="src/AgentFrameworkToolkit.Tests/AgentFrameworkToolkit.Tests.csproj" Id="d1f79e64-c224-438d-8c5c-a850db30ac39" />
-  <Project Path="src/AppHost/AppHost.csproj" Id="a0ecbf7c-4fea-48a7-8163-8041495a2fa7" />
-  <Project Path="src/DevUI/DevUI.csproj" Id="26cf87fd-fe9f-473a-a16c-92187054d0c2" />
-  <Project Path="src/Samples/Samples.csproj" />
-  <Project Path="src/ServiceDefaults/ServiceDefaults.csproj" Id="8dff7496-321d-4d25-8c88-061cc65dee79" />
+  <Folder Name="/Tests/">
+    <Project Path="src/AgentFrameworkToolkit.Tests/AgentFrameworkToolkit.Tests.csproj" Id="d1f79e64-c224-438d-8c5c-a850db30ac39" />
+  </Folder>
+  <Folder Name="/Examples/">
+    <Project Path="examples/Samples/Samples.csproj" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="tools/AppHost/AppHost.csproj" Id="a0ecbf7c-4fea-48a7-8163-8041495a2fa7" />
+    <Project Path="tools/DevUI/DevUI.csproj" Id="26cf87fd-fe9f-473a-a16c-92187054d0c2" />
+    <Project Path="tools/ServiceDefaults/ServiceDefaults.csproj" Id="8dff7496-321d-4d25-8c88-061cc65dee79" />
+  </Folder>
 </Solution>

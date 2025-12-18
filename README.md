@@ -11,6 +11,13 @@ An opinionated C# Toolkit for Microsoft Agent Framework that makes life easier
 [OpenRouter](https://www.nuget.org/packages/AgentFrameworkToolkit.OpenRouter) |
 [GitHub](https://www.nuget.org/packages/AgentFrameworkToolkit.GitHub)
 
+## Repository layout
+- [src/](src/) – Core libraries and tests (packages live under src/*, tests in [src/AgentFrameworkToolkit.Tests](src/AgentFrameworkToolkit.Tests)).
+- [examples/Samples](examples/Samples) – Console sample app with per-provider examples.
+- [tools/AppHost](tools/AppHost) – Aspire host to orchestrate DevUI and service defaults in dev.
+- [tools/DevUI](tools/DevUI) – Web UI to try all agents with your own keys.
+- [tools/ServiceDefaults](tools/ServiceDefaults) – Shared dev infra (health checks, telemetry defaults).
+
 ## Examples of use
 > All agents have AIAgent as base, fully work the  rest of Microsoft Agent Framework)
 
