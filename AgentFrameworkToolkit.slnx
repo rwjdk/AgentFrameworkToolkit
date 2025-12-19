@@ -2,14 +2,12 @@
   <Folder Name="/Packages/">
     <Project Path="src/AgentFrameworkToolkit.Anthropic/AgentFrameworkToolkit.Anthropic.csproj" />
     <Project Path="src/AgentFrameworkToolkit.AzureOpenAI/AgentFrameworkToolkit.AzureOpenAI.csproj" />
-    <Project Path="src/AgentFrameworkToolkit.GitHub/AgentFrameworkToolkit.GitHub.csproj"
-      Id="cb22229e-b96d-4643-89fd-87f43929f117" />
+    <Project Path="src/AgentFrameworkToolkit.GitHub/AgentFrameworkToolkit.GitHub.csproj" Id="cb22229e-b96d-4643-89fd-87f43929f117" />
     <Project Path="src/AgentFrameworkToolkit.Google/AgentFrameworkToolkit.Google.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Mistral/AgentFrameworkToolkit.Mistral.csproj" />
     <Project Path="src/AgentFrameworkToolkit.OpenAI/AgentFrameworkToolkit.OpenAI.csproj" />
     <Project Path="src/AgentFrameworkToolkit.OpenRouter/AgentFrameworkToolkit.OpenRouter.csproj" />
-    <Project
-      Path="src/AgentFrameworkToolkit.Tools.ModelContextProtocol/AgentFrameworkToolkit.Tools.ModelContextProtocol.csproj" />
+    <Project Path="src/AgentFrameworkToolkit.Tools.ModelContextProtocol/AgentFrameworkToolkit.Tools.ModelContextProtocol.csproj" />
     <Project Path="src/AgentFrameworkToolkit.XAI/AgentFrameworkToolkit.XAI.csproj" />
     <Project Path="src/AgentFrameworkToolkit/AgentFrameworkToolkit.csproj" />
   </Folder>
@@ -18,13 +16,19 @@
     <File Path="CONTRIBUTING.md" />
     <File Path="README.md" />
     <File Path="src/.editorconfig" />
-    <File Path="examples/.editorconfig" />
-    <File Path="tools/.editorconfig" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
+    <File Path="src/Directory.Packages.props" />
     <File Path="src/nuget-package.props" />
   </Folder>
+  <Folder Name="/Solution Items/Examples/">
+    <File Path="examples/.editorconfig" />
+  </Folder>
+  <Folder Name="/Solution Items/Tools/">
+    <File Path="tools/.editorconfig" />
+  </Folder>
   <Folder Name="/Tests/">
-    <Project Path="src/AgentFrameworkToolkit.Tests/AgentFrameworkToolkit.Tests.csproj"
-      Id="d1f79e64-c224-438d-8c5c-a850db30ac39" />
+    <Project Path="src/AgentFrameworkToolkit.Tests/AgentFrameworkToolkit.Tests.csproj" Id="d1f79e64-c224-438d-8c5c-a850db30ac39" />
   </Folder>
   <Folder Name="/Examples/">
     <Project Path="examples/Samples/Samples.csproj" />
@@ -32,7 +36,6 @@
   <Folder Name="/Tools/">
     <Project Path="tools/AppHost/AppHost.csproj" Id="a0ecbf7c-4fea-48a7-8163-8041495a2fa7" />
     <Project Path="tools/DevUI/DevUI.csproj" Id="26cf87fd-fe9f-473a-a16c-92187054d0c2" />
-    <Project Path="tools/ServiceDefaults/ServiceDefaults.csproj"
-      Id="8dff7496-321d-4d25-8c88-061cc65dee79" />
+    <Project Path="tools/ServiceDefaults/ServiceDefaults.csproj" Id="8dff7496-321d-4d25-8c88-061cc65dee79" />
   </Folder>
 </Solution>
