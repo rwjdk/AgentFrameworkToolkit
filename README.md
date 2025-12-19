@@ -106,12 +106,12 @@ AzureOpenAIAgent fullBlownAgent = azureOpenAIAgentFactory.CreateAgent(new AgentO
 ---
 
 ## Repository layout
-- [src/](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src) – Core libraries and tests (packages live under src/*, tests in [src/AgentFrameworkToolkit.Tests](src/AgentFrameworkToolkit.Tests)).
+- [src/](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src) – Core libraries and tests (packages live under src/*, tests in [src/AgentFrameworkToolkit.Tests](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Tests)).
 - [examples/Samples](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/examples/Samples) – Console sample app with per-provider examples.
 - [tools/AppHost](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/tools/AppHost) – Aspire host to orchestrate DevUI and service defaults in dev.
 - [tools/DevUI](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/tools/DevUI) – Web UI to try all agents with your own keys.
 - [tools/ServiceDefaults](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/tools/ServiceDefaults) – Shared dev infra (health checks, telemetry defaults).
 
-> **Contributing**: See [CONTRIBUTING.md](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/CHANGELOG.md) for build instructions and development guidelines.
+> **Contributing**: See [CONTRIBUTING.md](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/CONTRIBUTING.md) for build instructions and development guidelines.
 
 
