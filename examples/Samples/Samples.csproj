@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>f8bc826a-f7ee-419c-96f6-8339ef9f5s23</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.17.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference
+      Include="../../src/AgentFrameworkToolkit.Anthropic/AgentFrameworkToolkit.Anthropic.csproj" />
+    <ProjectReference
+      Include="../../src/AgentFrameworkToolkit.AzureOpenAI/AgentFrameworkToolkit.AzureOpenAI.csproj" />
+    <ProjectReference
+      Include="../../src/AgentFrameworkToolkit.GitHub/AgentFrameworkToolkit.GitHub.csproj" />
+    <ProjectReference
+      Include="../../src/AgentFrameworkToolkit.Google/AgentFrameworkToolkit.Google.csproj" />
+    <ProjectReference
+      Include="../../src/AgentFrameworkToolkit.Mistral/AgentFrameworkToolkit.Mistral.csproj" />
+    <ProjectReference
+      Include="../../src/AgentFrameworkToolkit.OpenAI/AgentFrameworkToolkit.OpenAI.csproj" />
+    <ProjectReference
+      Include="../../src/AgentFrameworkToolkit.OpenRouter/AgentFrameworkToolkit.OpenRouter.csproj" />
+    <ProjectReference Include="../../src/AgentFrameworkToolkit.XAI/AgentFrameworkToolkit.XAI.csproj" />
+  </ItemGroup>
+
+</Project>

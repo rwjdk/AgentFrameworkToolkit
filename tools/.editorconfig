@@ -1,0 +1,28 @@
+# EditorConfig for tools folder - development and infrastructure projects
+
+[*]
+# Development tools should follow strict coding standards
+indent_style = space
+
+[*.cs]
+indent_size = 4
+# Strict formatting for tools
+csharp_prefer_braces = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_expression_bodied_methods = false:silent
+csharp_style_var_for_built_in_types = false:silent
+csharp_style_var_when_type_is_apparent = true:suggestion
+
+# Strict naming conventions for tools
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = warning
+dotnet_naming_rule.types_should_be_pascal_case.severity = warning
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = warning
+
+[*.csproj]
+indent_size = 2
+
+[*.json]
+indent_size = 2
+
+[*.yml]
+indent_size = 2

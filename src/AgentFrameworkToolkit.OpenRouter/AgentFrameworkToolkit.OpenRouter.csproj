@@ -1,18 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<WarningsAsErrors>true</WarningsAsErrors>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<Description>An opinionated C# Toolkit targeting OpenRouter for Microsoft Agent Framework that makes life eaisier</Description>
+		<Description>An opinionated C# Toolkit targeting OpenRouter for Microsoft Agent Framework
+			that makes life eaisier</Description>
 	</PropertyGroup>
 
 	<Import Project="..\nuget-package.props" />
 
 	<ItemGroup>
-    <ProjectReference Include="..\AgentFrameworkToolkit.OpenAI\AgentFrameworkToolkit.OpenAI.csproj" />
-  </ItemGroup>
+		<ProjectReference
+			Include="..\AgentFrameworkToolkit.OpenAI\AgentFrameworkToolkit.OpenAI.csproj" />
+	</ItemGroup>
 </Project>

@@ -1,22 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<WarningsAsErrors>true</WarningsAsErrors>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<Description>An opinionated C# Toolkit targeting OpenAI for Microsoft Agent Framework that makes life eaisier</Description>
+		<Description>An opinionated C# Toolkit targeting OpenAI for Microsoft Agent Framework that
+			makes life eaisier</Description>
 	</PropertyGroup>
 
 	<Import Project="..\nuget-package.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251204.1" />
+		<PackageReference Include="Microsoft.Agents.AI.OpenAI" />
 	</ItemGroup>
-	
-	  <ItemGroup>
-	    <ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
-	  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
+	</ItemGroup>
 </Project>

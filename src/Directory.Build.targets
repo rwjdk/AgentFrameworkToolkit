@@ -1,0 +1,28 @@
+<Project>
+    <!-- Packaging and symbol standards for library projects -->
+
+    <ItemGroup Condition="'$(IsPackable)' == 'true'">
+        <!-- Enable SourceLink for GitHub -->
+        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+        <!-- Symbol package format -->
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSymbols>true</IncludeSymbols>
+
+        <!-- Source embedding -->
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+        <!-- Repository metadata -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+
+        <!-- Build determinism for reproducible builds -->
+        <Deterministic>true</Deterministic>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+        <!-- Enable package validation (API compatibility checks) -->
+        <EnablePackageValidation>true</EnablePackageValidation>
+    </PropertyGroup>
+</Project>

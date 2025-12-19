@@ -1,25 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<WarningsAsErrors>true</WarningsAsErrors>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<Description>An opinionated C# Toolkit targeting GitHubModels for Microsoft Agent Framework that makes life eaisier</Description>
+		<Description>An opinionated C# Toolkit targeting GitHubModels for Microsoft Agent Framework
+			that makes life eaisier</Description>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Azure.AI.Inference" Version="1.0.0-beta.5" />
-		<PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-preview.251204.1" />
-		<PackageReference Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
-	</ItemGroup>
-
 	<Import Project="..\nuget-package.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Azure.AI.Inference" />
+		<PackageReference Include="Microsoft.Agents.AI" />
+		<PackageReference Include="Microsoft.Extensions.AI.AzureAIInference" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
+	</ItemGroup>
 
 </Project>

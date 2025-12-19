@@ -1,0 +1,22 @@
+# EditorConfig for examples folder - sample/demonstration projects
+
+[*]
+# Examples may have different coding styles for educational purposes
+indent_style = space
+
+[*.cs]
+indent_size = 4
+# Less strict about formatting for examples
+csharp_prefer_braces = silent
+csharp_style_expression_bodied_methods = silent
+
+# Allow more flexible naming in examples
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = silent
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
+
+[*.csproj]
+indent_size = 2
+
+[*.json]
+indent_size = 2

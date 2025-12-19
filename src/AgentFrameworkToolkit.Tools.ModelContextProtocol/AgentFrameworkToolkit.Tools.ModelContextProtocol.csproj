@@ -1,24 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<WarningsAsErrors>true</WarningsAsErrors>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<Description>An opinionated C# Toolkit targeting Model Context Protocol for Microsoft Agent Framework Tools</Description>
+		<Description>An opinionated C# Toolkit targeting Model Context Protocol for Microsoft Agent
+			Framework Tools</Description>
 	</PropertyGroup>
 
 	<Import Project="..\nuget-package.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-preview.251204.1" />
-		<PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
-		<PackageReference Include="ModelContextProtocol" Version="0.5.0-preview.1" />
+		<PackageReference Include="Microsoft.Agents.AI" />
+		<PackageReference Include="JetBrains.Annotations" />
+		<PackageReference Include="ModelContextProtocol" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
+		<ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
 	</ItemGroup>
 </Project>
