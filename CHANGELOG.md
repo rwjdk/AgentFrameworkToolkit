@@ -1,26 +1,26 @@
 # Changelog - Agent Framework Toolkit
 
 ## Version 1.0.0-preview.251219.1
-- Added central build management and reorganize project structure (Huge thanks to [gurolg](https://github.com/gurolg) for [PR#24](https://github.com/rwjdk/AgentFrameworkToolkit/pull/24) doing the work 🙌)
+- Added central build management and reorganized project structure (Huge thanks to [gurolg](https://github.com/gurolg) for [PR#24](https://github.com/rwjdk/AgentFrameworkToolkit/pull/24) doing the work 🙌)
 - Add [CONTRIBUTING.md](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/CONTRIBUTING.md) (Again thanks to [gurolg](https://github.com/gurolg) 💪)
-- Bumped `Microsoft.Agents.AI` version to latest (1.0.0-preview.251219.1) to be compatible with [latest breaking change around Instructions](https://github.com/microsoft/agent-framework/releases/tag/dotnet-1.0.0-preview.251219.1)
-  - Removed Agent Display name as AF do not have it anymore
-  - Remove Agent ID as override as it is not overridable anymore 
+- Bumped `Microsoft.Agents.AI` version to latest (1.0.0-preview.251219.1) to be compatible with [latest breaking changes](https://github.com/microsoft/agent-framework/releases/tag/dotnet-1.0.0-preview.251219.1)
+  - Removed Agent Display name as AF does not have it anymore
+  - Remove Agent ID as an override, as it is not overridable anymore 
   - Resolved new OpenAI Nuget Package renames in ResponsesAPI
 - Renamed `ToolCallsHandler.ToolCallingMiddleware` to `ToolCallingMiddlewareAsync`
-- Added `DefaultClientType` to OpenAI/AzureOpenAI based providers so you can define if `ChatClient` or `ResponsesAPI` is the default `ClientType` for Agents that do not define it themself
+- Added `DefaultClientType` to OpenAI/AzureOpenAI-based providers so you can define if `ChatClient` or `ResponsesAPI` is the default `ClientType` for Agents that do not define it themself
 
 ---
 
 ## Version 1.0.0-preview.251217.1
 - Added `AIToolsFactory` to make it easier to create and define AI Tools
-- [BREAKING] Obsoleted `OpenAIAgentOptionsForChatClientWithoutReasoning`, `OpenAIAgentOptionsForChatClientWithReasoning`, `OpenAIAgentOptionsForResponseApiWithoutReasoning` and `OpenAIAgentOptionsForResponseApiWithReasoning` as these names where 'too much' and confused (Use AgentOptions instead (with `ClientType` and `ReasoningEffort` Enums to control the option))
-- Added support for `IServiceProvider`, `ILoggerFactory` and `ClientFactory` in Agent Creation
+- [BREAKING] Obsoleted `OpenAIAgentOptionsForChatClientWithoutReasoning`, `OpenAIAgentOptionsForChatClientWithReasoning`, `OpenAIAgentOptionsForResponseApiWithoutReasoning` and `OpenAIAgentOptionsForResponseApiWithReasoning` as these names were 'too much' and confused (Use AgentOptions instead (with `ClientType` and `ReasoningEffort` Enums to control the option))
+- Added support for `IServiceProvider`, `ILoggerFactory`, and `ClientFactory` in Agent Creation
 
 ---
 
 ## Version 1.0.0-preview.251215.1
-- Added option to get Raw Client from the various Connection Objects (Except for the Google Connection as switch to the new official Google Nuget is expected soon)
+- Added option to get Raw Client from the various Connection Objects (Except for the Google Connection, as switch to the new official Google Nuget is expected soon)
 - OpenRouter and XAI Connection are now inherited from OpenAI Connections
 - OpenAI + AzureOpenAI: Added EmbeddingFactory
 
@@ -35,25 +35,25 @@
 - AzureOpenAI: Added RBAC Support (TokenCredentials)
 - Enabled "Treat Warnings as Errors"
 - Added .editorconfig 
-- Removed all todo's in the code.
+- Removed all todos in the code.
 
 ---
 
 ## Version 1.0.0-preview.251129.1
 - Added GitHub provider NuGet Package
-- Everything now have XML Summaries
-- [BREAKING] Renamed `DeploymentModelName` to `Model` to make it simpler to understand (Sorry to exiting users, but better now than later)
-- [BREAKING] Renamed `RequestJson` and `ResponseJson` to `RequestData` and `ResponseData` as not all LLMs you JSON for communication (example Anthropic Data back is not JSON)
+- Everything now has XML Summaries
+- [BREAKING] Renamed `DeploymentModelName` to `Model` to make it simpler to understand (Sorry to existing users, but better now than later)
+- [BREAKING] Renamed `RequestJson` and `ResponseJson` to `RequestData` and `ResponseData` as not all LLMs use JSON for communication (exampl,e Anthropic Data back is not JSON)
 - OpenAI: Added `WithOpenAIResponsesApiReasoning` and `WithOpenAIChatClientReasoning` Extension Methods for `ChatOptions` (if you do not wish to use AgentFactory, but still wish to have an easier time to set OpenAI Reasoning)
 - Fixed that `ServiceCollectionExtensions` for Google was in the wrong namespace
 - Fixed that Mistral had an `AddAnthropicAgentFactory` method (wrong name)
-- Fixed that OpenAI ResponseAPI without reasoning Agents did not get their Temperature set
+- Fixed that OpenAI ResponseAPI without reasoning, Agents did not get their Temperature set
 
 ---
 
 ## Version 1.0.0-preview.251126.2
 - Anthropic: Replaced the unofficial `Anthropic.SDK` nuget package with the official `Microsoft.Agents.AI.Anthropic` nuget package instead.
-- [BREAKING] Removed the `UseInterleavedThinking` option form the Anthropic Package, as it actually did not do anything.
+- [BREAKING] Removed the `UseInterleavedThinking` option from the Anthropic Package, as it actually did not do anything.
 
 ---
 
@@ -75,7 +75,7 @@
 ---
 
 ## Version 1.0.0-preview.251121.3
-- [BREAKING] Moved NetworkTimeout from Request to Connection as it makes more sense (might introduce a per agent override if needed in the future)
+- [BREAKING] Moved NetworkTimeout from Request to Connection as it makes more sense (might introduce a per-agent override if needed in the future)
 - Added Dependency Injection Methods for all the AgentFactories
 - Added Extension Method for AIAgent to have .RunAsync<>(...) for Structured Output
 
@@ -89,7 +89,7 @@
 
 ## Version 1.0.0-preview.251121.1
 - Added Samples to README.md
-- Moved to central nuget-props + adopted same versioning as Microsoft Agent Framework
+- Moved to central NuGet-props + adopted the same versioning as Microsoft Agent Framework
 - Added Simplified Agent Factory Constructors
 - Added various simplified CreateAgent (XAI, OpenAI, AzureOpenAI)
 
