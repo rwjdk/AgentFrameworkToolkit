@@ -1,4 +1,4 @@
-﻿using Azure;
+using Azure;
 using Azure.AI.Inference;
 using Azure.Core.Pipeline;
 using JetBrains.Annotations;
@@ -14,7 +14,7 @@ public class GitHubConnection
     /// <summary>
     /// The GitHub Personal Access Token (fine-grained with Models Access) 
     /// </summary>
-    public required string PersonalAccessToken { get; set; }
+    public required string AccessToken { get; set; }
 
     /// <summary>
     /// The timeout value of the LLM Call (if not defined the underlying infrastructure's default will be used)
@@ -57,7 +57,7 @@ public class GitHubConnection
 
         ChatCompletionsClient client = new(
             new Uri("https://models.github.ai/inference"),
-            new AzureKeyCredential(PersonalAccessToken),
+            new AzureKeyCredential(AccessToken),
             clientOptions);
 
         return client;

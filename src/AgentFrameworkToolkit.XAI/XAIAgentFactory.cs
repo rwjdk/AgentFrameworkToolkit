@@ -1,4 +1,4 @@
-﻿using AgentFrameworkToolkit.OpenAI;
+using AgentFrameworkToolkit.OpenAI;
 using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
@@ -31,13 +31,8 @@ public class XAIAgentFactory
     /// <param name="connection">Connection Details</param>
     public XAIAgentFactory(XAIConnection connection)
     {
-        _openAIAgentFactory = new OpenAIAgentFactory(new OpenAIConnection
-        {
-            ApiKey = connection.ApiKey,
-            AdditionalOpenAIClientOptions = connection.AdditionalOpenAIClientOptions,
-            Endpoint = connection.Endpoint ?? XAIConnection.DefaultEndpoint,
-            NetworkTimeout = connection.NetworkTimeout
-        });
+        connection.Endpoint ??= XAIConnection.DefaultEndpoint;
+        _openAIAgentFactory = new OpenAIAgentFactory(connection);
     }
 
 
@@ -49,11 +44,10 @@ public class XAIAgentFactory
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public XAIAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public XAIAgent CreateAgent(string model, string? instructions = null, string? name = null, IList<AITool>? tools = null)
     {
         return CreateAgent(new AgentOptions
         {
-            ClientType = ClientType.ChatClient,
             Model = model,
             Name = name,
             Instructions = instructions,

@@ -1,4 +1,4 @@
-namespace Samples;
+namespace Secrets;
 
 public record Secrets(
     string OpenAiApiKey,

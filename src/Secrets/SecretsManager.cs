@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Samples;
+namespace Secrets;
 
 public class SecretsManager
 {
@@ -32,7 +32,7 @@ public class SecretsManager
     ************************************************************************************************************************************************
     */
 
-    public static Secrets GetConfiguration()
+    public static Secrets GetSecrets()
     {
         IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddUserSecrets<SecretsManager>().Build();
         string openAiApiKey = configurationRoot["OpenAiApiKey"] ?? string.Empty;
@@ -73,5 +73,17 @@ public class SecretsManager
             trelloToken,
             anthropicApiKey,
             mistralApiKey);
+    }
+
+    public static (string endpoint, string apiKey) GetAzureOpenAICredentials()
+    {
+        Secrets secrets = GetSecrets();
+        return (secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+    }
+
+    public static string GetOpenAICredentials()
+    {
+        Secrets secrets = GetSecrets();
+        return secrets.OpenAiApiKey;
     }
 }

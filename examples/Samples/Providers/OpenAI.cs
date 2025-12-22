@@ -1,5 +1,6 @@
 using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Agents.AI;
+using Secrets;
 
 #pragma warning disable OPENAI001
 
@@ -9,7 +10,7 @@ public static class OpenAI
 {
     public static async Task RunAsync()
     {
-        Secrets secrets = SecretsManager.GetConfiguration();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         OpenAIAgentFactory factory = new(new OpenAIConnection
         {
             ApiKey = secrets.OpenAiApiKey,

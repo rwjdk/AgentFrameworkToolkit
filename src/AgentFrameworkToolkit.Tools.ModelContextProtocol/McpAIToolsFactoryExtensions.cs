@@ -15,7 +15,7 @@ public static class McpAIToolsFactoryExtensions
     /// <param name="remoteMcpUrl">the URL for the Remote MCP Server</param>
     /// <param name="additionalHeaders">Optional Headers to send for the Remote MCP server</param>
     /// <returns></returns>
-    public static async Task<IList<AITool>> GetToolsFromRemoteMcpAsync(this AIToolsFactory factory, string remoteMcpUrl, Dictionary<string, string>? additionalHeaders = null)
+    public static async Task<McpClientTools> GetToolsFromRemoteMcpAsync(this AIToolsFactory factory, string remoteMcpUrl, Dictionary<string, string>? additionalHeaders = null)
     {
         HttpClientTransportOptions options = new()
         {
@@ -32,11 +32,15 @@ public static class McpAIToolsFactoryExtensions
     /// <param name="factory">The AIToolsFactory</param>
     /// <param name="options">Options for the Remote Server</param>
     /// <returns></returns>
-    public static async Task<IList<AITool>> GetToolsFromRemoteMcpAsync(this AIToolsFactory factory, HttpClientTransportOptions options)
+    public static async Task<McpClientTools> GetToolsFromRemoteMcpAsync(this AIToolsFactory factory, HttpClientTransportOptions options)
     {
-        await using McpClient client = await McpClient.CreateAsync(new HttpClientTransport(options));
+        McpClient client = await McpClient.CreateAsync(new HttpClientTransport(options));
         IList<McpClientTool> mcpTools = await client.ListToolsAsync();
-        return mcpTools.Cast<AITool>().ToList();
+        return new McpClientTools
+        {
+            McpClient = client,
+            Tools = mcpTools.Cast<AITool>().ToList()
+        };
     }
 
     /// <summary>
@@ -46,7 +50,7 @@ public static class McpAIToolsFactoryExtensions
     /// <param name="command">The command to run (Example 'npx')</param>
     /// <param name="arguments">The arguments for the command</param>
     /// <returns></returns>
-    public static async Task<IList<AITool>> GetToolsFromLocalMcpAsync(this AIToolsFactory factory, string command, IList<string>? arguments)
+    public static async Task<McpClientTools> GetToolsFromLocalMcpAsync(this AIToolsFactory factory, string command, IList<string>? arguments)
     {
         StdioClientTransportOptions options = new()
         {
@@ -62,10 +66,38 @@ public static class McpAIToolsFactoryExtensions
     /// <param name="factory">The AIToolsFactory</param>
     /// <param name="options">The options for the local MCP server</param>
     /// <returns></returns>
-    public static async Task<IList<AITool>> GetToolsFromLocalMcpAsync(this AIToolsFactory factory, StdioClientTransportOptions options)
+    public static async Task<McpClientTools> GetToolsFromLocalMcpAsync(this AIToolsFactory factory, StdioClientTransportOptions options)
     {
-        await using McpClient client = await McpClient.CreateAsync(new StdioClientTransport(options));
+        McpClient client = await McpClient.CreateAsync(new StdioClientTransport(options));
         IList<McpClientTool> mcpTools = await client.ListToolsAsync();
-        return mcpTools.Cast<AITool>().ToList();
+        return new McpClientTools
+        {
+            McpClient = client,
+            Tools = mcpTools.Cast<AITool>().ToList()
+        };
+    }
+}
+
+/// <summary>
+/// Represent an MCP Client and its tools
+/// </summary>
+public class McpClientTools : IAsyncDisposable
+{
+    /// <summary>
+    /// The client hosting the tools (need to be disposed after tools usage)
+    /// </summary>
+    public required McpClient McpClient { get; set; }
+
+    /// <summary>
+    /// The Tools from the MCP Server
+    /// </summary>
+    public required IList<AITool> Tools { get; set; }
+
+    /// <summary>
+    /// Dispose the underlying Client
+    /// </summary>
+    public async ValueTask DisposeAsync()
+    {
+        await McpClient.DisposeAsync();
     }
 }

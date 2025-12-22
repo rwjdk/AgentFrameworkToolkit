@@ -1,8 +1,13 @@
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.Tools;
+using AgentFrameworkToolkit.Tools.ModelContextProtocol;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using ModelContextProtocol.Client;
+using Secrets;
 
 #pragma warning disable OPENAI001
 
@@ -18,7 +23,7 @@ public static class AzureOpenAI
 
     public static async Task RunAsync()
     {
-        Secrets secrets = SecretsManager.GetConfiguration();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         AzureOpenAIConnection connection = new()
         {
             Endpoint = secrets.AzureOpenAiEndpoint,
@@ -29,18 +34,15 @@ public static class AzureOpenAI
 
         AIToolsFactory aiToolsFactory = new();
 
-        IList<AITool> aiTools = aiToolsFactory.GetTools(typeof(AzureOpenAI));
+        await using McpClientTools mcpClientTools = await aiToolsFactory.GetToolsFromRemoteMcpAsync("https://mcp.relewise.com");
         AzureOpenAIAgent agent = factory.CreateAgent(new AgentOptions
         {
-            ClientType = ClientType.ResponsesApi,
             Model = OpenAIChatModels.Gpt41Mini,
-            Temperature = 0,
-            Instructions = "Speak like a pirate",
-            RawHttpCallDetails = details => Console.WriteLine(details.RequestData),
-            Tools = aiTools,
+            Tools = mcpClientTools.Tools,
+            RawToolCallDetails = Console.WriteLine,
         });
 
-        AgentRunResponse response = await agent.RunAsync<string>("How is the weather?");
+        AgentRunResponse response = await agent.RunAsync("Use the 'search_docs' tool to find out what relewise user-types exist?");
         Console.WriteLine(response);
     }
 }

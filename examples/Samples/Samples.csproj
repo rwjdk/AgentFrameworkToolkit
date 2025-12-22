@@ -2,17 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UserSecretsId>f8bc826a-f7ee-419c-96f6-8339ef9f5s23</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.17.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="../../src/AgentFrameworkToolkit.Anthropic/AgentFrameworkToolkit.Anthropic.csproj" />
     <ProjectReference Include="../../src/AgentFrameworkToolkit.AzureOpenAI/AgentFrameworkToolkit.AzureOpenAI.csproj" />
@@ -22,6 +19,7 @@
     <ProjectReference Include="../../src/AgentFrameworkToolkit.OpenAI/AgentFrameworkToolkit.OpenAI.csproj" />
     <ProjectReference Include="../../src/AgentFrameworkToolkit.OpenRouter/AgentFrameworkToolkit.OpenRouter.csproj" />
     <ProjectReference Include="../../src/AgentFrameworkToolkit.XAI/AgentFrameworkToolkit.XAI.csproj" />
+    <ProjectReference Include="../../src/Secrets/Secrets.csproj" />
+    <ProjectReference Include="..\..\src\AgentFrameworkToolkit.Tools.ModelContextProtocol\AgentFrameworkToolkit.Tools.ModelContextProtocol.csproj" />
   </ItemGroup>
-
 </Project>

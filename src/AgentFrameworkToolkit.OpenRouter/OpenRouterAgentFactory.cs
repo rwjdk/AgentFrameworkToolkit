@@ -1,6 +1,7 @@
-﻿using AgentFrameworkToolkit.OpenAI;
+using AgentFrameworkToolkit.OpenAI;
 using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
+using System.Net;
 
 namespace AgentFrameworkToolkit.OpenRouter;
 
@@ -31,13 +32,8 @@ public class OpenRouterAgentFactory
     /// <param name="connection">Connection Details</param>
     public OpenRouterAgentFactory(OpenRouterConnection connection)
     {
-        _openAIAgentFactory = new OpenAIAgentFactory(new OpenAIConnection
-        {
-            ApiKey = connection.ApiKey,
-            AdditionalOpenAIClientOptions = connection.AdditionalOpenAIClientOptions,
-            Endpoint = connection.Endpoint ?? OpenRouterConnection.DefaultEndpoint,
-            NetworkTimeout = connection.NetworkTimeout
-        });
+        connection.Endpoint ??= OpenRouterConnection.DefaultEndpoint;
+        _openAIAgentFactory = new OpenAIAgentFactory(connection);
     }
 
 
@@ -49,11 +45,10 @@ public class OpenRouterAgentFactory
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public OpenRouterAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public OpenRouterAgent CreateAgent(string model, string? instructions = null, string? name = null, IList<AITool>? tools = null)
     {
         return CreateAgent(new AgentOptions
         {
-            ClientType = ClientType.ChatClient,
             Model = model,
             Name = name,
             Instructions = instructions,

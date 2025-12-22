@@ -1,6 +1,7 @@
 using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.XAI;
 using Microsoft.Agents.AI;
+using Secrets;
 
 namespace Samples.Providers;
 
@@ -8,7 +9,7 @@ public static class XAI
 {
     public static async Task RunAsync()
     {
-        Secrets secrets = SecretsManager.GetConfiguration();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         XAIAgentFactory factory = new(new XAIConnection
         {
             ApiKey = secrets.XAiGrokApiKey,

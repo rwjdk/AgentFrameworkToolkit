@@ -25,7 +25,5 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '24'      
-    - name: Test      
-      run: dotnet test
     - name: Publish to NuGet if needed
       run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate

@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
@@ -41,7 +41,7 @@ public class MistralAgentFactory
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public MistralAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public MistralAgent CreateAgent(string model, string? instructions = null, string? name = null, IList<AITool>? tools = null)
     {
         return CreateAgent(new MistralAgentOptions
         {

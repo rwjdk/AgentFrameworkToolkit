@@ -42,7 +42,7 @@ public class GoogleAgentFactory
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public GoogleAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public GoogleAgent CreateAgent(string model, string? instructions = null, string? name = null, IList<AITool>? tools = null)
     {
         return CreateAgent(new GoogleAgentOptions
         {

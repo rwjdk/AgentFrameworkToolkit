@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
@@ -20,7 +20,7 @@ public class GitHubAgentFactory
     {
         _connection = new GitHubConnection
         {
-            PersonalAccessToken = personalAccessToken
+            AccessToken = personalAccessToken
         };
     }
 
@@ -41,7 +41,7 @@ public class GitHubAgentFactory
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public GitHubAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public GitHubAgent CreateAgent(string model, string? instructions = null, string? name = null, IList<AITool>? tools = null)
     {
         return CreateAgent(new GitHubAgentOptions
         {

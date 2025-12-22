@@ -1,28 +1,30 @@
 <Project>
-  <!-- Enable Central Package Management for all src projects -->
-  <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-  </PropertyGroup>
-  <ItemGroup>
-    <!-- Microsoft Agents AI Framework -->
-    <PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.251219.1" />
-    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251219.1" />
-    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.251219.1" />
-    <!-- Azure -->
-    <PackageVersion Include="Azure.AI.OpenAI" Version="2.8.0-beta.1" />
-    <PackageVersion Include="Azure.AI.Inference" Version="1.0.0-beta.5" />
-    <PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
-    <!-- Third-party AI SDKs -->
-    <PackageVersion Include="Google_GenerativeAI.Microsoft" Version="3.4.1" />
-    <PackageVersion Include="Mistral.SDK" Version="2.3.1" />
-    <PackageVersion Include="ModelContextProtocol" Version="0.5.0-preview.1" />
-    <!-- Code analysis -->
-    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
-    <!-- Testing -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageVersion Include="xunit.v3" Version="3.2.1" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <!-- SourceLink for symbol packages -->
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-  </ItemGroup>
+	<!-- Enable Central Package Management for all src projects -->
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<ItemGroup>
+		<!-- Microsoft Agents AI Framework -->
+		<PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.251219.1" />
+		<PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251219.1" />
+		<PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.251219.1" />
+		<!-- Azure -->
+		<PackageVersion Include="Azure.AI.OpenAI" Version="2.8.0-beta.1" />
+		<PackageVersion Include="Azure.AI.Inference" Version="1.0.0-beta.5" />
+		<PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
+		<!-- Third-party AI SDKs -->
+		<PackageVersion Include="Google_GenerativeAI.Microsoft" Version="3.4.1" />
+		<PackageVersion Include="Mistral.SDK" Version="2.3.1" />
+		<PackageVersion Include="ModelContextProtocol" Version="0.5.0-preview.1" />
+		<!-- Code analysis -->
+		<PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
+		<!-- Testing -->
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+		<PackageVersion Include="xunit.v3" Version="3.2.1" />
+		<PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+		<!-- Secrets -->
+		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+		<!-- SourceLink for symbol packages -->
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+	</ItemGroup>
 </Project>

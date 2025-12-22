@@ -59,18 +59,17 @@ public class AzureOpenAIAgentFactory
 
 
     /// <summary>
-    /// Create a simple Agent (using the ChatClient) with default settings (For more advanced agents use the options overloads)
+    /// Create a simple Agent with default settings (For more advanced agents use the options overloads)
     /// </summary>
     /// <param name="model">Name of the model to use</param>
     /// <param name="instructions">Instructions for the Agent to follow (aka Developer Message)</param>
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public AzureOpenAIAgent CreateAgent(string model, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public AzureOpenAIAgent CreateAgent(string model, string? instructions = null, string? name = null, IList<AITool>? tools = null)
     {
         return CreateAgent(new AgentOptions
         {
-            ClientType = ClientType.ChatClient,
             Model = model,
             Name = name,
             Instructions = instructions,
@@ -370,6 +369,22 @@ public class AzureOpenAIAgentFactory
                             chatOptions = chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString));
                             break;
                     }
+
+                    break;
+                case null:
+                    chatOptions = _connection.DefaultClientType switch
+                    {
+                        ClientType.ChatClient => chatOptions.WithOpenAIChatClientReasoning(new ChatReasoningEffortLevel(reasoningEffortAsString)),
+                        ClientType.ResponsesApi => options.ReasoningSummaryVerbosity switch
+                        {
+                            OpenAIReasoningSummaryVerbosity.Auto => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Auto),
+                            OpenAIReasoningSummaryVerbosity.Concise => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Concise),
+                            OpenAIReasoningSummaryVerbosity.Detailed => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Detailed),
+                            null => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString)),
+                            _ => chatOptions
+                        },
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
 
                     break;
                 default:

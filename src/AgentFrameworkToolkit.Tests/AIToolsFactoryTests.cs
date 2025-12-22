@@ -45,8 +45,9 @@ public class AIToolsFactoryTests
     public async Task GetRemoteMcpToolsAsync()
     {
         AIToolsFactory factory = new();
-        IList<AITool> tools = await factory.GetToolsFromRemoteMcpAsync("https://trellodotnetassistantbackend.azurewebsites.net/runtime/webhooks/mcp?code=Tools");
+        await using McpClientTools clientTools = await factory.GetToolsFromRemoteMcpAsync("https://trellodotnetassistantbackend.azurewebsites.net/runtime/webhooks/mcp?code=Tools");
 
+        IList<AITool> tools = clientTools.Tools;
         Assert.Equal(2, tools.Count);
         Assert.Equal("TrelloDotNetCodeAssistant", tools[0].Name);
         Assert.Equal("Call this Tool in order to get information on how NuGet Package TrelloDotNet is used, how to do various actions in the API", tools[0].Description);
@@ -58,9 +59,9 @@ public class AIToolsFactoryTests
     public async Task GetLocalMcpToolsAsync()
     {
         AIToolsFactory factory = new();
-        IList<AITool> tools = await factory.GetToolsFromLocalMcpAsync("npx", ["@playwright/mcp@latest"]);
-        Assert.True(tools.Count > 0);
-        Assert.Contains("browser_click", tools.Select(x => x.Name));
+        await using McpClientTools clientTools = await factory.GetToolsFromLocalMcpAsync("npx", ["@playwright/mcp@latest"]);
+        Assert.True(clientTools.Tools.Count > 0);
+        Assert.Contains("browser_click", clientTools.Tools.Select(x => x.Name));
     }
 
     [PublicAPI]

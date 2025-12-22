@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>AgentFrameworkToolkit.Tests</RootNamespace>
     <!--
@@ -26,9 +27,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\AgentFrameworkToolkit.Tools.ModelContextProtocol\AgentFrameworkToolkit.Tools.ModelContextProtocol.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.Anthropic\AgentFrameworkToolkit.Anthropic.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.AzureOpenAI\AgentFrameworkToolkit.AzureOpenAI.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.GitHub\AgentFrameworkToolkit.GitHub.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.Google\AgentFrameworkToolkit.Google.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.Mistral\AgentFrameworkToolkit.Mistral.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.OpenAI\AgentFrameworkToolkit.OpenAI.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.OpenRouter\AgentFrameworkToolkit.OpenRouter.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.Tools.ModelContextProtocol\AgentFrameworkToolkit.Tools.ModelContextProtocol.csproj" />
+    <ProjectReference Include="..\AgentFrameworkToolkit.XAI\AgentFrameworkToolkit.XAI.csproj" />
     <ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
+    <ProjectReference Include="..\Secrets\Secrets.csproj" />
   </ItemGroup>
 
 </Project>

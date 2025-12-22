@@ -1,4 +1,4 @@
-﻿using Anthropic.Models.Messages;
+using Anthropic.Models.Messages;
 using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
@@ -44,7 +44,7 @@ public class AnthropicAgentFactory
     /// <param name="name">Name of the Agent</param>
     /// <param name="tools">Tools for the Agent</param>
     /// <returns>An Agent</returns>
-    public AnthropicAgent CreateAgent(string model, int maxTokenCount, string? instructions = null, string? name = null, AITool[]? tools = null)
+    public AnthropicAgent CreateAgent(string model, int maxTokenCount, string? instructions = null, string? name = null, IList<AITool>? tools = null)
     {
         return CreateAgent(new AnthropicAgentOptions
         {

@@ -1,5 +1,6 @@
-﻿using AgentFrameworkToolkit.GitHub;
+using AgentFrameworkToolkit.GitHub;
 using Microsoft.Agents.AI;
+using Secrets;
 
 #pragma warning disable OPENAI001
 
@@ -9,7 +10,7 @@ public static class GitHub
 {
     public static async Task Run()
     {
-        Secrets secrets = SecretsManager.GetConfiguration();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         GitHubAgentFactory factory = new(secrets.GitHubPatToken);
 
         GitHubAgent agent = factory.CreateAgent(new GitHubAgentOptions
