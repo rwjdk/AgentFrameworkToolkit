@@ -32,7 +32,7 @@
 		<PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
 		
 		<!-- Secrets -->
-		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.1" />
 
 		<!-- SourceLink for symbol packages -->
 		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
