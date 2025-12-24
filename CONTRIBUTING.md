@@ -24,10 +24,9 @@ AgentFrameworkToolkit/
 
 ## Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (for tools/DevUI and tools/AppHost)
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later (core libraries)
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (development utilities in the `development/` folder target net10.0)
 - IDE: [Visual Studio 2022](https://visualstudio.microsoft.com/), [VS Code](https://code.visualstudio.com/), or [JetBrains Rider](https://www.jetbrains.com/rider/)
-- Optional: [Node.js 24+](https://nodejs.org/) (for AppHost)
 
 ## Getting Started
 
@@ -60,7 +59,7 @@ dotnet test --configuration Release
 
 ### Central Package Management
 
-All package versions are centrally managed in `src/Directory.Packages.props`. When adding or updating a package:
+All package versions are centrally managed in `Directory.Packages.props`. When adding or updating a package:
 
 1. Add/update the version in `Directory.Packages.props`:
    ```xml
@@ -75,9 +74,9 @@ All package versions are centrally managed in `src/Directory.Packages.props`. Wh
 ### Build Configuration
 
 Common build properties are defined in:
-- **`src/Directory.Build.props`**: Shared settings (TargetFramework, Nullable, TreatWarningsAsErrors, etc.)
-- **`src/Directory.Build.targets`**: Packaging standards (SourceLink, symbols, package validation)
-- **`src/nuget-package.props`**: NuGet metadata (authors, license, icon, README)
+- **`Directory.Build.props`**: Shared settings (TargetFramework, Nullable, TreatWarningsAsErrors, etc.)
+- **`Directory.Build.targets`**: Packaging standards (SourceLink, symbols, package validation)
+- **`nuget-package.props`**: NuGet metadata (authors, license, icon, README)
 
 ### Adding a New Provider Package
 
@@ -105,34 +104,27 @@ Common build properties are defined in:
    </Project>
    ```
 
-3. Add package version to `src/Directory.Packages.props`
+3. Add the package version to `Directory.Packages.props`
 
 4. Add the project to `AgentFrameworkToolkit.slnx` under the `/Packages/` folder
 
 ### Running Development Tools
 
-#### DevUI (Web Interface for Testing Agents)
+#### Sandbox (Console Playground)
 
 ```bash
-cd tools/DevUI
-dotnet run
+dotnet run --project development/Sandbox/Sandbox.csproj
 ```
 
-Configure API keys in `appsettings.Development.json` or use User Secrets:
+The sandbox references every provider package so you can experiment with agent flows locally. Configure API keys via `dotnet user-secrets` or the `development/Secrets` utility below before running it.
+
+#### Secrets Utility
 
 ```bash
-dotnet user-secrets set "OpenAIApiKey" "your-key-here"
-dotnet user-secrets set "AnthropicApiKey" "your-key-here"
+dotnet run --project development/Secrets/Secrets.csproj
 ```
 
-#### AppHost (Aspire Orchestrator)
-
-```bash
-cd tools/AppHost
-dotnet run
-```
-
-This starts the DevUI and orchestrates the development environment.
+Use this helper to manage local secrets (API keys, endpoints, etc.) that both the sandbox and tests consume.
 
 ## Coding Standards
 
@@ -140,7 +132,7 @@ This starts the DevUI and orchestrates the development environment.
 - **Nullable Reference Types**: Enabled
 - **Warnings as Errors**: Enabled (`TreatWarningsAsErrors=true`)
 - **Code Analysis**: Enabled with `AnalysisLevel=latest`
-- **EditorConfig**: Follow the rules defined in `.editorconfig`, `src/.editorconfig`, `examples/.editorconfig`, and `tools/.editorconfig`
+- **EditorConfig**: Follow the rules defined in `.editorconfig` (repo root) and `src/.editorconfig`
 
 ### Naming Conventions
 
@@ -191,7 +183,7 @@ public OpenAIAgent CreateAgent(OpenAIAgentOptions options)
 
 ## Versioning
 
-All packages are versioned together (coordinated releases). Version is defined in `src/nuget-package.props`:
+All packages are versioned together (coordinated releases). Version is defined in `nuget-package.props`:
 
 ```xml
 <PackageVersion>1.0.0-preview.251217.1</PackageVersion>
@@ -212,7 +204,8 @@ When making changes that affect users, update `CHANGELOG.md`:
 
 ## Testing
 
-- **Unit Tests**: Located in `src/AgentFrameworkToolkit.Tests/`
+- **Unit Tests**: Located in `development/Tests/`
+- **How to run**: `dotnet test development/Tests/Tests.csproj --configuration Release` (or run `dotnet test AgentFrameworkToolkit.sln`)
 - **Test Framework**: xUnit v3
 - **Coverage**: Aim for high coverage on public APIs
 - **Naming**: `MethodName_Scenario_ExpectedBehavior`
@@ -236,13 +229,18 @@ public void CreateAgent_WithValidOptions_ReturnsAgent()
 
 ## Release Process
 
-1. Update version in `src/nuget-package.props`
+1. Update version in `nuget-package.props`
 2. Update `CHANGELOG.md` with changes
 3. Create PR with version bump
 4. After merge, CI/CD will:
    - Build all packages
    - Run tests
    - Push to NuGet (if configured)
+
+## Continuous Integration
+
+- The GitHub Actions workflow defined in `.github/workflows/Build.yml` executes the restore/build/test/pack sequence for every PR and push.
+- Keep your local verification steps aligned with that workflow so CI stays green.
 
 ## Questions or Issues?
 
