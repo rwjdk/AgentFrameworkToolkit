@@ -17,10 +17,9 @@ Things like the above, while doable are very cumbersome and are not discoverable
 
 Agent Framework Toolkit resolves these issues, but offering Provider-specific wrappers around Microsoft Agent Framwork, that is tailored to the specific provider, while keeping 100% compatibility with the rest of Microsoft Agent Framework. The result is less and much more easy code for you to write.
 
-## Example (With and Without Agent Framwork Toolkit)
-The following sample show how code looks with and without Agent Framwork Toolkit. You can get more details in [this video](https://youtu.be/OWjy4vkj-8o)
-
+**Example (With and Without Agent Framwork Toolkit)**
 ![With and Without Agent Framework Toolkit](https://i.imgur.com/NN18Ets.png)
+Above sample show how code looks with and without Agent Framwork Toolkit. You can get more details in [this video](https://youtu.be/OWjy4vkj-8o)
 
 ## Supported Providers
 The following providers are currently supported (check out the individual README's for details and samples)
