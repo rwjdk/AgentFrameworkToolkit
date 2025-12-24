@@ -7,6 +7,8 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/rwjdk/AgentFrameworkToolkit</RepositoryUrl>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Rasmus Wulff Jensen</Authors>
 		<Copyright>2025</Copyright>
 		<PackageProjectUrl>https://github.com/rwjdk/AgentFrameworkToolkit</PackageProjectUrl>

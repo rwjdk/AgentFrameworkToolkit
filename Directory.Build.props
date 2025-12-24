@@ -16,8 +16,7 @@
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisLevel>latest</AnalysisLevel>
 
-        <!-- By default, don't package projects (libraries will override) -->
-        <IsPackable>false</IsPackable>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <!-- Test project specific settings -->
