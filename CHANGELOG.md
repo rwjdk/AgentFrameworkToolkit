@@ -1,11 +1,13 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.0.0-preview.251224.1
 - Added support for easy Tool-Calling Middleware (allowing you to inspect, manipulate and cancel tool-calling)
 - Added support for easy OpenTelemetry Middleware (Logging in the OpenTelemetry standard)
 - Added support for easy Logging Middleware (Custom Logging)
 - Added OpenRouterEmbeddingFactory
 - Added MistralEmbeddingFactory
+- Restructured README
+- Added individual provider README files
 
 ---
 

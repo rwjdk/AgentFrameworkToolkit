@@ -36,7 +36,7 @@ AnthropicAgentFactory agentFactory = new AnthropicAgentFactory("<apiKey>");
 
 //Create your Agent
 AIAgent agent = agentFactory.CreateAgent(
-    model: AnthropicChatModels.ClaudeHaiku45,
+    model: "claude-haiku-4-5",
     maxTokenCount: 2000
 );
 
@@ -52,7 +52,7 @@ AnthropicAgentFactory agentFactory = new AnthropicAgentFactory("<apiKey>");
 //Create your Agent
 AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions //Use AnthropicAgentOptions overload to access more options
 {
-    Model = AnthropicChatModels.ClaudeHaiku45,
+    Model = "claude-haiku-4-5",
     MaxOutputTokens = 2000,
     Instructions = "You are a nice AI", //The System Prompt
     Tools = [], //Add your tools here
@@ -76,7 +76,7 @@ AnthropicAgentFactory agentFactory = new AnthropicAgentFactory(new AnthropicConn
 AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
 {
     //Mandatory
-    Model = AnthropicChatModels.ClaudeHaiku45, //Model to use
+    Model = "claude-haiku-4-5", //Model to use
     MaxOutputTokens = 2000, //Max allow token
 
     //Optional (Common)

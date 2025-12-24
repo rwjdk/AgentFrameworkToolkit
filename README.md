@@ -36,7 +36,9 @@ The following providers are currently supported (check out the individual README
 
 > Tip: For other OpenAI-based providers, you can use the OpenAI Package and provide a custom endpoint
 
-## Code sample (using Azure OpenAI, easily setting Reasoning Effort and Tool Calling Middleware)
+## Code sample 
+> using Azure OpenAI, easily setting Reasoning Effort and Tool Calling Middleware (see individual Provider README for detailed examples)
+
 ```cs
 AzureOpenAIAgentFactory agentFactory = new("<endpoint>", "<apiKey>");
 
