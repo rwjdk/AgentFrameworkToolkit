@@ -36,7 +36,7 @@ The following providers are currently supported (check out the individual README
 
 > Tip: For other OpenAI-based providers, you can use the OpenAI Package and provide a custom endpoint
 
-## Code sample 
+## Code sample (AgentFactory)
 > using Azure OpenAI, easily setting Reasoning Effort and Tool Calling Middleware (see individual Provider README for detailed examples)
 
 ```cs
@@ -53,6 +53,32 @@ AzureOpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
 string question = "What is the Weather like in Paris";
 ChatClientAgentRunResponse<WeatherReport> response = await agent.RunAsync<WeatherReport>(question);
 WeatherReport weatherReport = response.Result;
+```
+
+## Code sample (AIToolsFactory)
+```cs
+//1. Make your tool-class and add [AITool] attributes
+
+public class MyTools
+{
+    [AITool]
+    public string MyTool1()
+    {
+        return "hello";
+    }
+
+    [AITool]
+    public string MyTool2()
+    {
+        return "world";
+    }
+}
+
+//2. Get your tool by either instance or Type (if not contructor dependencies)
+
+IList<AITool> tools = aiToolsFactory.GetTools(typeof(MyTools));
+//or
+IList<AITool> tools = aiToolsFactory.GetTools(new MyTools());
 ```
 
 **More Info**
