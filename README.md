@@ -86,5 +86,5 @@ IList<AITool> tools = aiToolsFactory.GetTools(new MyTools());
 [![WIKI](https://img.shields.io/badge/Wiki-brown?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/wiki)
 [![Changelog](https://img.shields.io/badge/-Changelog-darkgreen?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/CHANGELOG.md)
 [![YouTube](https://img.shields.io/badge/-YouTube-darkred?style=for-the-badge)](https://www.youtube.com/playlist?list=PLhGl0l5La4sa2XT_K5ndgdStQNchSHe5x)
-
-> **Contributing**: See [CONTRIBUTING.md](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/CONTRIBUTING.md) for build instructions and development guidelines.
+[![Contributing](https://img.shields.io/badge/-Contributing-blue?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/CONTRIBUTING.md)
+[![Security](https://img.shields.io/badge/-Security-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/SECURITY.md)
