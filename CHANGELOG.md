@@ -4,6 +4,7 @@
 - Added support for setting `AIContextProviderFactory` and `ChatMessageStoreFactory` on Agents
 - Removed obsolete `OpenAIAgentOptionsForChatClientWithoutReasoning`, `OpenAIAgentOptionsForChatClientWithReasoning`, `OpenAIAgentOptionsForResponseApiWithoutReasoning` and `OpenAIAgentOptionsForResponseApiWithReasoning` (Use `AgentOptions` instead)
 - Added missing Dependency Injection options for EmbeddingFactory in Providers `Mistral` and `OpenRouter`
+- Added Cohere as provider
 - [BREAKING] Athropic: Renamed 'maxTokenCount' to 'maxOutputTokens' to have consistent naming in the simplified CreateAgent method
 
 ---

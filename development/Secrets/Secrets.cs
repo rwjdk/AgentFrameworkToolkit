@@ -12,6 +12,7 @@ public record Secrets(
     string GitHubPatToken,
     string HuggingFaceApiKey,
     string OpenRouterApiKey,
+    string CohereApiKey,
     string ApplicationInsightsConnectionString,
     string GoogleGeminiApiKey,
     string XAiGrokApiKey,

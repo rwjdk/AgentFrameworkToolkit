@@ -18,6 +18,7 @@ public class SecretsManager
       "HuggingFaceApiKey": "todo",
       "OpenRouterApiKet" : "todo",
       "OpenRouterApiKey" : "todo",
+      "CohereApiKey" : "todo",
       "ApplicationInsightsConnectionString" : "todo",
       "GoogleGeminiApiKey" : "todo",
       "XAiGrokApiKey" : "todo",
@@ -46,6 +47,7 @@ public class SecretsManager
         string githubPatToken = configurationRoot["GitHubPatToken"] ?? string.Empty;
         string huggingFaceApiKey = configurationRoot["HuggingFaceApiKey"] ?? string.Empty;
         string openRouterApiKey = configurationRoot["OpenRouterApiKey"] ?? string.Empty;
+        string cohereApiKey = configurationRoot["CohereApiKey"] ?? string.Empty;
         string applicationInsightsConnectionString = configurationRoot["ApplicationInsightsConnectionString"] ?? string.Empty;
         string googleGeminiApiKey = configurationRoot["GoogleGeminiApiKey"] ?? string.Empty;
         string xAiGrokApiKey = configurationRoot["XAiGrokApiKey"] ?? string.Empty;
@@ -66,6 +68,7 @@ public class SecretsManager
             githubPatToken,
             huggingFaceApiKey,
             openRouterApiKey,
+            cohereApiKey,
             applicationInsightsConnectionString,
             googleGeminiApiKey,
             xAiGrokApiKey,

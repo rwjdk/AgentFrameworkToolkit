@@ -1,5 +1,6 @@
 using AgentFrameworkToolkit.Anthropic;
 using AgentFrameworkToolkit.AzureOpenAI;
+using AgentFrameworkToolkit.Cohere;
 using AgentFrameworkToolkit.GitHub;
 using AgentFrameworkToolkit.Google;
 using AgentFrameworkToolkit.Mistral;
@@ -29,7 +30,7 @@ public abstract class TestsBase
     internal static string? OpenTelemetryDisplayName;
     private static McpClientTools? _mcpClientTools;
     private const string TestName = "MyAgent";
-    private const string TestInstructions = "You are a nice AI";
+    private const string TestInstructions = "You are a nice AI and a weather expert";
     private const string TestDescription = "Sampledescription";
 
     static string GetWeatherWithServiceDependency(IServiceProvider serviceProvider, string city)
@@ -75,6 +76,7 @@ public abstract class TestsBase
             case AgentProvider.OpenAIResponsesApi:
             case AgentProvider.OpenRouterChatClient:
             case AgentProvider.OpenRouterResponsesApi:
+            case AgentProvider.CohereChatClient:
             case AgentProvider.XAIChatClient:
             case AgentProvider.XAIResponsesApi:
                 Assert.Contains("ClientFactory Called", testLogger.Logger.Messages);
@@ -108,6 +110,7 @@ public abstract class TestsBase
             case AgentProvider.OpenAIResponsesApi:
             case AgentProvider.OpenRouterChatClient:
             case AgentProvider.OpenRouterResponsesApi:
+            case AgentProvider.CohereChatClient:
             case AgentProvider.XAIChatClient:
             case AgentProvider.XAIResponsesApi:
                 Assert.Contains("ClientFactory Called", testLogger.Logger.Messages);
@@ -318,6 +321,20 @@ public abstract class TestsBase
                     _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, OpenRouterConnection.DefaultEndpoint, ClientType.ResponsesApi)),
                 };
             }
+            case AgentProvider.CohereChatClient:
+            {
+                CohereAgentFactory factory = new(new CohereConnection
+                {
+                    ApiKey = secrets.CohereApiKey,
+                    DefaultClientType = ClientType.ChatClient
+                });
+                string model = "command-a-03-2025";
+                return scenario switch
+                {
+                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
+                    _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, CohereConnection.DefaultEndpoint, ClientType.ChatClient)),
+                };
+            }
             case AgentProvider.XAIChatClient:
             {
                 XAIAgentFactory factory = new(new XAIConnection
@@ -378,6 +395,7 @@ public abstract class TestsBase
                         case AgentProvider.AzureOpenAIChatClient:
                         case AgentProvider.OpenAIChatClient:
                         case AgentProvider.OpenRouterChatClient:
+                        case AgentProvider.CohereChatClient:
                         case AgentProvider.XAIChatClient:
                             Assert.Contains("\"max_completion_tokens\": 2000", details.RequestData);
                             // ReSharper disable once AccessToModifiedClosure
@@ -598,6 +616,7 @@ public abstract class TestsBase
                 switch (provider)
                 {
                     case AgentProvider.Google:
+                    case AgentProvider.CohereChatClient:
                         tools = [AIFunctionFactory.Create(GetWeather, "get_weather")];
                         break;
                     default:
@@ -641,6 +660,7 @@ public enum AgentProvider
     Mistral,
     OpenRouterChatClient,
     OpenRouterResponsesApi,
+    CohereChatClient,
     XAIChatClient,
     XAIResponsesApi,
 }
