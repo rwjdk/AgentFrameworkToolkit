@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Adde `OpenAIEmbeddingModels` collection of Open AI Embedding Models
+
+---
+
 ## Version 1.0.0-preview.251226.1
 - Added support for setting `AIContextProviderFactory` and `ChatMessageStoreFactory` on Agents
 - Removed obsolete `OpenAIAgentOptionsForChatClientWithoutReasoning`, `OpenAIAgentOptionsForChatClientWithReasoning`, `OpenAIAgentOptionsForResponseApiWithoutReasoning` and `OpenAIAgentOptionsForResponseApiWithReasoning` (Use `AgentOptions` instead)
