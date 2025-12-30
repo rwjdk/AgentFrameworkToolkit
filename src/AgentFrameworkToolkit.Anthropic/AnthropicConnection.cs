@@ -19,6 +19,11 @@ public class AnthropicConnection
     public TimeSpan? NetworkTimeout { get; set; }
 
     /// <summary>
+    /// Set the BaseUrl of the Client (if you need to the API from a non-default Endpoint; example Microsoft Foundry)
+    /// </summary>
+    public string? Endpoint { get; set; }
+
+    /// <summary>
     /// Get a Raw Client
     /// </summary>
     /// <param name="rawHttpCallDetails">An Action, if set, will attach an HTTP Message Handler so you can see the raw HTTP Calls that are sent to the LLM</param>
@@ -44,6 +49,12 @@ public class AnthropicConnection
             APIKey = ApiKey,
             Timeout = NetworkTimeout
         };
+
+        if (!string.IsNullOrWhiteSpace(Endpoint))
+        {
+            clientOptions.BaseUrl = new Uri(Endpoint);
+        }
+
         if (httpClient != null)
         {
             clientOptions.HttpClient = httpClient;

@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Anthropic: Added `Endpoint` property to connection so you can override the default BaseUrl (and example consume an Anthropic model from Microsoft Foundry using the Anthropic API)
+
+---
+
 ## Version 1.0.0-preview.251230.1
 - Added `OpenAIEmbeddingModels` const-collection of Open AI Embedding Models
 - Exposed `Connection` as a Property on all Factories
