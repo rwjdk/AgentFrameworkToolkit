@@ -5,9 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Microsoft Agents AI Framework -->
-    <PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.251219.1" />
-    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251219.1" />
-    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.251219.1" />
+    <PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.260108.1" />
+    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.260108.1" />
+    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.260108.1" />
     <!-- Azure -->
     <PackageVersion Include="Azure.Identity" Version="1.17.1" />
     <PackageVersion Include="Azure.AI.OpenAI" Version="2.8.0-beta.1" />
