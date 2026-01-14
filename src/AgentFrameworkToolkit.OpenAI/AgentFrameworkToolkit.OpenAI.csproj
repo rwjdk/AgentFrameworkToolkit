@@ -11,6 +11,12 @@
 		<PackageReference Include="Microsoft.Agents.AI.OpenAI" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>AgentFrameworkToolkit.AzureOpenAI</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
 	</ItemGroup>

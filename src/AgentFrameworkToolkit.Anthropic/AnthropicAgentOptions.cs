@@ -63,7 +63,7 @@ public class AnthropicAgentOptions
     /// <summary>
     /// Reasoning effort knob, in tokens. Higher value --> more internal reasoning.
     /// </summary>
-    public int BudgetTokens { get; set; }
+    public int? BudgetTokens { get; set; }
 
     /// <summary>The temperature for generating chat responses.</summary>
     /// <remarks>
@@ -108,36 +108,4 @@ public class AnthropicAgentOptions
     /// provide additional context for each agent run.
     /// </summary>
     public Func<AIContextProviderFactoryContext, AIContextProvider>? AIContextProviderFactory { get; set; }
-
-    /// <summary>
-    /// Apply Middleware to the Agent, if needed
-    /// </summary>
-    /// <param name="innerAgent">The inner Agent</param>
-    /// <returns>The Agent back with applied middleware</returns>
-    public AIAgent ApplyMiddleware(AIAgent innerAgent)
-    {
-        AIAgentBuilder builder = innerAgent.AsBuilder();
-        if (RawToolCallDetails != null)
-        {
-            builder = builder.Use(new ToolCallsHandler(RawToolCallDetails).ToolCallingMiddlewareAsync);
-        }
-
-        if (OpenTelemetryMiddleware != null)
-        {
-            builder = builder.UseOpenTelemetry(OpenTelemetryMiddleware.Source, OpenTelemetryMiddleware.Configure);
-        }
-
-        if (ToolCallingMiddleware != null)
-        {
-            builder = builder.Use(ToolCallingMiddleware.Invoke);
-        }
-
-        if (LoggingMiddleware != null)
-        {
-            builder = builder.UseLogging(LoggingMiddleware.LoggerFactory, LoggingMiddleware.Configure);
-        }
-
-        innerAgent = builder.Build(Services);
-        return innerAgent;
-    }
 }

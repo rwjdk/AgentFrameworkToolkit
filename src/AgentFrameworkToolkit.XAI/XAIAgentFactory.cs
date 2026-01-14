@@ -43,7 +43,6 @@ public class XAIAgentFactory
         _openAIAgentFactory = new OpenAIAgentFactory(connection);
     }
 
-
     /// <summary>
     /// Create a simple Agent (using the ChatClient) with default settings (For more advanced agents use the options overloads)
     /// </summary>

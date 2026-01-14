@@ -70,7 +70,13 @@ public class GoogleAgentFactory
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (options.RawToolCallDetails != null || options.ToolCallingMiddleware != null || options.OpenTelemetryMiddleware != null || options.LoggingMiddleware != null)
         {
-            return new GoogleAgent(options.ApplyMiddleware(innerAgent));
+            return new GoogleAgent(MiddlewareHelper.ApplyMiddleware(
+                innerAgent,
+                options.RawToolCallDetails,
+                options.ToolCallingMiddleware,
+                options.OpenTelemetryMiddleware,
+                options.LoggingMiddleware,
+                options.Services));
         }
 
         return new GoogleAgent(innerAgent);

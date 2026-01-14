@@ -17,7 +17,7 @@ public static class AzureOpenAI
     [AITool]
     static string GetWeather()
     {
-        return "Sunny";
+        return "Sunny af 30 degrees";
     }
 
     public static async Task RunAsync()
@@ -31,17 +31,10 @@ public static class AzureOpenAI
             ApiKey = secrets.AzureOpenAiKey,
         });
 
-        ChatClientAgent a = factory.Connection.GetClient().GetChatClient(OpenAIChatModels.Gpt41Nano).CreateAIAgent();
+        AzureOpenAIAgent agent = factory.CreateAgent(OpenAIChatModels.Gpt41, instructions: null);
 
-        ChatClientAgentRunResponse<Movie[]> response = await a.RunAsync<Movie[]>("Give me the top 3 movies according to IMDB");
-
-        AzureOpenAIAgent agent = factory.CreateAgent(new AgentOptions
-        {
-            Model = OpenAIChatModels.Gpt41Nano,
-            RawToolCallDetails = Console.WriteLine
-        });
-
-        ChatClientAgentRunResponse<Movie[]> response2 = await agent.RunAsync<Movie[]>("Give me the top 3 movies according to IMDB");
+        AgentRunResponse response2 = await agent.RunAsync("How is the weather?");
+        Console.WriteLine(response2);
     }
 
     private class MovieResult

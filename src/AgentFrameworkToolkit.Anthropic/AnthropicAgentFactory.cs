@@ -68,15 +68,17 @@ public class AnthropicAgentFactory
     {
         IChatClient client = Connection.GetClient(options.RawHttpCallDetails).AsIChatClient();
 
-        AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options), options.LoggerFactory, options.Services);
+        AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options),
+            options.LoggerFactory,
+            options.Services);
 
-        // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (options.RawToolCallDetails != null || options.ToolCallingMiddleware != null || options.OpenTelemetryMiddleware != null || options.LoggingMiddleware != null)
-        {
-            return new AnthropicAgent(options.ApplyMiddleware(innerAgent));
-        }
-
-        return new AnthropicAgent(innerAgent);
+        return new AnthropicAgent(MiddlewareHelper.ApplyMiddleware(
+            innerAgent,
+            options.RawToolCallDetails,
+            options.ToolCallingMiddleware,
+            options.OpenTelemetryMiddleware,
+            options.LoggingMiddleware,
+            options.Services));
     }
 
     private static ChatClientAgentOptions CreateChatClientAgentOptions(AnthropicAgentOptions options)
@@ -84,7 +86,7 @@ public class AnthropicAgentFactory
         ChatOptions chatOptions = new()
         {
             ModelId = options.Model,
-            Instructions = options.Instructions
+            MaxOutputTokens = options.MaxOutputTokens,
         };
 
         if (options.Tools != null)
@@ -92,21 +94,24 @@ public class AnthropicAgentFactory
             chatOptions.Tools = options.Tools;
         }
 
-        chatOptions.MaxOutputTokens = options.MaxOutputTokens;
+        if (!string.IsNullOrWhiteSpace(options.Instructions))
+        {
+            chatOptions.Instructions = options.Instructions;
+        }
 
         if (options.Temperature != null)
         {
             chatOptions.Temperature = options.Temperature;
         }
 
-        if (options.BudgetTokens > 0)
+        if (options.BudgetTokens != null)
         {
             chatOptions.RawRepresentationFactory = _ => new MessageCreateParams
             {
                 MaxTokens = options.MaxOutputTokens,
                 Messages = [],
                 Model = options.Model,
-                Thinking = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens }),
+                Thinking = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens.Value }),
             };
         }
 
@@ -117,7 +122,7 @@ public class AnthropicAgentFactory
             Id = options.Id,
             ChatOptions = chatOptions,
             AIContextProviderFactory = options.AIContextProviderFactory,
-            ChatMessageStoreFactory = options.ChatMessageStoreFactory,
+            ChatMessageStoreFactory = options.ChatMessageStoreFactory
         };
 
         options.AdditionalChatClientAgentOptions?.Invoke(chatClientAgentOptions);

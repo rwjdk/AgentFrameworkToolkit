@@ -1,10 +1,12 @@
 # Changelog - Agent Framework Toolkit
 
 ## Unreleased
-- Fixed that the AIAgentExtensions was in a wrongly names class called AIToolsExtensions
 - `.RunAsync<T>(...)` in AIAgentExtensions now used provided serializationOptions (if given); only creating it's own if null.
 - `.RunAsync<T>(...)` now support List/Array as T (using similar object wrapping technique as Microsoft.Extensions.AI)
 - AzureOpenAI: Added Auto-correction of the Endpoint if you by mistake give the entire foundry url 'https://[name].services.ai.azure.com/api/projects/[project]' by on the fly correcting it to 'https://[name].services.ai.azure.com'. This is on by default, but can be turned off by setting property `AutoCorrectFoundryEndpoint` to false
+- Fixed that the AIAgentExtensions was in a wrongly names class called AIToolsExtensions
+- [BREAKING] `ApplyMiddleware` on the various options objects are moved to a central `MiddlewareHelper` to reduce code-duplication
+
 ---
 
 ## Version 1.0.0-preview.260108.1

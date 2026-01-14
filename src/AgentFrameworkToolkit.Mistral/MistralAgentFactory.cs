@@ -69,7 +69,13 @@ public class MistralAgentFactory
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (options.RawToolCallDetails != null || options.ToolCallingMiddleware != null || options.OpenTelemetryMiddleware != null || options.LoggingMiddleware != null)
         {
-            return new MistralAgent(options.ApplyMiddleware(innerAgent));
+            return new MistralAgent(MiddlewareHelper.ApplyMiddleware(
+                innerAgent,
+                options.RawToolCallDetails,
+                options.ToolCallingMiddleware,
+                options.OpenTelemetryMiddleware,
+                options.LoggingMiddleware,
+                options.Services));
         }
 
         return new MistralAgent(innerAgent);

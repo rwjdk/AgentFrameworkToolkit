@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Chat;
 using OpenAI.Responses;
@@ -69,50 +70,41 @@ public class OpenAIAgentFactory
     {
         OpenAIClient client = Connection.GetClient(options.RawHttpCallDetails);
 
-        ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options);
-
-        ChatClientAgent innerAgent;
-        switch (options.ClientType)
-        {
-            case ClientType.ChatClient:
-                innerAgent = client
-                    .GetChatClient(options.Model)
-                    .CreateAIAgent(chatClientAgentOptions, options.ClientFactory, options.LoggerFactory, options.Services);
-                break;
-            case ClientType.ResponsesApi:
-                innerAgent = client
-                    .GetResponsesClient(options.Model)
-                    .CreateAIAgent(chatClientAgentOptions, options.ClientFactory, options.LoggerFactory, options.Services);
-                break;
-            case null:
-                innerAgent = Connection.DefaultClientType switch
-                {
-                    ClientType.ChatClient => client
-                        .GetChatClient(options.Model)
-                        .CreateAIAgent(chatClientAgentOptions, options.ClientFactory, options.LoggerFactory, options.Services),
-                    ClientType.ResponsesApi => client
-                        .GetResponsesClient(options.Model)
-                        .CreateAIAgent(chatClientAgentOptions, options.ClientFactory, options.LoggerFactory, options.Services),
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-
-        // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (options.RawToolCallDetails != null || options.ToolCallingMiddleware != null || options.OpenTelemetryMiddleware != null || options.LoggingMiddleware != null)
-        {
-            return new OpenAIAgent(options.ApplyMiddleware(innerAgent));
-        }
-
-        return new OpenAIAgent(innerAgent);
+        ChatClientAgent innerAgent = GetChatClientAgent(options, client, options.Model, Connection.DefaultClientType);
+        return new OpenAIAgent(MiddlewareHelper.ApplyMiddleware(
+            innerAgent,
+            options.RawToolCallDetails,
+            options.ToolCallingMiddleware,
+            options.OpenTelemetryMiddleware,
+            options.LoggingMiddleware,
+            options.Services));
     }
 
-    private ChatClientAgentOptions CreateChatClientAgentOptions(AgentOptions options)
+    internal static ChatClientAgent GetChatClientAgent(AgentOptions options, OpenAIClient client, string model, ClientType defaultClientType)
+    {
+        ChatClientAgentOptions chatClientAgentOptions = CreateChatClientAgentOptions(options, defaultClientType);
+        Func<IChatClient, IChatClient>? clientFactory = options.ClientFactory;
+        ILoggerFactory? loggerFactory = options.LoggerFactory;
+        IServiceProvider? services = options.Services;
+        return options.ClientType switch
+        {
+            ClientType.ChatClient => client.GetChatClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+            ClientType.ResponsesApi => client.GetResponsesClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+            null => defaultClientType switch
+            {
+                ClientType.ChatClient => client.GetChatClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+                ClientType.ResponsesApi => client.GetResponsesClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+                _ => throw new ArgumentOutOfRangeException()
+            },
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    private static ChatClientAgentOptions CreateChatClientAgentOptions(AgentOptions options, ClientType defaultClientType)
     {
         bool anyOptionsSet = false;
         ChatOptions chatOptions = new();
+
         if (options.Tools != null)
         {
             anyOptionsSet = true;
@@ -131,14 +123,16 @@ public class OpenAIAgentFactory
             chatOptions.Temperature = options.Temperature;
         }
 
-        if (!string.IsNullOrWhiteSpace(options.Instructions))
+        string? instructions = options.Instructions;
+        if (!string.IsNullOrWhiteSpace(instructions))
         {
             anyOptionsSet = true;
-            chatOptions.Instructions = options.Instructions;
+            chatOptions.Instructions = instructions;
         }
 
         string? reasoningEffortAsString = null;
-        switch (options.ReasoningEffort)
+        OpenAIReasoningEffort? effort = options.ReasoningEffort;
+        switch (effort)
         {
             case OpenAIReasoningEffort.None:
                 reasoningEffortAsString = "none";
@@ -164,13 +158,14 @@ public class OpenAIAgentFactory
         {
             anyOptionsSet = true;
 
+            OpenAIReasoningSummaryVerbosity? summaryVerbosity = options.ReasoningSummaryVerbosity;
             switch (options.ClientType)
             {
                 case ClientType.ChatClient:
                     chatOptions = chatOptions.WithOpenAIChatClientReasoning(new ChatReasoningEffortLevel(reasoningEffortAsString));
                     break;
                 case ClientType.ResponsesApi:
-                    chatOptions = options.ReasoningSummaryVerbosity switch
+                    chatOptions = summaryVerbosity switch
                     {
                         OpenAIReasoningSummaryVerbosity.Auto => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Auto),
                         OpenAIReasoningSummaryVerbosity.Concise => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Concise),
@@ -181,10 +176,10 @@ public class OpenAIAgentFactory
 
                     break;
                 case null:
-                    chatOptions = Connection.DefaultClientType switch
+                    chatOptions = defaultClientType switch
                     {
                         ClientType.ChatClient => chatOptions.WithOpenAIChatClientReasoning(new ChatReasoningEffortLevel(reasoningEffortAsString)),
-                        ClientType.ResponsesApi => options.ReasoningSummaryVerbosity switch
+                        ClientType.ResponsesApi => summaryVerbosity switch
                         {
                             OpenAIReasoningSummaryVerbosity.Auto => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Auto),
                             OpenAIReasoningSummaryVerbosity.Concise => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Concise),
