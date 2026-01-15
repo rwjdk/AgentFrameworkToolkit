@@ -3,8 +3,10 @@ using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.OpenRouter;
 using AgentFrameworkToolkit.Tools;
+using AgentFrameworkToolkit.Tools.Common;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using Microsoft.VisualBasic;
 using OpenAI.Chat;
 using Secrets;
 
@@ -31,9 +33,14 @@ public static class AzureOpenAI
             ApiKey = secrets.AzureOpenAiKey,
         });
 
-        AzureOpenAIAgent agent = factory.CreateAgent(OpenAIChatModels.Gpt41, instructions: null);
+        AzureOpenAIAgent agent = factory.CreateAgent(new AgentOptions
+        {
+            Model = OpenAIChatModels.Gpt41Nano,
+            Tools = [AIFileReaderTools.GetFilesInFolder(), AIFileReaderTools.GetFileContentAsText()],
+            RawToolCallDetails = Console.WriteLine
+        });
 
-        AgentRunResponse response2 = await agent.RunAsync("How is the weather?");
+        AgentRunResponse response2 = await agent.RunAsync(@"What is in the markdown in folder 'X:\ag-ui' (summarize the content)");
         Console.WriteLine(response2);
     }
 
