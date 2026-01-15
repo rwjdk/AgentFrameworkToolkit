@@ -1,4 +1,5 @@
-using GenerativeAI.Microsoft;
+using Google.GenAI;
+using Google.GenAI.Types;
 using JetBrains.Annotations;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
@@ -63,7 +64,7 @@ public class GoogleAgentFactory
     /// <returns>The Agent</returns>
     public GoogleAgent CreateAgent(GoogleAgentOptions options)
     {
-        IChatClient client = GetClient(options.Model);
+        IChatClient client = Connection.GetClient().AsIChatClient(options.Model);
 
         AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options), options.LoggerFactory, options.Services);
 
@@ -98,15 +99,32 @@ public class GoogleAgentFactory
             chatOptions.MaxOutputTokens = options.MaxOutputTokens.Value;
         }
 
-        if (options.ThinkingBudget > 0)
+        if (options.ThinkingBudget.HasValue || options.ThinkingLevel.HasValue)
         {
             anyOptionsSet = true;
-            chatOptions.AdditionalProperties = new AdditionalPropertiesDictionary
+            if (options.ThinkingLevel.HasValue)
             {
-                ["ThinkingBudget"] = options.ThinkingBudget,
-            };
+                chatOptions.RawRepresentationFactory = _ => new GenerateContentConfig
+                {
+                    ThinkingConfig = new ThinkingConfig
+                    {
+                        ThinkingLevel = options.ThinkingLevel,
+                        IncludeThoughts = options.IncludeThoughts
+                    }
+                };
+            }
+            else if (options.ThinkingBudget.HasValue)
+            {
+                chatOptions.RawRepresentationFactory = _ => new GenerateContentConfig
+                {
+                    ThinkingConfig = new ThinkingConfig
+                    {
+                        ThinkingBudget = options.ThinkingBudget.Value,
+                        IncludeThoughts = options.IncludeThoughts
+                    }
+                };
+            }
         }
-
 
         if (options.Temperature != null)
         {
@@ -137,25 +155,5 @@ public class GoogleAgentFactory
         options.AdditionalChatClientAgentOptions?.Invoke(chatClientAgentOptions);
 
         return chatClientAgentOptions;
-    }
-
-
-    private IChatClient GetClient(string model)
-    {
-        IChatClient client;
-        if (Connection.Adapter != null)
-        {
-            client = new GenerativeAIChatClient(Connection.Adapter, model);
-        }
-        else if (Connection.ApiKey != null)
-        {
-            client = new GenerativeAIChatClient(Connection.ApiKey, model);
-        }
-        else
-        {
-            throw new AgentFrameworkToolkitException("You need to provide either an APIKey or Adapter to make a Google Connection");
-        }
-
-        return client;
     }
 }

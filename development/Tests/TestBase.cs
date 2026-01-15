@@ -124,16 +124,8 @@ public abstract class TestsBase
         ToolCallingMiddlewareCity = null;
         AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.ToolCall, testLogger);
         AgentRunResponse response = await agent.RunAsync("What is the weather like in Paris", cancellationToken: TestContext.Current.CancellationToken);
-        switch (provider)
-        {
-            case AgentProvider.Google:
-                Assert.Single(response.Messages); //Do not give tool call details back
-                break;
-            default:
-                Assert.Single(response.Messages.Where(x => x.Role == ChatRole.Tool).ToList());
-                Assert.Equal(3, response.Messages.Count);
-                break;
-        }
+        Assert.Single(response.Messages.Where(x => x.Role == ChatRole.Tool).ToList());
+        Assert.Equal(3, response.Messages.Count);
 
         Assert.Contains("SUNNY", response.Text.ToUpperInvariant());
         Assert.Contains("19", response.Text);
@@ -145,16 +137,7 @@ public abstract class TestsBase
         TestLoggerFactory testLogger = new();
         AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.McpToolCall, testLogger);
         AgentRunResponse response = await agent.RunAsync("Call the 'getting_started' tool to find what URL the nuget is on", cancellationToken: TestContext.Current.CancellationToken);
-        switch (provider)
-        {
-            case AgentProvider.Google:
-                Assert.Single(response.Messages); //Do not give tool call details back
-                break;
-            default:
-                Assert.True(response.Messages.Count(x => x.Role == ChatRole.Tool) > 0);
-                break;
-        }
-
+        Assert.True(response.Messages.Count(x => x.Role == ChatRole.Tool) > 0);
         Assert.Contains("www.nuget.org/packages/TrelloDotNet".ToUpperInvariant(), response.Text.ToUpperInvariant());
     }
 
@@ -552,6 +535,7 @@ public abstract class TestsBase
                 Tools = tools,
                 LoggerFactory = testLogger,
                 Instructions = TestInstructions,
+                Services = serviceProvider,
                 ToolCallingMiddleware = async (_, context, next, token) =>
                 {
                     if (scenario is AgentScenario.ToolCall)
@@ -615,7 +599,6 @@ public abstract class TestsBase
             case AgentScenario.ToolCall:
                 switch (provider)
                 {
-                    case AgentProvider.Google:
                     case AgentProvider.CohereChatClient:
                         tools = [AIFunctionFactory.Create(GetWeather, "get_weather")];
                         break;

@@ -1,3 +1,4 @@
+using Google.GenAI.Types;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
@@ -62,9 +63,21 @@ public class GoogleAgentOptions
     public float? Temperature { get; set; }
 
     /// <summary>
-    /// How many tokens are allowed for thinking/reasoning
+    /// Only models lower than Gemini 3: Indicates the thinking budget in tokens. 0 is DISABLED. -1 is AUTOMATIC. The default values
+    /// and allowed ranges are model dependent.
     /// </summary>
-    public int ThinkingBudget { get; set; }
+    public int? ThinkingBudget { get; set; }
+
+    /// <summary>
+    /// Only Gemini 3 and Higher: How much Thinking is allowed (Pro support HIGH and LOW, Flash support HIGH, MEDIUM, LOW and MINIMAL)
+    /// </summary>
+    public ThinkingLevel? ThinkingLevel { get; set; }
+
+    /// <summary>
+    /// Indicates whether to include thoughts in the response. If true, thoughts are returned only
+    /// if the model supports thought and thoughts are available.
+    /// </summary>
+    public bool IncludeThoughts { get; set; }
 
     /// <summary>
     /// An optional <see cref="IServiceProvider"/> to use for resolving services required by the <see cref="AIFunction"/> instances being invoked.

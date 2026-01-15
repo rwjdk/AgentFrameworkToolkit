@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgentFrameworkToolkit.Google;
@@ -29,5 +29,27 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddGoogleAgentFactory(this IServiceCollection services, string apiKey)
     {
         return services.AddSingleton(new GoogleAgentFactory(apiKey));
+    }
+
+    /// <summary>
+    /// Register an GoogleEmbeddingFactory as a Singleton
+    /// </summary>
+    /// <param name="services">The IServiceCollection collection</param>
+    /// <param name="connection">Connection Details</param>
+    /// <returns>The ServiceCollection</returns>
+    public static IServiceCollection AddGoogleEmbeddingFactory(this IServiceCollection services, GoogleConnection connection)
+    {
+        return services.AddSingleton(new GoogleEmbeddingFactory(connection));
+    }
+
+    /// <summary>
+    /// Register an GoogleEmbeddingFactory as a Singleton
+    /// </summary>
+    /// <param name="services">The IServiceCollection collection</param>
+    /// <param name="apiKey">The API Key</param>
+    /// <returns>The ServiceCollection</returns>
+    public static IServiceCollection AddGoogleEmbeddingFactory(this IServiceCollection services, string apiKey)
+    {
+        return services.AddSingleton(new GoogleEmbeddingFactory(apiKey));
     }
 }
