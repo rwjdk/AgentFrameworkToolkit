@@ -1,6 +1,9 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.0.0-preview.260115.1
+- Google: [BREAKING] Switched to the official Google NuGet Package (only breaking in Connection part if Google Vertex is used)
+- Google: Added GoogleEmbeddingFactory
+- Google: Added`ThinkingLevel` and `IncludeThoughts` in options
 - `.RunAsync<T>(...)` in AIAgentExtensions now used provided serializationOptions (if given); only creating it's own if null.
 - `.RunAsync<T>(...)` now support List/Array as T (using similar object wrapping technique as Microsoft.Extensions.AI)
 - AzureOpenAI: Added Auto-correction of the Endpoint if you by mistake give the entire foundry url 'https://[name].services.ai.azure.com/api/projects/[project]' by on the fly correcting it to 'https://[name].services.ai.azure.com'. This is on by default, but can be turned off by setting property `AutoCorrectFoundryEndpoint` to false
