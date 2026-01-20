@@ -1,12 +1,9 @@
-using System.Runtime.CompilerServices;
-using System.Text;
 using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.OpenRouter;
 using AgentFrameworkToolkit.Tools;
-using AgentSkillsDotNet;
+using AgentFrameworkToolkit.Tools.Common;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using OpenAI.Chat;
 using Secrets;
 
 namespace Sandbox.Providers;
@@ -26,27 +23,23 @@ public static class OpenRouter
             ApiKey = secrets.OpenRouterApiKey
         });
 
+        var toolsFactory = new AIToolsFactory();
 
-        ChatClientAgent a = factory.Connection.GetClient().GetChatClient(OpenRouterChatModels.OpenAI.Gpt41Nano).CreateAIAgent();
 
-        ChatClientAgentRunResponse<MovieResult> response = await a.RunAsync<MovieResult>("Give me the top 3 movies according to IMDB");
+        var weatherOptions = WeatherOptions.OpenWeatherMap(secrets.OpenWeatherApiKey, WeatherOptionsUnits.Metric);
+        List<AITool> tools =
+        [
+            new WeatherTools(weatherOptions).GetWeatherForCity()
+        ];
+
 
         OpenRouterAgent agent = factory.CreateAgent(new AgentOptions
         {
             Model = OpenRouterChatModels.OpenAI.Gpt41Nano,
-            RawToolCallDetails = Console.WriteLine
+            Tools = tools
         });
 
-        ChatClientAgentRunResponse<MovieResult> response2 = await agent.RunAsync<MovieResult>("Give me the top 3 movies according to IMDB");
-    }
-
-    private class MovieResult
-    {
-        public required List<Movie> List { get; set; }
-    }
-
-    private class Movie
-    {
-        public required string Title { get; set; }
+        AgentRunResponse response = await agent.RunAsync("What is the weather like in Paris?");
+        Console.WriteLine(response);
     }
 }

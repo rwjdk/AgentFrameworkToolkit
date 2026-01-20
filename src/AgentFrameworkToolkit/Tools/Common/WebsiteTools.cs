@@ -7,7 +7,7 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools Related to Website Content
 /// </summary>
-public static class AIWebsiteTools
+public class WebsiteTools
 {
     /// <summary>
     /// Get the raw content of a website
@@ -15,7 +15,7 @@ public static class AIWebsiteTools
     /// <param name="toolDescription">Description of Tool</param>
     /// </summary>
     /// <returns></returns>
-    public static AITool GetContentOfPage(string? toolName = "get_content_of_url", string? toolDescription = null)
+    public AITool GetContentOfPage(string? toolName = "get_content_of_url", string? toolDescription = null)
     {
         return AIFunctionFactory.Create(async (string url) => await GetContentAsync(url), toolName, toolDescription);
     }

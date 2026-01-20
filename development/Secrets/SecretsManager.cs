@@ -55,6 +55,7 @@ public class SecretsManager
         string trelloToken = configurationRoot["TrelloToken"] ?? string.Empty;
         string anthropicApiKey = configurationRoot["AnthropicApiKey"] ?? string.Empty;
         string mistralApiKey = configurationRoot["MistralApiKey"] ?? string.Empty;
+        string openWeatherApiKey = configurationRoot["OpenWeatherApiKey"] ?? string.Empty;
 
         return new Secrets(
             openAiApiKey,
@@ -75,6 +76,7 @@ public class SecretsManager
             trelloApiKey,
             trelloToken,
             anthropicApiKey,
-            mistralApiKey);
+            mistralApiKey,
+            openWeatherApiKey);
     }
 }

@@ -1,5 +1,7 @@
+using AgentFrameworkToolkit.Tools;
 using Sandbox.Providers;
 
+#pragma warning disable CS8321 // Local function is declared but never used
 Console.Clear();
 
 //await Sandbox.Providers.Anthropic.RunAsync();
@@ -13,3 +15,11 @@ await AzureOpenAI.RunAsync();
 //await Sandbox.Providers.OpenRouter.RunAsync();
 
 Console.WriteLine("Done");
+return;
+
+
+[AITool("my_tool")]
+static string MyTool()
+{
+    return "42";
+}
