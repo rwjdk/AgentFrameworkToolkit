@@ -20,7 +20,7 @@ public static class XAI
             Model = XAIChatModels.Grok4FastNonReasoning,
         });
 
-        AgentRunResponse response = await agent.RunAsync("Hello");
+        AgentResponse response = await agent.RunAsync("Hello");
         Console.WriteLine(response);
     }
 }

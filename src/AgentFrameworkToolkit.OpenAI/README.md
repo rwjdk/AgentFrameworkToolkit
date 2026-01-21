@@ -37,7 +37,7 @@ OpenAIAgentFactory agentFactory = new OpenAIAgentFactory("<API Key>");
 
 //Create your Agent
 OpenAIAgent agent = agentFactory.CreateAgent("gpt-5");
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -55,7 +55,7 @@ OpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions //Use AgentOptions
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -122,6 +122,6 @@ OpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
     }
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

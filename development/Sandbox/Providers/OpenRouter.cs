@@ -27,9 +27,9 @@ public static class OpenRouter
         });
 
 
-        ChatClientAgent a = factory.Connection.GetClient().GetChatClient(OpenRouterChatModels.OpenAI.Gpt41Nano).CreateAIAgent();
+        ChatClientAgent a = factory.Connection.GetClient().GetChatClient(OpenRouterChatModels.OpenAI.Gpt41Nano).AsAIAgent();
 
-        ChatClientAgentRunResponse<MovieResult> response = await a.RunAsync<MovieResult>("Give me the top 3 movies according to IMDB");
+        ChatClientAgentResponse<MovieResult> response = await a.RunAsync<MovieResult>("Give me the top 3 movies according to IMDB");
 
         OpenRouterAgent agent = factory.CreateAgent(new AgentOptions
         {
@@ -37,7 +37,7 @@ public static class OpenRouter
             RawToolCallDetails = Console.WriteLine
         });
 
-        ChatClientAgentRunResponse<MovieResult> response2 = await agent.RunAsync<MovieResult>("Give me the top 3 movies according to IMDB");
+        ChatClientAgentResponse<MovieResult> response2 = await agent.RunAsync<MovieResult>("Give me the top 3 movies according to IMDB");
     }
 
     private class MovieResult

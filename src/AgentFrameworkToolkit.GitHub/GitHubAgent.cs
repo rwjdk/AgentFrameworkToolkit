@@ -51,25 +51,25 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     }
 
     /// <inheritdoc />
-    public override AgentThread GetNewThread()
+    public override ValueTask<AgentThread> GetNewThreadAsync(CancellationToken cancellationToken = default)
     {
-        return innerAgent.GetNewThread();
+        return innerAgent.GetNewThreadAsync(cancellationToken);
     }
 
     /// <inheritdoc />
-    public override AgentThread DeserializeThread(JsonElement serializedThread, JsonSerializerOptions? jsonSerializerOptions = null)
+    public override ValueTask<AgentThread> DeserializeThreadAsync(JsonElement serializedThread, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
-        return innerAgent.DeserializeThread(serializedThread, jsonSerializerOptions);
+        return innerAgent.DeserializeThreadAsync(serializedThread, jsonSerializerOptions, cancellationToken);
     }
 
     /// <inheritdoc />
-    protected override Task<AgentRunResponse> RunCoreAsync(IEnumerable<ChatMessage> messages, AgentThread? thread = null, AgentRunOptions? options = null, CancellationToken cancellationToken = default)
+    protected override Task<AgentResponse> RunCoreAsync(IEnumerable<ChatMessage> messages, AgentThread? thread = null, AgentRunOptions? options = null, CancellationToken cancellationToken = default)
     {
         return innerAgent.RunAsync(messages, thread, options, cancellationToken);
     }
 
     /// <inheritdoc />
-    protected override IAsyncEnumerable<AgentRunResponseUpdate> RunCoreStreamingAsync(IEnumerable<ChatMessage> messages, AgentThread? thread = null, AgentRunOptions? options = null, CancellationToken cancellationToken = default)
+    protected override IAsyncEnumerable<AgentResponseUpdate> RunCoreStreamingAsync(IEnumerable<ChatMessage> messages, AgentThread? thread = null, AgentRunOptions? options = null, CancellationToken cancellationToken = default)
     {
         return innerAgent.RunStreamingAsync(messages, thread, options, cancellationToken);
     }
@@ -89,7 +89,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -102,7 +102,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         IEnumerable<ChatMessage> messages,
         AgentThread? thread = null,
         JsonSerializerOptions? serializerOptions = null,
@@ -127,7 +127,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -140,7 +140,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         AgentThread? thread = null,
         JsonSerializerOptions? serializerOptions = null,
         AgentRunOptions? options = null,
@@ -163,7 +163,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -176,7 +176,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         string message,
         AgentThread? thread = null,
         JsonSerializerOptions? serializerOptions = null,
@@ -202,7 +202,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -215,7 +215,7 @@ public class GitHubAgent(AIAgent innerAgent) : AIAgent
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         ChatMessage message,
         AgentThread? thread = null,
         JsonSerializerOptions? serializerOptions = null,

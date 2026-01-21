@@ -37,7 +37,7 @@ GitHubAgentFactory agentFactory = new GitHubAgentFactory("<Access Token>");
 
 //Create your Agent
 GitHubAgent agent = agentFactory.CreateAgent("openai/gpt-5");
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -54,7 +54,7 @@ GitHubAgent agent = agentFactory.CreateAgent(new GitHubAgentOptions //Use GitHub
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -112,6 +112,6 @@ GitHubAgent agent = agentFactory.CreateAgent(new GitHubAgentOptions
     },
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

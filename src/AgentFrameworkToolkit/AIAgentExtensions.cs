@@ -33,7 +33,7 @@ public static class AIAgentExtensions
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -46,7 +46,7 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         IEnumerable<ChatMessage> messages,
         AgentThread? thread = null,
@@ -136,7 +136,7 @@ public static class AIAgentExtensions
             };
         }
 
-        AgentRunResponse response = await agent.RunAsync(messages, thread, options, cancellationToken);
+        AgentResponse response = await agent.RunAsync(messages, thread, options, cancellationToken);
         ChatResponse<T> chatResponse = new(response.AsChatResponse(), jsonSerializerOptions);
         if (isWrappedInObject)
         {
@@ -148,7 +148,7 @@ public static class AIAgentExtensions
             }
         }
 
-        return new ChatClientAgentRunResponse<T>(chatResponse);
+        return new ChatClientAgentResponse<T>(chatResponse);
     }
 
     static bool SchemaRepresentsObject(JsonElement schemaElement)
@@ -184,7 +184,7 @@ public static class AIAgentExtensions
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -197,7 +197,7 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         AgentThread? thread = null,
         JsonSerializerOptions? serializerOptions = null,
@@ -222,7 +222,7 @@ public static class AIAgentExtensions
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -235,7 +235,7 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         string message,
         AgentThread? thread = null,
@@ -263,7 +263,7 @@ public static class AIAgentExtensions
     /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
     /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentRunResponse"/> with the agent's output.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
     /// <remarks>
     /// <para>
@@ -276,7 +276,7 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="thread"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentRunResponse<T>> RunAsync<T>(
+    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         ChatMessage message,
         AgentThread? thread = null,

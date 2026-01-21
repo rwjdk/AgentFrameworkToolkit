@@ -1,7 +1,13 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.260121.1
+- [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0.0-preview.260121.1
+- Bumped OpenTelemetry package to 1.15.0
+
+---
+
 ## Version 1.0.0-preview.260120.1
-- Added `GetTextReasoningContent` extension method to easily get the Reasoning text (if any) from an AgentRunResponse.
+- Added `GetTextReasoningContent` extension method to easily get the Reasoning text (if any) from an AgentResponse.
 - Added `GetContainerFileCitationMessageAnnotations` extension method to easily get ContainerFileCitations from example a Code Interpreter usage (OpenAI-based agents only).
 - Google: Bump internal NuGet to 0.12.0
 

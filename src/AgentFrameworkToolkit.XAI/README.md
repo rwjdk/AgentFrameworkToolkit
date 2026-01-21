@@ -37,7 +37,7 @@ XAIAgentFactory agentFactory = new XAIOpenAIAgentFactory("<API Key>");
 
 //Create your Agent
 XAIAgent agent = agentFactory.CreateAgent("grok-4-1-fast-reasoning");
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -55,7 +55,7 @@ XAIAgent agent = agentFactory.CreateAgent(new AgentOptions //Use AgentOptions ov
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -122,6 +122,6 @@ XAIAIAgent agent = agentFactory.CreateAgent(new AgentOptions
     }
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

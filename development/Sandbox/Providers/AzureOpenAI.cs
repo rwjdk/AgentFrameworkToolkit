@@ -33,7 +33,7 @@ public static class AzureOpenAI
 
         AzureOpenAIAgent agent = factory.CreateAgent(OpenAIChatModels.Gpt41, instructions: null);
 
-        AgentRunResponse response2 = await agent.RunAsync("How is the weather?");
+        AgentResponse response2 = await agent.RunAsync("How is the weather?");
         Console.WriteLine(response2);
     }
 

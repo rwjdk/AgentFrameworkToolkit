@@ -9,16 +9,16 @@ using System.ClientModel;
 namespace AgentFrameworkToolkit.OpenAI;
 
 /// <summary>
-/// Various handy Extensions for an AgentRunResponse that are OpenAI Specific
+/// Various handy Extensions for an AgentResponse that are OpenAI Specific
 /// </summary>
-public static class OpenAIAgentRunResponseExtensions
+public static class OpenAIAgentResponseExtensions
 {
     /// <summary>
     /// Get all ContainerFileCitationMessageAnnotations from a 
     /// </summary>
     /// <param name="response"></param>
     /// <returns></returns>
-    public static IList<ContainerFileCitationMessageAnnotation>? GetContainerFileCitationMessageAnnotations(this AgentRunResponse response)
+    public static IList<ContainerFileCitationMessageAnnotation>? GetContainerFileCitationMessageAnnotations(this AgentResponse response)
     {
         List<ContainerFileCitationMessageAnnotation> result = [];
         foreach (ChatMessage message in response.Messages)

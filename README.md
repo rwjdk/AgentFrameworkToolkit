@@ -52,7 +52,7 @@ AzureOpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
 });
 
 string question = "What is the Weather like in Paris";
-ChatClientAgentRunResponse<WeatherReport> response = await agent.RunAsync<WeatherReport>(question);
+ChatClientAgentResponse<WeatherReport> response = await agent.RunAsync<WeatherReport>(question);
 WeatherReport weatherReport = response.Result;
 ```
 

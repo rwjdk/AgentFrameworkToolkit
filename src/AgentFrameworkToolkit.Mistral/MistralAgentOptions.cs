@@ -95,12 +95,12 @@ public class MistralAgentOptions
     /// Gets or sets a factory function to create an instance of <see cref="ChatMessageStore"/>
     /// which will be used to store chat messages for this agent.
     /// </summary>
-    public Func<ChatMessageStoreFactoryContext, ChatMessageStore>? ChatMessageStoreFactory { get; set; }
+    public Func<ChatMessageStoreFactoryContext, CancellationToken, ValueTask<ChatMessageStore>>? ChatMessageStoreFactory { get; set; }
 
     /// <summary>
     /// Gets or sets a factory function to create an instance of <see cref="AIContextProvider"/>
     /// which will be used to create a context provider for each new thread, and can then
     /// provide additional context for each agent run.
     /// </summary>
-    public Func<AIContextProviderFactoryContext, AIContextProvider>? AIContextProviderFactory { get; set; }
+    public Func<AIContextProviderFactoryContext, CancellationToken, ValueTask<AIContextProvider>>? AIContextProviderFactory { get; set; }
 }

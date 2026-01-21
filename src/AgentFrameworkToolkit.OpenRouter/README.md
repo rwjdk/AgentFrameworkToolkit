@@ -37,7 +37,7 @@ OpenRouterAgentFactory agentFactory = new OpenRouterOpenAIAgentFactory("<API Key
 
 //Create your Agent
 OpenRouterAgent agent = agentFactory.CreateAgent("openai/gpt-5");
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -55,7 +55,7 @@ OpenRouterAgent agent = agentFactory.CreateAgent(new AgentOptions //Use AgentOpt
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -122,6 +122,6 @@ OpenRouterAIAgent agent = agentFactory.CreateAgent(new AgentOptions
     }
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

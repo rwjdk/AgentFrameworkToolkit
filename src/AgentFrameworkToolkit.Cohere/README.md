@@ -37,7 +37,7 @@ CohereAgentFactory agentFactory = new CohereAgentFactory("<API Key>");
 
 //Create your Agent
 CohereAgent agent = agentFactory.CreateAgent("<model>");
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -55,7 +55,7 @@ CohereAgent agent = agentFactory.CreateAgent(new AgentOptions //Use AgentOptions
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -122,6 +122,6 @@ CohereAgent agent = agentFactory.CreateAgent(new AgentOptions
     }
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

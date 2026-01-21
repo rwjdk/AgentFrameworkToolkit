@@ -65,7 +65,7 @@ public static class GitHub
             },
         });
 
-        AgentRunResponse response = await agent.RunAsync("Hello World");
+        AgentResponse response = await agent.RunAsync("Hello World");
         Console.WriteLine(response);
     }
 }
