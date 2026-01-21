@@ -23,8 +23,6 @@ public static class AzureOpenAI
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
 
-        new TimeTools().Get(TimeTool.All);
-
         //Create your AgentFactory (using a connection object for more options)
         AzureOpenAIAgentFactory factory = new AzureOpenAIAgentFactory(new AzureOpenAIConnection
         {
@@ -32,41 +30,21 @@ public static class AzureOpenAI
             ApiKey = secrets.AzureOpenAiKey,
         });
 
+        List<AITool> tools = [];
+        tools.AddRange(Time.AllTools());
+        tools.Add(Website.GetContentOfPageTool());
+        tools.Add(Weather.GetWeatherForCityTool(new OpenWeatherMapOptions
+        {
+            ApiKey = secrets.OpenWeatherApiKey,
+            PreferredUnits = WeatherOptionsUnits.Metric
+        }));
+        tools.AddRange(FileSystem.AllTools());
+        
 
-        var toolsFactory = new AIToolsFactory();
-        IList<AITool> allTheTools = toolsFactory.GetToolsFromMultipleSources(
-            toolsWithAttributeFromTypes:
-            [
-                typeof(MyToolsInType), //add more
-            ],
-            toolsWithAttributeFromObjectInstances:
-            [
-                new MyToolsInInstance(), //add more
-            ],
-            toolsFromAgentSkillFolders:
-            [
-                new AgentSkillFolder("TestData\\AgentSkills"), //add more
-            ],
-            timeTools: TimeTool.All,
-            otherTools:
-            [
-                //Advanced Common Tools
-                new WeatherTools(WeatherOptions.OpenWeatherMap(secrets.OpenWeatherApiKey)).GetWeatherForCity(),
-                //Hosted Tools
-                new HostedCodeInterpreterTool(),
-                new HostedWebSearchTool(),
-
-                //Your own tools
-                AIFunctionFactory.Create(MyTool)
-            ]
-        );
-
-
-        WeatherOptions weatherOptions = WeatherOptions.OpenWeatherMap(secrets.OpenWeatherApiKey, WeatherOptionsUnits.Metric);
         AIAgent agent = factory.CreateAgent(new AgentOptions
         {
             Model = OpenAIChatModels.Gpt41Nano,
-            Tools = allTheTools,
+            Tools = tools,
             RawToolCallDetails = Console.WriteLine
         });
 

@@ -22,21 +22,10 @@ public static class OpenRouter
         {
             ApiKey = secrets.OpenRouterApiKey
         });
-
-        var toolsFactory = new AIToolsFactory();
-
-
-        var weatherOptions = WeatherOptions.OpenWeatherMap(secrets.OpenWeatherApiKey, WeatherOptionsUnits.Metric);
-        List<AITool> tools =
-        [
-            new WeatherTools(weatherOptions).GetWeatherForCity()
-        ];
-
-
+        
         OpenRouterAgent agent = factory.CreateAgent(new AgentOptions
         {
             Model = OpenRouterChatModels.OpenAI.Gpt41Nano,
-            Tools = tools
         });
 
         AgentRunResponse response = await agent.RunAsync("What is the weather like in Paris?");

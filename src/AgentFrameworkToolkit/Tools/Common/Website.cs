@@ -7,20 +7,22 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools Related to Website Content
 /// </summary>
-public class WebsiteTools
+public static class Website
 {
     /// <summary>
     /// Get the raw content of a website
+    /// <param name="options">Optional options for tool</param>
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// </summary>
     /// <returns></returns>
-    public AITool GetContentOfPage(string? toolName = "get_content_of_url", string? toolDescription = null)
+    public static AITool GetContentOfPageTool(GetContentOfPageOptions? options = null, string? toolName = "get_content_of_url", string? toolDescription = null)
     {
-        return AIFunctionFactory.Create(async (string url) => await GetContentAsync(url), toolName, toolDescription);
+        GetContentOfPageOptions optionToUse = options ?? new GetContentOfPageOptions();
+        return AIFunctionFactory.Create(async (string url) => await GetContentAsync(url, optionToUse), toolName, toolDescription);
     }
 
-    private static async Task<string> GetContentAsync(string url)
+    private static async Task<string> GetContentAsync(string url, GetContentOfPageOptions options)
     {
         if (string.IsNullOrWhiteSpace(url))
         {
@@ -37,7 +39,12 @@ public class WebsiteTools
         response.EnsureSuccessStatusCode();
 
         string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-        return StripMarkup(content);
+        if (options.StripMarkup)
+        {
+            content = StripMarkup(content);
+        }
+
+        return content;
     }
 
     private static string StripMarkup(string html)
@@ -54,4 +61,15 @@ public class WebsiteTools
 
         return normalizedWhitespace;
     }
+}
+
+/// <summary>
+/// Options of GetContentOfPageTool Tool
+/// </summary>
+public class GetContentOfPageOptions
+{
+    /// <summary>
+    /// If tool should Strip away markup (HTML, JS and CSS) leaving only raw text (Default = true)
+    /// </summary>
+    public bool StripMarkup { get; set; } = true;
 }
