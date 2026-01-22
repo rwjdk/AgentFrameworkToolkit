@@ -1,5 +1,4 @@
 using System.Reflection;
-using AgentFrameworkToolkit.Tools.Common;
 using AgentSkillsDotNet;
 using Microsoft.Extensions.AI;
 
@@ -107,10 +106,3 @@ public class AIToolsFactory
         return methods.Where(x => x.GetCustomAttribute<AIToolAttribute>() != null).ToList();
     }
 }
-
-/// <summary>
-/// Settings for an AgentSkill Folder
-/// </summary>
-/// <param name="Path"></param>
-/// <param name="Options"></param>
-public record AgentSkillFolder(string Path, AgentSkillsOptions? Options = null);
