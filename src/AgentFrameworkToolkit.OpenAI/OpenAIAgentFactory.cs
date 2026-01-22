@@ -88,12 +88,12 @@ public class OpenAIAgentFactory
         IServiceProvider? services = options.Services;
         return options.ClientType switch
         {
-            ClientType.ChatClient => client.GetChatClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
-            ClientType.ResponsesApi => client.GetResponsesClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+            ClientType.ChatClient => client.GetChatClient(model).AsAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+            ClientType.ResponsesApi => client.GetResponsesClient(model).AsAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
             null => defaultClientType switch
             {
-                ClientType.ChatClient => client.GetChatClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
-                ClientType.ResponsesApi => client.GetResponsesClient(model).CreateAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+                ClientType.ChatClient => client.GetChatClient(model).AsAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
+                ClientType.ResponsesApi => client.GetResponsesClient(model).AsAIAgent(chatClientAgentOptions, clientFactory, loggerFactory, services),
                 _ => throw new ArgumentOutOfRangeException()
             },
             _ => throw new ArgumentOutOfRangeException()

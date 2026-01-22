@@ -43,7 +43,7 @@ public static class OpenAI
             }
         });
 
-        AgentRunResponse response = await agent.RunAsync("What is the answer to the extra secret formula (Only return the result)");
+        AgentResponse response = await agent.RunAsync("What is the answer to the extra secret formula (Only return the result)");
         Console.WriteLine(response);
     }
 }

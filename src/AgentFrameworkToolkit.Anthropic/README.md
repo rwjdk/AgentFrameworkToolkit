@@ -40,7 +40,7 @@ AIAgent agent = agentFactory.CreateAgent(
     maxTokenCount: 2000
 );
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -59,7 +59,7 @@ AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions //Use 
     BudgetTokens = 1024, //Set Thinking Budget
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -113,6 +113,6 @@ AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
     }
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

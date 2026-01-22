@@ -48,7 +48,7 @@ public static class AzureOpenAI
             RawToolCallDetails = Console.WriteLine
         });
 
-        AgentRunResponse response2 = await agent.RunAsync("What is the weather like in Paris?");
+        AgentResponse response2 = await agent.RunAsync("How is the weather?");
         Console.WriteLine(response2);
     }
 

@@ -28,7 +28,7 @@ public static class OpenRouter
             Model = OpenRouterChatModels.OpenAI.Gpt41Nano,
         });
 
-        AgentRunResponse response = await agent.RunAsync("What is the weather like in Paris?");
+        AgentResponse response = await agent.RunAsync("What is the weather like in Paris?");
         Console.WriteLine(response);
     }
 }

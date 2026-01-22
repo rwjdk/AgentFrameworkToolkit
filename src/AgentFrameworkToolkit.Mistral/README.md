@@ -37,7 +37,7 @@ MistralAgentFactory agentFactory = new MistralAgentFactory("<apiKey>");
 //Create your Agent
 AIAgent agent = agentFactory.CreateAgent("mistral-small-latest");
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -54,7 +54,7 @@ MistralAgent agent = agentFactory.CreateAgent(new MistralAgentOptions //Use Mist
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -107,6 +107,6 @@ MistralAgent agent = agentFactory.CreateAgent(new MistralAgentOptions
     }
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

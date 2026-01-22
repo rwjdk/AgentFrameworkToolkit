@@ -33,7 +33,7 @@ public static class Cohere
             }
         );
 
-        ChatClientAgentRunResponse<WeatherReport> response = await agent.RunAsync<WeatherReport>("What is the Weather like in Paris?");
+        ChatClientAgentResponse<WeatherReport> response = await agent.RunAsync<WeatherReport>("What is the Weather like in Paris?");
         Console.WriteLine(response);
     }
 

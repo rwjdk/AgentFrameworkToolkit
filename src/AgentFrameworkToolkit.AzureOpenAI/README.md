@@ -37,7 +37,7 @@ AzureOpenAIAgentFactory agentFactory = new AzureOpenAIAgentFactory("<Endpoint>",
 
 //Create your Agent
 AzureOpenAIAgent agent = agentFactory.CreateAgent("gpt-5");
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -55,7 +55,7 @@ AzureOpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions //Use AgentOp
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -77,7 +77,7 @@ AzureOpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions //Use AgentOp
     Tools = [], //Add your tools here
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -145,6 +145,6 @@ AzureOpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
     }
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

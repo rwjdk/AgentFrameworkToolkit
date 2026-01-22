@@ -56,7 +56,7 @@ public static class Anthropic
             }
         });
 
-        AgentRunResponse response = await agent.RunAsync("Hello World");
+        AgentResponse response = await agent.RunAsync("Hello World");
         Console.WriteLine(response);
     }
 }

@@ -29,7 +29,7 @@ public static class Google
         await agent.RunAsync<string>("");
 
 
-        AgentRunResponse response = await agent.RunAsync("Why is the Sky Blue");
+        AgentResponse response = await agent.RunAsync("Why is the Sky Blue");
         Console.WriteLine(response);
     }
 }

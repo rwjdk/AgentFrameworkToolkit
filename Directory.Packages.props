@@ -1,35 +1,35 @@
 <Project>
-	<!-- Enable Central Package Management for all src projects -->
-	<PropertyGroup>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-	</PropertyGroup>
-	<ItemGroup>
-		<!-- Microsoft Agents AI Framework -->
-		<PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.260108.1" />
-		<PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.260108.1" />
-		<PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.260108.1" />
-		<!-- Azure -->
-		<PackageVersion Include="Azure.Identity" Version="1.17.1" />
-		<PackageVersion Include="Azure.AI.OpenAI" Version="2.8.0-beta.1" />
-		<PackageVersion Include="Azure.AI.Inference" Version="1.0.0-beta.5" />
-		<PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.2.0" />
-		<PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
-		<!-- Third-party AI SDKs -->
-		<PackageVersion Include="Google.GenAI" Version="0.11.0" />
-		<PackageVersion Include="Mistral.SDK" Version="2.3.1" />
-		<PackageVersion Include="ModelContextProtocol" Version="0.6.0-preview.1" />
-		<!-- Code analysis -->
-		<PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
-		<!-- Testing -->
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-		<PackageVersion Include="xunit.v3" Version="3.2.2" />
-		<PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-		<PackageVersion Include="OpenTelemetry" Version="1.14.0" />
-		<PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
-		<!-- Secrets -->
-		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.2" />
-		<!-- SourceLink for symbol packages -->
-		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.102" />
-	</ItemGroup>
+  <!-- Enable Central Package Management for all src projects -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Microsoft Agents AI Framework -->
+    <PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.260121.1" />
+    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.260121.1" />
+    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.260121.1" />
+    <!-- Azure -->
+    <PackageVersion Include="Azure.Identity" Version="1.17.1" />
+    <PackageVersion Include="Azure.AI.OpenAI" Version="2.8.0-beta.1" />
+    <PackageVersion Include="Azure.AI.Inference" Version="1.0.0-beta.5" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+    <!-- Third-party AI SDKs -->
+    <PackageVersion Include="Google.GenAI" Version="0.12.0" />
+    <PackageVersion Include="Mistral.SDK" Version="2.3.1" />
+    <PackageVersion Include="ModelContextProtocol" Version="0.6.0-preview.1" />
+    <!-- Code analysis -->
+    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
+    <!-- Testing -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageVersion Include="OpenTelemetry" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.15.0" />
+    <!-- Secrets -->
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.2" />
+    <!-- SourceLink for symbol packages -->
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.102" />
+  </ItemGroup>
 </Project>

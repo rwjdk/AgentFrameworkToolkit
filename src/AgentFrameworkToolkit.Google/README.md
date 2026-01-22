@@ -37,7 +37,7 @@ GoogleAgentFactory agentFactory = new GoogleAgentFactory("<apiKey>");
 //Create your Agent
 AIAgent agent = agentFactory.CreateAgent(model: "gemini-2.5-flash");
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -55,7 +55,7 @@ GoogleAgent agent = agentFactory.CreateAgent(new GoogleAgentOptions //Use Google
     BudgetTokens = 1024, //Set Thinking Budget
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
@@ -102,6 +102,6 @@ GoogleAgent agent = agentFactory.CreateAgent(new GoogleAgentOptions
     RawToolCallDetails = Console.WriteLine, //Raw Tool calling Middleware (if you just wish to log what tools are being called. ToolCallingMiddleware is a more advanced version of this)
 });
 
-AgentRunResponse response = await agent.RunAsync("Hello World");
+AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```

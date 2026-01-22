@@ -50,7 +50,7 @@ public abstract class TestsBase
         AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Simple);
         Assert.NotNull(agent.Id);
         Assert.Equal(TestName, agent.Name);
-        AgentRunResponse response = await agent.RunAsync("Hello", cancellationToken: TestContext.Current.CancellationToken);
+        AgentResponse response = await agent.RunAsync("Hello", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Single(response.Messages);
         Assert.NotEmpty(response.Text);
     }
@@ -62,7 +62,7 @@ public abstract class TestsBase
         Assert.NotNull(agent.Id);
         Assert.Equal(TestName, agent.Name);
         Assert.Equal(TestDescription, agent.Description);
-        AgentRunResponse response = await agent.RunAsync("Hello", cancellationToken: TestContext.Current.CancellationToken);
+        AgentResponse response = await agent.RunAsync("Hello", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Single(response.Messages);
         Assert.NotEmpty(response.Text);
         bool condition = testLogger.Logger.Messages.Any(x => x.Contains(agent.Id));
@@ -92,7 +92,7 @@ public abstract class TestsBase
         Assert.NotNull(agent.Id);
         Assert.Equal(TestName, agent.Name);
         Assert.Equal(TestDescription, agent.Description);
-        AgentRunResponse response = await agent.RunAsync("Hello", cancellationToken: TestContext.Current.CancellationToken);
+        AgentResponse response = await agent.RunAsync("Hello", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Single(response.Messages);
         Assert.NotEmpty(response.Text);
         bool idCondition = testLogger.Logger.Messages.Any(x => x.Contains(agent.Id));
@@ -123,7 +123,7 @@ public abstract class TestsBase
         TestLoggerFactory testLogger = new();
         ToolCallingMiddlewareCity = null;
         AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.ToolCall, testLogger);
-        AgentRunResponse response = await agent.RunAsync("What is the weather like in Paris", cancellationToken: TestContext.Current.CancellationToken);
+        AgentResponse response = await agent.RunAsync("What is the weather like in Paris", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Single(response.Messages.Where(x => x.Role == ChatRole.Tool).ToList());
         Assert.Equal(3, response.Messages.Count);
 
@@ -136,7 +136,7 @@ public abstract class TestsBase
     {
         TestLoggerFactory testLogger = new();
         AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.McpToolCall, testLogger);
-        AgentRunResponse response = await agent.RunAsync("Call the 'getting_started' tool to find what URL the nuget is on", cancellationToken: TestContext.Current.CancellationToken);
+        AgentResponse response = await agent.RunAsync("Call the 'getting_started' tool to find what URL the nuget is on", cancellationToken: TestContext.Current.CancellationToken);
         Assert.True(response.Messages.Count(x => x.Role == ChatRole.Tool) > 0);
         Assert.Contains("www.nuget.org/packages/TrelloDotNet".ToUpperInvariant(), response.Text.ToUpperInvariant());
     }
@@ -145,7 +145,7 @@ public abstract class TestsBase
     {
         TestLoggerFactory testLogger = new();
         AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Normal, testLogger);
-        ChatClientAgentRunResponse<MovieResult> response = await agent.RunAsync<MovieResult>("Top 3 IMDB Movies", cancellationToken: TestContext.Current.CancellationToken);
+        ChatClientAgentResponse<MovieResult> response = await agent.RunAsync<MovieResult>("Top 3 IMDB Movies", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(3, response.Result.Movies.Count);
     }
 
