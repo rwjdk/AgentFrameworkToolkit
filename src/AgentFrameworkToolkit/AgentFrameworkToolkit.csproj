@@ -17,6 +17,6 @@
     </None>
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\AgentSkillsDotNet\AgentSkillsDotNet.csproj" />
+	  <ProjectReference Include="..\AgentFrameworkToolkit.Tools\AgentFrameworkToolkit.Tools.csproj" />
 	</ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
     <Project Path="src/AgentFrameworkToolkit.OpenAI/AgentFrameworkToolkit.OpenAI.csproj" />
     <Project Path="src/AgentFrameworkToolkit.OpenRouter/AgentFrameworkToolkit.OpenRouter.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Tools.ModelContextProtocol/AgentFrameworkToolkit.Tools.ModelContextProtocol.csproj" />
+    <Project Path="src/AgentFrameworkToolkit.Tools/AgentFrameworkToolkit.Tools.csproj" />
     <Project Path="src/AgentFrameworkToolkit.XAI/AgentFrameworkToolkit.XAI.csproj" />
     <Project Path="src/AgentFrameworkToolkit/AgentFrameworkToolkit.csproj" />
     <Project Path="src/AgentSkillsDotNet/AgentSkillsDotNet.csproj" Id="b6cf36bb-01cb-443f-a430-daff9b243742" />

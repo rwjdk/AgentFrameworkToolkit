@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+# Unreleased
+- Moved AIToolsFactory to it's own NuGetPackage (`AgentFrameworkToolkit.Tool` to allow usage without dependency on `Microsoft.Agents.AI`)
+
+---
+
 ## Version 1.0.0-preview.260121.1
 - [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0.0-preview.260121.1
 - Bumped OpenTelemetry package to 1.15.0

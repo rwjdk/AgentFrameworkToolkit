@@ -8,18 +8,17 @@
 	<Import Project="..\..\nuget-package.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Agents.AI" />
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
 		<PackageReference Include="JetBrains.Annotations" />
 		<PackageReference Include="ModelContextProtocol" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
 	</ItemGroup>
   <ItemGroup>
     <None Include="README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AgentFrameworkToolkit.Tools\AgentFrameworkToolkit.Tools.csproj" />
   </ItemGroup>
 </Project>
