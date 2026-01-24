@@ -94,7 +94,6 @@ public class AmazonBedrockAgentFactory
             Instructions = options.Instructions,
             MaxOutputTokens = options.MaxOutputTokens,
             Temperature = options.Temperature,
-            TopP = options.TopP
         };
 
         if (options.Tools != null)

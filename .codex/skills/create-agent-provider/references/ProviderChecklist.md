@@ -90,21 +90,18 @@ Use this checklist to ensure your provider implementation is complete and follow
 - [ ] Add provider API key to user-secrets:
   - [ ] Update `development/Secrets/Secrets.cs` + `development/Secrets/SecretsManager.cs`
   - [ ] Set user-secrets for `development/Secrets/Secrets.csproj`
-- [ ] Tests pass: `dotnet test --configuration Release`
 
 ## Sandbox
 
 - [ ] Add provider project reference to `development/Sandbox/Sandbox.csproj`
 - [ ] Create `development/Sandbox/Providers/<Provider>.cs` (use `SecretsManager.GetSecrets()`)
-- [ ] Optional: wire it into `development/Sandbox/Program.cs`
-- [ ] Sandbox run works: `dotnet run --project development/Sandbox/Sandbox.csproj`
+- [ ] Optional: wire it into `development/Sandbox/Program.cs` (use minimal agentoptions in sandbox)
 
 ## Repo Updates
 
 - [ ] Add project to `AgentFrameworkToolkit.slnx` under `/Packages/`
 - [ ] Update main `README.md` provider table
 - [ ] Add provider `src/AgentFrameworkToolkit.<Provider>/README.md`
-- [ ] Update `CHANGELOG.md`
 
 ## Common Issues to Avoid
 

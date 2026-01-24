@@ -46,7 +46,7 @@ Most provider packages include these components (OpenAI-compatible providers reu
 - Delegates to an inner agent instance
 - Exposes an `InnerAgent` property
 
-### 5. Chat Models Constants (`<Provider>ChatModels`)
+### 5. Chat Models Constants (`<Provider>ChatModels`) (only if provider is specific. if it offers multiple LLMs don't include such)
 - Constants for available model IDs
 - Makes model selection discoverable
 
@@ -108,8 +108,6 @@ See [Testing Guide](references/TestingGuide.md) for the repo’s concrete patter
 
 ```bash
 dotnet build --configuration Release
-dotnet test --configuration Release
-dotnet run --project development/Sandbox/Sandbox.csproj
 ```
 
 ## Key Architectural Patterns
@@ -144,7 +142,7 @@ public class <Provider>AgentFactory
 
 1. Missing XML documentation (warnings are errors in this repo)
 2. Putting versions in `.csproj` instead of `Directory.Packages.props`
-3. Forgetting to update `AgentFrameworkToolkit.slnx`, `README.md`, and `CHANGELOG.md`
+3. Forgetting to update `AgentFrameworkToolkit.slnx` and `README.md`
 4. Forgetting to add provider to `development/Tests/TestBase.cs` test harness
 5. Hardcoding API keys instead of using user-secrets (`development/Secrets/SecretsManager.cs`)
 

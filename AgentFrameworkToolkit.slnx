@@ -33,4 +33,11 @@
     <Project Path="development/Secrets/Secrets.csproj" />
     <Project Path="development/Tests/Tests.csproj" />
   </Folder>
+  <Folder Name="/Solution Items/create-new-provider-skill/">
+    <File Path=".codex/skills/create-agent-provider/references/CustomProviderTemplate.md" />
+    <File Path=".codex/skills/create-agent-provider/references/OpenAICompatibleTemplate.md" />
+    <File Path=".codex/skills/create-agent-provider/references/ProviderChecklist.md" />
+    <File Path=".codex/skills/create-agent-provider/references/TestingGuide.md" />
+    <File Path=".codex/skills/create-agent-provider/SKILL.md" />
+  </Folder>
 </Solution>

@@ -2,4 +2,5 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=AI/@EntryIndexedValue">AI</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=MCP/@EntryIndexedValue">MCP</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=XAI/@EntryIndexedValue">XAI</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=MEAI/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=xhigh/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

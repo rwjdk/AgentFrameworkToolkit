@@ -16,7 +16,7 @@ public class AmazonBedrockAgentOptions
     public required string Model { get; set; }
 
     /// <summary>
-    /// Id of the Agent
+    /// ID of the Agent
     /// </summary>
     public string? Id { get; set; }
 
@@ -52,9 +52,6 @@ public class AmazonBedrockAgentOptions
 
     /// <summary>The temperature for generating chat responses.</summary>
     public float? Temperature { get; set; }
-
-    /// <summary>Gets or sets the "nucleus sampling" factor (or "top p") for generating chat responses.</summary>
-    public float? TopP { get; set; }
 
     /// <summary>
     /// An optional <see cref="IServiceProvider"/> to use for resolving services required by the <see cref="AIFunction"/> instances being invoked.

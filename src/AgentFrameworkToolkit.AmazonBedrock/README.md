@@ -18,7 +18,6 @@ using Microsoft.Extensions.AI;
 var factory = new AmazonBedrockAgentFactory(new AmazonBedrockConnection
 {
     Region = RegionEndpoint.EUNorth1,
-
     ApiKey = "<your-bedrock-api-key>",
 });
 
