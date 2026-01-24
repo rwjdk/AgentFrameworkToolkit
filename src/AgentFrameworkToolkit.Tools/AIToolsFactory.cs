@@ -142,6 +142,26 @@ public class AIToolsFactory
         return result;
     }
 
+    /// <summary>
+    /// Get OpenWeatherMap Tools
+    /// </summary>
+    /// <param name="openWeatherMapOptions">Required OpenWeatherMap configuration</param>
+    /// <param name="options">Optional customization options</param>
+    /// <returns>Tools</returns>
+    public IList<AITool> GetWeatherTools(OpenWeatherMapOptions openWeatherMapOptions, GetOpenWeatherMapToolsOptions? options = null)
+    {
+        GetOpenWeatherMapToolsOptions optionsToUse = options ?? new GetOpenWeatherMapToolsOptions();
+        List<AITool> result = [];
+        if (optionsToUse.GetWeatherForCity)
+        {
+            result.Add(WeatherTools.GetWeatherForCity(
+                openWeatherMapOptions,
+                optionsToUse.GetWeatherForCityToolName,
+                optionsToUse.GetWeatherForCityToolDescription));
+        }
+        return result;
+    }
+
     private static IEnumerable<MethodInfo> GetMethodsWithAttribute(Type type)
     {
         MethodInfo[] methods = type.GetMethods(
@@ -220,4 +240,25 @@ public class GetTimeToolsOptions
     /// Optional description override for GetLocalNow tool (Default: null)
     /// </summary>
     public string? GetLocalNowToolDescription { get; set; }
+}
+
+/// <summary>
+/// Options for GetWeatherTools method for provider OpenWeatherMap
+/// </summary>
+public class GetOpenWeatherMapToolsOptions
+{
+    /// <summary>
+    /// Include GetWeatherForCity tool (Default: true)
+    /// </summary>
+    public bool GetWeatherForCity { get; set; } = true;
+
+    /// <summary>
+    /// Optional name override for GetWeatherForCity tool (Default: null)
+    /// </summary>
+    public string? GetWeatherForCityToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for GetWeatherForCity tool (Default: null)
+    /// </summary>
+    public string? GetWeatherForCityToolDescription { get; set; }
 }
