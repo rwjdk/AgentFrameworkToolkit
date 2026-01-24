@@ -23,171 +23,130 @@ This skill guides you through creating a new Agent Provider NuGet package for th
 
 ## Core Provider Components
 
-Every provider package requires these 5 components:
+Most provider packages include these components (OpenAI-compatible providers reuse `AgentFrameworkToolkit.OpenAI.AgentOptions`):
 
 ### 1. Connection Class (`<Provider>Connection`)
 - Manages API credentials and configuration
 - Creates and configures the SDK client
-- Supports network timeout and custom endpoints
-- Provides raw HTTP call inspection hooks
+- Supports network timeout and custom endpoints (if applicable)
+- Provides raw HTTP call inspection hooks (if possible)
 
 ### 2. Agent Factory (`<Provider>AgentFactory`)
-- Creates agent instances from options
-- Applies middleware pipeline (logging, telemetry, tool-calling)
-- Handles SDK client initialization
-- Provides simple and advanced constructors
+- Creates agent instances from options (or from simplified overloads)
+- Builds the inner `ChatClientAgent` (custom providers)
+- Applies middleware via `AgentFrameworkToolkit.MiddlewareHelper`
 
-### 3. Agent Options (`<Provider>AgentOptions`)
-- Configuration for agent creation
-- Includes: model, instructions, tools, temperature
-- Provider-specific settings (e.g., max tokens, budget tokens)
-- Middleware configuration options
+### 3. Agent Options (`<Provider>AgentOptions`) (custom providers only)
+- Configuration for agent creation (model, instructions, tools, max tokens, etc.)
+- Provider-specific settings (e.g., thinking budget)
+- Middleware configuration (raw HTTP/tool inspection, tool-calling middleware, OpenTelemetry, logging)
 
 ### 4. Agent Wrapper (`<Provider>Agent`)
 - Inherits from `AIAgent`
-- Delegates to inner generic agent
-- Provides strongly-typed provider interface
-- Exposes `InnerAgent` property
+- Delegates to an inner agent instance
+- Exposes an `InnerAgent` property
 
 ### 5. Chat Models Constants (`<Provider>ChatModels`)
 - Constants for available model IDs
 - Makes model selection discoverable
-- Examples: `ClaudeHaiku45`, `Gpt4o`, `GeminiFlash2`
 
 ## Implementation Steps
 
 ### Step 1: Project Setup
 
 ```bash
-# Create project directory
 mkdir src/AgentFrameworkToolkit.<Provider>
-
-# Create .csproj file (use references as template)
 ```
 
-**For OpenAI-compatible providers:**
-- Reference: `AgentFrameworkToolkit.OpenAI`
-- Reference: `AgentFrameworkToolkit`
-
-**For custom providers:**
-- Reference: `AgentFrameworkToolkit`
-- Add provider's official SDK package
+**Important repo conventions (don’t fight the build system):**
+- `src/*` projects inherit defaults from `Directory.Build.props` (currently `net8.0`).
+- NuGet packaging defaults are imported via `nuget-package.props` in each `src/*` `.csproj`.
+- Central package versions are in `Directory.Packages.props` (no versions in `.csproj`).
 
 ### Step 2: Implement Core Components
 
-Follow the pattern from existing providers:
-- **OpenAI-compatible**: See `src/AgentFrameworkToolkit.OpenRouter/` or `src/AgentFrameworkToolkit.XAI/`
-- **Custom**: See `src/AgentFrameworkToolkit.Anthropic/` or `src/AgentFrameworkToolkit.GitHub/`
+Follow existing providers:
+- **OpenAI-compatible**: `src/AgentFrameworkToolkit.OpenRouter/`, `src/AgentFrameworkToolkit.XAI/`, `src/AgentFrameworkToolkit.Cohere/`
+- **Custom**: `src/AgentFrameworkToolkit.Anthropic/`, `src/AgentFrameworkToolkit.GitHub/`, `src/AgentFrameworkToolkit.Google/`, `src/AgentFrameworkToolkit.Mistral/`
 
 ### Step 3: Add Service Extensions
 
-Create `ServiceCollectionExtensions.cs` for dependency injection:
-- `AddSingleton<Provider>Connection`
-- `AddSingleton<Provider>AgentFactory`
-- Helper methods for common scenarios
+Create `ServiceCollectionExtensions.cs` for dependency injection using the repo naming convention:
+- `Add<Provider>AgentFactory(this IServiceCollection services, string apiKey)`
+- `Add<Provider>AgentFactory(this IServiceCollection services, <Provider>Connection connection)`
 
-### Step 4: Write Unit Tests
+### Step 4: Write Tests (Integration Tests)
 
-Unit tests are **required** for all providers. See [Testing Guide](references/TestingGuide.md) for detailed instructions.
+Provider tests live in `development/Tests/` and make real API calls.
+See [Testing Guide](references/TestingGuide.md) for the repo’s concrete pattern.
 
 **Quick checklist:**
-1. Create test file: `development/Tests/<Provider>Tests.cs`
-2. Inherit from `TestsBase`
-3. Add provider to `AgentProvider` enum in `TestBase.cs`
-4. Override `GetAgentAsync()` method
-5. Implement 7 required test methods:
-   - `AgentFactory_Simple()`
-   - `AgentFactory_Normal()`
-   - `AgentFactory_OpenTelemetryAndLoggingMiddleware()`
-   - `AgentFactory_ToolCall()`
-   - `AgentFactory_McpToolCall()`
-   - `AgentFactory_DependencyInjection()`
-   - `AgentFactory_DependencyInjection_Connection()`
-6. Add API key to `Secrets.cs` and `secrets.json`
-7. Run tests: `dotnet test --configuration Release`
+1. Add provider project references:
+   - `development/Tests/Tests.csproj`
+   - `development/Sandbox/Sandbox.csproj`
+2. Add provider to the shared test harness:
+   - Add a value to `AgentProvider` enum in `development/Tests/TestBase.cs`
+   - Add a `case` to `GetAgentForScenarioAsync(...)` in `development/Tests/TestBase.cs`
+3. Create `development/Tests/<Provider>Tests.cs`:
+   - Call the shared scenario tests (`SimpleAgentTestsAsync`, `NormalAgentTestsAsync`, etc.)
+   - Add DI tests for `Add<Provider>AgentFactory(...)`
+4. Add a sandbox runner in `development/Sandbox/Providers/<Provider>.cs` and optionally wire it in `development/Sandbox/Program.cs`
+5. Add your API key to user-secrets:
+   - Update `development/Secrets/Secrets.cs` and `development/Secrets/SecretsManager.cs`
+   - Set the secret using `dotnet user-secrets` for the `development/Secrets/Secrets.csproj` project
 
 ### Step 5: Repository Integration
 
-1. **Add to solution**:
-   ```bash
-   # Add project to AgentFrameworkToolkit.slnx under /Packages/
-   ```
-
-2. **Update package management**:
-   ```xml
-   <!-- Add SDK package version to Directory.Packages.props -->
-   <PackageVersion Include="<Provider>.SDK" Version="x.y.z" />
-   ```
-
-3. **Update documentation**:
-   - Add provider to main `README.md` provider table
-   - Create provider-specific `README.md` with usage examples
-   - Add entry to `CHANGELOG.md`
+1. Add the project to `AgentFrameworkToolkit.slnx` under `/Packages/`
+2. Add any new SDK package versions to `Directory.Packages.props`
+3. Update documentation:
+   - Main `README.md` provider table
+   - Provider-specific `src/AgentFrameworkToolkit.<Provider>/README.md`
+   - `CHANGELOG.md`
 
 ### Step 6: Validation
 
 ```bash
-# Build the solution
 dotnet build --configuration Release
-
-# Run tests (must pass!)
 dotnet test --configuration Release
-
-# Test in Sandbox
 dotnet run --project development/Sandbox/Sandbox.csproj
 ```
 
 ## Key Architectural Patterns
 
-### Middleware Pipeline Order
-Apply middleware in this exact order:
-1. **Logging Middleware** (outermost)
-2. **OpenTelemetry Middleware**
-3. **Tool-Calling Middleware**
-4. **Raw Tool Details Hook** (innermost)
+### Middleware Configuration (custom providers)
 
-### Agent Factory Pattern
+Use the shared helper instead of re-implementing ordering rules:
+- `AgentFrameworkToolkit.MiddlewareHelper.ApplyMiddleware(...)`
+
+### Agent Factory Pattern (custom providers)
+
 ```csharp
 public class <Provider>AgentFactory
 {
     public <Provider>Connection Connection { get; }
 
-    // Simple: API key only
-    public <Provider>AgentFactory(string apiKey)
-
-    // Advanced: full connection control
-    public <Provider>AgentFactory(<Provider>Connection connection)
+    public <Provider>AgentFactory(string apiKey);
+    public <Provider>AgentFactory(<Provider>Connection connection);
 
     public <Provider>Agent CreateAgent(<Provider>AgentOptions options)
     {
         // 1. Get SDK client from connection
-        // 2. Create ChatClientAgent
-        // 3. Apply middleware pipeline
-        // 4. Wrap in provider-specific agent
+        // 2. Build IChatClient (or use SDK-provided one)
+        // 3. Create ChatClientAgent
+        // 4. Apply middleware via MiddlewareHelper
+        // 5. Wrap in provider-specific agent
     }
 }
 ```
 
-### Agent Wrapper Pattern
-```csharp
-public class <Provider>Agent(AIAgent innerAgent) : AIAgent
-{
-    public AIAgent InnerAgent => innerAgent;
+## Common Pitfalls
 
-    // Delegate all methods to innerAgent
-}
-```
-
-## Code Style Requirements
-
-From `AGENTS.md` and `.editorconfig`:
-- Follow CRLF line endings in `src/`
-- Enable nullable reference types
-- All public APIs require XML documentation comments
-- Use `[PublicAPI]` attribute (JetBrains.Annotations)
-- Prefer primary constructors (where codebase uses them)
-- Warnings as errors (strict)
-- Namespace must match folder structure
+1. Missing XML documentation (warnings are errors in this repo)
+2. Putting versions in `.csproj` instead of `Directory.Packages.props`
+3. Forgetting to update `AgentFrameworkToolkit.slnx`, `README.md`, and `CHANGELOG.md`
+4. Forgetting to add provider to `development/Tests/TestBase.cs` test harness
+5. Hardcoding API keys instead of using user-secrets (`development/Secrets/SecretsManager.cs`)
 
 ## Reference Documentation
 
@@ -195,68 +154,3 @@ From `AGENTS.md` and `.editorconfig`:
 - [Custom Provider Template](references/CustomProviderTemplate.md)
 - [Unit Testing Guide](references/TestingGuide.md)
 - [Provider Implementation Checklist](references/ProviderChecklist.md)
-
-## Common Pitfalls
-
-1. **Middleware Order**: Wrong order breaks functionality
-2. **Missing Documentation**: All public APIs need XML docs
-3. **Package Versions**: Must be in `Directory.Packages.props`, NOT in `.csproj`
-4. **Changelog**: Always update `CHANGELOG.md`
-5. **Namespace Mismatch**: Namespace must match folder structure exactly
-6. **Missing Unit Tests**: All providers require comprehensive unit tests (7 minimum)
-7. **Forgetting to Add Provider to Enum**: Must add to `AgentProvider` enum in `TestBase.cs`
-8. **Hardcoded API Keys**: Never commit API keys; use `SecretsManager` in tests
-
-## Testing Your Provider
-
-### Unit Tests (Required)
-
-All providers **must** have comprehensive unit tests. See [Unit Testing Guide](references/TestingGuide.md).
-
-**Required tests:**
-1. Simple agent creation
-2. Agent with logging and middleware
-3. Tool calling
-4. MCP tool integration
-5. Dependency injection (2 variants)
-
-```bash
-# Run your provider tests
-dotnet test --configuration Release --filter "FullyQualifiedName~<Provider>Tests"
-```
-
-### Sandbox Testing (Required)
-
-Create a test file in `development/Sandbox/Providers/<Provider>.cs`:
-
-```csharp
-public static class <Provider>Example
-{
-    public static async Task RunAsync()
-    {
-        var apiKey = Environment.GetEnvironmentVariable("<PROVIDER>_API_KEY")
-            ?? throw new InvalidOperationException("API key not found");
-
-        var factory = new <Provider>AgentFactory(apiKey);
-        var agent = factory.CreateAgent(new <Provider>AgentOptions
-        {
-            Model = <Provider>ChatModels.DefaultModel,
-            MaxOutputTokens = 2000,
-            Instructions = "You are a helpful assistant."
-        });
-
-        var response = await agent.RunAsync("Hello!");
-        Console.WriteLine(response.Text);
-    }
-}
-```
-
-## Next Steps
-
-1. Choose your implementation approach (OpenAI-compatible vs Custom)
-2. Review the appropriate template in references/
-3. Follow the [Provider Implementation Checklist](references/ProviderChecklist.md)
-4. Implement core components
-5. **Write unit tests** (see [Testing Guide](references/TestingGuide.md))
-6. Validate and test (all tests must pass)
-7. Submit PR with updated documentation
