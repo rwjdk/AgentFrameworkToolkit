@@ -5,6 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>5e0bd350-8989-4e72-b1a7-f79a5f72a904</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\AgentFrameworkToolkit.AmazonBedrock\AgentFrameworkToolkit.AmazonBedrock.csproj" />
     <ProjectReference Include="..\..\src\AgentFrameworkToolkit.Anthropic\AgentFrameworkToolkit.Anthropic.csproj" />
     <ProjectReference Include="..\..\src\AgentFrameworkToolkit.AzureOpenAI\AgentFrameworkToolkit.AzureOpenAI.csproj" />
     <ProjectReference Include="..\..\src\AgentFrameworkToolkit.Cohere\AgentFrameworkToolkit.Cohere.csproj" />

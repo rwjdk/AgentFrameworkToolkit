@@ -21,6 +21,4 @@ public record Secrets(
     string AnthropicApiKey,
     string MistralApiKey,
     string OpenWeatherApiKey,
-    string AwsAccessKeyId,
-    string AwsSecretAccessKey,
     string AmazonBedrockApiKey);

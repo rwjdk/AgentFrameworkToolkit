@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Packages/">
+    <Project Path="src/AgentFrameworkToolkit.AmazonBedrock/AgentFrameworkToolkit.AmazonBedrock.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Anthropic/AgentFrameworkToolkit.Anthropic.csproj" />
     <Project Path="src/AgentFrameworkToolkit.AzureOpenAI/AgentFrameworkToolkit.AzureOpenAI.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Cohere/AgentFrameworkToolkit.Cohere.csproj" />

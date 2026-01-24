@@ -1,3 +1,5 @@
+using Amazon;
+using AgentFrameworkToolkit.AmazonBedrock;
 using AgentFrameworkToolkit.Anthropic;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.Cohere;
@@ -274,6 +276,20 @@ public abstract class TestsBase
                 {
                     AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
                     _ => factory.CreateAgent(await GetMistralAgentOptions(model)),
+                };
+            }
+            case AgentProvider.AmazonBedrock:
+            {
+                AmazonBedrockAgentFactory factory = new(new AmazonBedrockConnection
+                {
+                    Region = RegionEndpoint.EUNorth1,
+                    ApiKey = secrets.AmazonBedrockApiKey
+                });
+                string model = "eu.anthropic.claude-haiku-4-5-20251001-v1:0";
+                return scenario switch
+                {
+                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
+                    _ => factory.CreateAgent(await GetAmazonBedrockAgentOptions(model)),
                 };
             }
             case AgentProvider.OpenRouterChatClient:
@@ -589,6 +605,33 @@ public abstract class TestsBase
                 LoggingMiddleware = new LoggingMiddleware(testLogger)
             });
         }
+
+        Task<AmazonBedrockAgentOptions> GetAmazonBedrockAgentOptions(string model)
+        {
+            return Task.FromResult(new AmazonBedrockAgentOptions
+            {
+                Model = model,
+                Name = TestName,
+                MaxOutputTokens = 2000,
+                Description = TestDescription,
+                Tools = tools,
+                Services = serviceProvider,
+                Instructions = TestInstructions,
+                LoggerFactory = testLogger,
+                ToolCallingMiddleware = async (_, context, next, token) =>
+                {
+                    if (scenario is AgentScenario.ToolCall)
+                    {
+                        Assert.True(context.Arguments.ContainsKey("city") && context.Arguments["city"]!.ToString() == "Paris");
+                        ToolCallingMiddlewareCity = context.Arguments["city"]!.ToString();
+                    }
+
+                    return await next(context, token);
+                },
+                OpenTelemetryMiddleware = new OpenTelemetryMiddleware(sourceName, agent => agent.EnableSensitiveData = true),
+                LoggingMiddleware = new LoggingMiddleware(testLogger)
+            });
+        }
     }
 
     private async Task<IList<AITool>> GetToolsForScenarioAsync(AgentProvider provider, AgentScenario scenario)
@@ -642,6 +685,7 @@ public enum AgentProvider
     GitHub,
     Google,
     Mistral,
+    AmazonBedrock,
     OpenRouterChatClient,
     OpenRouterResponsesApi,
     CohereChatClient,

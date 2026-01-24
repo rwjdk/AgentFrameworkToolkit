@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Description>An opinionated C# Toolkit targeting Amazon Bedrock for Microsoft Agent Framework that
+			makes life eaisier</Description>
+	</PropertyGroup>
+
+	<Import Project="..\..\nuget-package.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Agents.AI" />
+		<PackageReference Include="AWSSDK.BedrockRuntime" />
+		<PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AgentFrameworkToolkit\AgentFrameworkToolkit.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+</Project>
