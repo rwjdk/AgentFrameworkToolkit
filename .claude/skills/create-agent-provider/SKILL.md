@@ -86,7 +86,27 @@ Create `ServiceCollectionExtensions.cs` for dependency injection:
 - `AddSingleton<Provider>AgentFactory`
 - Helper methods for common scenarios
 
-### Step 4: Repository Integration
+### Step 4: Write Unit Tests
+
+Unit tests are **required** for all providers. See [Testing Guide](references/TestingGuide.md) for detailed instructions.
+
+**Quick checklist:**
+1. Create test file: `development/Tests/<Provider>Tests.cs`
+2. Inherit from `TestsBase`
+3. Add provider to `AgentProvider` enum in `TestBase.cs`
+4. Override `GetAgentAsync()` method
+5. Implement 7 required test methods:
+   - `AgentFactory_Simple()`
+   - `AgentFactory_Normal()`
+   - `AgentFactory_OpenTelemetryAndLoggingMiddleware()`
+   - `AgentFactory_ToolCall()`
+   - `AgentFactory_McpToolCall()`
+   - `AgentFactory_DependencyInjection()`
+   - `AgentFactory_DependencyInjection_Connection()`
+6. Add API key to `Secrets.cs` and `secrets.json`
+7. Run tests: `dotnet test --configuration Release`
+
+### Step 5: Repository Integration
 
 1. **Add to solution**:
    ```bash
@@ -104,13 +124,13 @@ Create `ServiceCollectionExtensions.cs` for dependency injection:
    - Create provider-specific `README.md` with usage examples
    - Add entry to `CHANGELOG.md`
 
-### Step 5: Validation
+### Step 6: Validation
 
 ```bash
 # Build the solution
 dotnet build --configuration Release
 
-# Run tests
+# Run tests (must pass!)
 dotnet test --configuration Release
 
 # Test in Sandbox
@@ -173,6 +193,7 @@ From `AGENTS.md` and `.editorconfig`:
 
 - [OpenAI-Compatible Provider Template](references/OpenAICompatibleTemplate.md)
 - [Custom Provider Template](references/CustomProviderTemplate.md)
+- [Unit Testing Guide](references/TestingGuide.md)
 - [Provider Implementation Checklist](references/ProviderChecklist.md)
 
 ## Common Pitfalls
@@ -182,22 +203,52 @@ From `AGENTS.md` and `.editorconfig`:
 3. **Package Versions**: Must be in `Directory.Packages.props`, NOT in `.csproj`
 4. **Changelog**: Always update `CHANGELOG.md`
 5. **Namespace Mismatch**: Namespace must match folder structure exactly
+6. **Missing Unit Tests**: All providers require comprehensive unit tests (7 minimum)
+7. **Forgetting to Add Provider to Enum**: Must add to `AgentProvider` enum in `TestBase.cs`
+8. **Hardcoded API Keys**: Never commit API keys; use `SecretsManager` in tests
 
 ## Testing Your Provider
+
+### Unit Tests (Required)
+
+All providers **must** have comprehensive unit tests. See [Unit Testing Guide](references/TestingGuide.md).
+
+**Required tests:**
+1. Simple agent creation
+2. Agent with logging and middleware
+3. Tool calling
+4. MCP tool integration
+5. Dependency injection (2 variants)
+
+```bash
+# Run your provider tests
+dotnet test --configuration Release --filter "FullyQualifiedName~<Provider>Tests"
+```
+
+### Sandbox Testing (Required)
 
 Create a test file in `development/Sandbox/Providers/<Provider>.cs`:
 
 ```csharp
-var factory = new <Provider>AgentFactory("<api-key>");
-var agent = factory.CreateAgent(new <Provider>AgentOptions
+public static class <Provider>Example
 {
-    Model = <Provider>ChatModels.DefaultModel,
-    MaxOutputTokens = 2000,
-    Instructions = "You are a helpful assistant."
-});
+    public static async Task RunAsync()
+    {
+        var apiKey = Environment.GetEnvironmentVariable("<PROVIDER>_API_KEY")
+            ?? throw new InvalidOperationException("API key not found");
 
-var response = await agent.RunAsync("Hello!");
-Console.WriteLine(response.Message.Text);
+        var factory = new <Provider>AgentFactory(apiKey);
+        var agent = factory.CreateAgent(new <Provider>AgentOptions
+        {
+            Model = <Provider>ChatModels.DefaultModel,
+            MaxOutputTokens = 2000,
+            Instructions = "You are a helpful assistant."
+        });
+
+        var response = await agent.RunAsync("Hello!");
+        Console.WriteLine(response.Text);
+    }
+}
 ```
 
 ## Next Steps
@@ -206,5 +257,6 @@ Console.WriteLine(response.Message.Text);
 2. Review the appropriate template in references/
 3. Follow the [Provider Implementation Checklist](references/ProviderChecklist.md)
 4. Implement core components
-5. Validate and test
-6. Submit PR with updated documentation
+5. **Write unit tests** (see [Testing Guide](references/TestingGuide.md))
+6. Validate and test (all tests must pass)
+7. Submit PR with updated documentation

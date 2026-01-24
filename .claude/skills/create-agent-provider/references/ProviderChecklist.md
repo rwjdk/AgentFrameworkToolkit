@@ -198,7 +198,61 @@ Use this checklist to ensure your provider implementation is complete and follow
 
 ## Testing
 
-### Sandbox Example
+### Unit Tests (Required)
+
+See [Testing Guide](TestingGuide.md) for detailed instructions.
+
+#### Test File Setup
+
+- [ ] File created: `development/Tests/<Provider>Tests.cs`
+- [ ] Class name: `<Provider>Tests`
+- [ ] Class is `sealed`
+- [ ] Inherits from `TestsBase`
+- [ ] All required test methods implemented (7 tests minimum)
+
+#### Required Test Methods
+
+- [ ] `[Fact] AgentFactory_Simple()` - Tests basic agent creation
+- [ ] `[Fact] AgentFactory_Normal()` - Tests agent with logging and description
+- [ ] `[Fact] AgentFactory_OpenTelemetryAndLoggingMiddleware()` - Tests middleware integration
+- [ ] `[Fact] AgentFactory_ToolCall()` - Tests function/tool calling
+- [ ] `[Fact] AgentFactory_McpToolCall()` - Tests Model Context Protocol tools
+- [ ] `[Fact] AgentFactory_DependencyInjection()` - Tests DI with API key string
+- [ ] `[Fact] AgentFactory_DependencyInjection_Connection()` - Tests DI with Connection object
+
+#### Test Infrastructure
+
+- [ ] Provider added to `AgentProvider` enum in `development/Tests/TestBase.cs`
+- [ ] `GetAgentAsync()` method overridden in test class
+- [ ] GetAgentAsync creates agent with all middleware options
+- [ ] GetAgentAsync handles `RawHttpCallDetailsHandler` for inspection
+- [ ] GetAgentAsync delegates to base for other providers
+
+#### Secrets Management
+
+- [ ] API key property added to `development/Tests/Secrets/Secrets.cs`
+- [ ] Property name: `<Provider>ApiKey`
+- [ ] Property type: `string`
+- [ ] Property has XML documentation comment
+- [ ] API key added to `development/Tests/Secrets/secrets.json` (local only)
+- [ ] No hardcoded API keys in test code
+
+#### Test Execution
+
+- [ ] All tests pass: `dotnet test --configuration Release`
+- [ ] No test warnings or failures
+- [ ] Tests complete in reasonable time (< 2 minutes total)
+- [ ] Tests make real API calls (integration tests)
+- [ ] Tests validate agent responses are non-empty
+
+#### Optional: Provider-Specific Tests
+
+- [ ] Embedding factory tests (if provider supports embeddings)
+- [ ] Streaming response tests (if applicable)
+- [ ] Multiple model variant tests (if provider has multiple client types)
+- [ ] Custom parameter tests (provider-specific options)
+
+### Sandbox Example (Required)
 
 - [ ] File created: `development/Sandbox/Providers/<Provider>.cs`
 - [ ] Contains `<Provider>Example` static class
@@ -217,12 +271,7 @@ Use this checklist to ensure your provider implementation is complete and follow
 - [ ] Simple message produces response
 - [ ] Error messages are clear and helpful
 - [ ] API authentication works correctly
-
-### Optional: Unit Tests
-
-- [ ] Tests added to `development/Tests/`
-- [ ] Tests cover core functionality
-- [ ] Tests pass: `dotnet test --configuration Release`
+- [ ] All unit tests pass locally before committing
 
 ## Validation
 
