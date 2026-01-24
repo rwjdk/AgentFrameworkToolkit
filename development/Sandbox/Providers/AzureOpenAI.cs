@@ -30,16 +30,17 @@ public static class AzureOpenAI
             ApiKey = secrets.AzureOpenAiKey,
         });
 
+        AIToolsFactory toolsFactory = new();
+
         List<AITool> tools = [];
-        tools.AddRange(Time.AllTools());
-        tools.Add(Website.GetContentOfPageTool());
-        tools.Add(Weather.GetWeatherForCityTool(new OpenWeatherMapOptions
+        tools.AddRange(toolsFactory.GetTimeTools());
+        tools.AddRange(WeatherTools.All(new OpenWeatherMapOptions
         {
             ApiKey = secrets.OpenWeatherApiKey,
             PreferredUnits = WeatherOptionsUnits.Metric
         }));
-        tools.AddRange(FileSystem.AllTools());
-        
+        tools.AddRange(FileSystemTools.All());
+
 
         AIAgent agent = factory.CreateAgent(new AgentOptions
         {
@@ -48,7 +49,7 @@ public static class AzureOpenAI
             RawToolCallDetails = Console.WriteLine
         });
 
-        AgentResponse response2 = await agent.RunAsync("How is the weather?");
+        AgentResponse response2 = await agent.RunAsync("How is the weather in paris?");
         Console.WriteLine(response2);
     }
 

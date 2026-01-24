@@ -1,4 +1,5 @@
 using System.Reflection;
+using AgentFrameworkToolkit.Tools.Common;
 using AgentSkillsDotNet;
 using Microsoft.Extensions.AI;
 
@@ -94,6 +95,45 @@ public class AIToolsFactory
         return result;
     }
 
+    /// <summary>
+    /// Get Time-related Tools
+    /// </summary>
+    /// <param name="options">Optional options</param>
+    /// <returns>Tools</returns>
+    public IList<AITool> GetTimeTools(GetTimeToolsOptions? options = null)
+    {
+        GetTimeToolsOptions optionsToUse = options ?? new GetTimeToolsOptions();
+        List<AITool> result = [];
+        if (optionsToUse.GetLocalNowTool)
+        {
+            result.Add(TimeTools.GetNowLocal(optionsToUse.GetNowLocalOptions));
+        }
+        if (optionsToUse.GetUtcNowTool)
+        {
+            result.Add(TimeTools.GetNowUtc());
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Get Website-related Tools
+    /// </summary>
+    /// <param name="options">Optional options</param>
+    /// <returns>Tools</returns>
+    public IList<AITool> GetWebsiteTools(GetWebsiteToolsOptions? options = null)
+    {
+        if (options == null)
+        {
+            return WebsiteTools.All();
+        }
+        List<AITool> result = [];
+        if (options.GetContentOfPageTool)
+        {
+            result.Add(WebsiteTools.GetContentOfPage(options.GetContentOfPageOptions));
+        }
+        return result;
+    }
+
     private static IEnumerable<MethodInfo> GetMethodsWithAttribute(Type type)
     {
         MethodInfo[] methods = type.GetMethods(
@@ -105,4 +145,17 @@ public class AIToolsFactory
 
         return methods.Where(x => x.GetCustomAttribute<AIToolAttribute>() != null).ToList();
     }
+}
+
+public class GetWebsiteToolsOptions
+{
+    public bool GetContentOfPageTool { get; set; } = true;
+    public GetContentOfPageOptions? GetContentOfPageOptions { get; set; }
+}
+
+public class GetTimeToolsOptions
+{
+    public bool GetUtcNowTool { get; set; } = true;
+    public bool GetLocalNowTool { get; set; } = true;
+    public GetNowLocalOptions? GetNowLocalOptions { get; set; }
 }

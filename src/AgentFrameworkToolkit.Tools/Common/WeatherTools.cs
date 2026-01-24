@@ -5,7 +5,7 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools related to Weather
 /// </summary>
-public static class Weather
+public static class WeatherTools
 {
     /// <summary>
     /// Get Weather for a specific City
@@ -14,7 +14,8 @@ public static class Weather
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>AI Tool</returns>
-    public static AITool GetWeatherForCityTool(OpenWeatherMapOptions options, string? toolName = "get_weather_for_city", string? toolDescription = null)
+    public static AITool GetWeatherForCity(OpenWeatherMapOptions options, string? toolName = "get_weather_for_city",
+        string? toolDescription = "Get weather for specified city. If country is needed to specify same name cities the define as <city>,<country_code>")
     {
         return AIFunctionFactory.Create(async (string city) =>
         {
@@ -25,7 +26,8 @@ public static class Weather
                 WeatherOptionsUnits.Imperial => "&units=imperial",
                 _ => string.Empty
             };
-            string requestUri = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={options.ApiKey}&mode=xml{units}";
+            string requestUri =
+                $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={options.ApiKey}&mode=xml{units}";
             HttpResponseMessage response = await httpClient.GetAsync(requestUri);
             if (!response.IsSuccessStatusCode)
             {
@@ -34,6 +36,19 @@ public static class Weather
 
             return await response.Content.ReadAsStringAsync();
         }, toolName, toolDescription);
+    }
+
+    /// <summary>
+    /// Get All OpenWeatherMap Tools
+    /// </summary>
+    /// <param name="options">Options for OpenWeatherMap</param>
+    /// <returns>Tools</returns>
+    public static IList<AITool> All(OpenWeatherMapOptions options)
+    {
+        return
+        [
+            GetWeatherForCity(options)
+        ];
     }
 }
 

@@ -2,6 +2,8 @@
 
 # Unreleased
 - Moved AIToolsFactory to it's own NuGetPackage (`AgentFrameworkToolkit.Tool` to allow usage without dependency on `Microsoft.Agents.AI`)
+- Added write-focused FileSystem tools (write, create, move, delete, copy for files/folders)
+- Added FileSystem tools for listing folders and checking file/folder existence
 
 ---
 

@@ -7,7 +7,7 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools Related to Website Content
 /// </summary>
-public static class Website
+public static class WebsiteTools
 {
     /// <summary>
     /// Get the raw content of a website
@@ -16,7 +16,7 @@ public static class Website
     /// <param name="toolDescription">Description of Tool</param>
     /// </summary>
     /// <returns></returns>
-    public static AITool GetContentOfPageTool(GetContentOfPageOptions? options = null, string? toolName = "get_content_of_url", string? toolDescription = null)
+    public static AITool GetContentOfPage(GetContentOfPageOptions? options = null, string? toolName = "get_content_of_url", string? toolDescription = null)
     {
         GetContentOfPageOptions optionToUse = options ?? new GetContentOfPageOptions();
         return AIFunctionFactory.Create(async (string url) => await GetContentAsync(url, optionToUse), toolName, toolDescription);
@@ -60,6 +60,18 @@ public static class Website
         string normalizedWhitespace = Regex.Replace(decoded, "\\s+", " ").Trim();
 
         return normalizedWhitespace;
+    }
+
+    /// <summary>
+    /// Get All Website Tools
+    /// </summary>
+    /// <returns>The Tools</returns>
+    public static IList<AITool> All(GetContentOfPageOptions? getContentOfPageOptions = null)
+    {
+        return
+        [
+            GetContentOfPage(getContentOfPageOptions)
+        ];
     }
 }
 
