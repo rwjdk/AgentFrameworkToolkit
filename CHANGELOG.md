@@ -1,7 +1,7 @@
 # Changelog - Agent Framework Toolkit
 
 # Unreleased
-- Moved AIToolsFactory to it's own NuGetPackage (`AgentFrameworkToolkit.Tool` to allow usage without dependency on `Microsoft.Agents.AI`)
+- Moved AIToolsFactory to its own NuGetPackage (`AgentFrameworkToolkit.Tool` to allow usage without dependency on `Microsoft.Agents.AI`)
 - Added write-focused FileSystem tools (write, create, move, delete, copy for files/folders)
 - Added FileSystem tools for listing folders and checking file/folder existence
 
@@ -15,7 +15,7 @@
 
 ## Version 1.0.0-preview.260120.1
 - Added `GetTextReasoningContent` extension method to easily get the Reasoning text (if any) from an AgentResponse.
-- Added `GetContainerFileCitationMessageAnnotations` extension method to easily get ContainerFileCitations from example a Code Interpreter usage (OpenAI-based agents only).
+- Added `GetContainerFileCitationMessageAnnotations` extension method to easily get ContainerFileCitations from, for example, a Code Interpreter usage (OpenAI-based agents only).
 - Google: Bump internal NuGet to 0.12.0
 
 ---
@@ -27,7 +27,7 @@
 - `.RunAsync<T>(...)` in AIAgentExtensions now used provided serializationOptions (if given); only creating it's own if null.
 - `.RunAsync<T>(...)` now support List/Array as T (using similar object wrapping technique as Microsoft.Extensions.AI)
 - AzureOpenAI: Added Auto-correction of the Endpoint if you by mistake give the entire foundry url 'https://[name].services.ai.azure.com/api/projects/[project]' by on the fly correcting it to 'https://[name].services.ai.azure.com'. This is on by default, but can be turned off by setting property `AutoCorrectFoundryEndpoint` to false
-- Fixed that the AIAgentExtensions was in a wrongly names class called AIToolsExtensions
+- Fixed that the AIAgentExtensions was in a wrongly named class called AIToolsExtensions
 - [BREAKING] `ApplyMiddleware` on the various options objects are moved to a central `MiddlewareHelper` to reduce code-duplication
 
 ---
@@ -39,7 +39,7 @@
 
 ## Version 1.0.0-preview.260104.1
 - Added option to work with [AgentSkills](https://agentskills.io) in the `AIToolsFactory` or with the dedicated `AgentSkillsFactory`
-- Anthropic: Added `Endpoint` property to connection so you can override the default BaseUrl (and example consume an Anthropic model from Microsoft Foundry using the Anthropic API)
+- Anthropic: Added `Endpoint` property to connection so you can override the default BaseUrl (and, for example, consume an Anthropic model from Microsoft Foundry using the Anthropic API)
 
 ---
 
@@ -129,7 +129,7 @@
 - Added GitHub provider NuGet Package
 - Everything now has XML Summaries
 - [BREAKING] Renamed `DeploymentModelName` to `Model` to make it simpler to understand (Sorry to existing users, but better now than later)
-- [BREAKING] Renamed `RequestJson` and `ResponseJson` to `RequestData` and `ResponseData` as not all LLMs use JSON for communication (exampl,e Anthropic Data back is not JSON)
+- [BREAKING] Renamed `RequestJson` and `ResponseJson` to `RequestData` and `ResponseData` as not all LLMs use JSON for communication (e.g., Anthropic response data is not JSON)
 - OpenAI: Added `WithOpenAIResponsesApiReasoning` and `WithOpenAIChatClientReasoning` Extension Methods for `ChatOptions` (if you do not wish to use AgentFactory, but still wish to have an easier time to set OpenAI Reasoning)
 - Fixed that `ServiceCollectionExtensions` for Google was in the wrong namespace
 - Fixed that Mistral had an `AddAnthropicAgentFactory` method (wrong name)

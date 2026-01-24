@@ -3,7 +3,7 @@
 > This package is aimed at OpenRouter as an LLM Provider. Check out the [General README.md](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/README.md) for other providers and shared features in Agent Framework Toolkit.
 
 ## What is Agent Framework Toolkit?
-Agent Framework Toolkit and an opinionated C# wrapper on top of the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) that makes various things easier to work with:
+Agent Framework Toolkit is an opinionated C# wrapper on top of the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) that makes various things easier to work with:
 - Easier to set advanced Agent Options ([often only needing half or fewer lines of code to do the same things](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/README.md)) that normally would need the Breaking Glass approach.
 - Easier [Tools / MCP Tools Definition](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/README.md)
 - Easier Structured Output calling with `.RunAsync<>(...)` even on AIAgents using Tool Calling Middleware.
@@ -33,7 +33,7 @@ A: The specialized agents in Agent Framework Toolkit are all 100% compatible wit
 ### Minimal Code Example
 ```cs
 //Create your AgentFactory
-OpenRouterAgentFactory agentFactory = new OpenRouterOpenAIAgentFactory("<API Key>");
+OpenRouterAgentFactory agentFactory = new OpenRouterAgentFactory("<API Key>");
 
 //Create your Agent
 OpenRouterAgent agent = agentFactory.CreateAgent("openai/gpt-5");
@@ -75,7 +75,7 @@ OpenRouterAgentFactory agentFactory = new OpenRouterAgentFactory(new OpenRouterC
 });
 
 //Create your Agent
-OpenRouterAIAgent agent = agentFactory.CreateAgent(new AgentOptions
+OpenRouterAgent agent = agentFactory.CreateAgent(new AgentOptions
 {
     //Mandatory
     Model = "openai/gpt-5", //Model to use

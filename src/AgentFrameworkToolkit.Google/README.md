@@ -3,7 +3,7 @@
 > This package is aimed at Google as an LLM Provider. Check out the [General README.md](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/README.md) for other providers and shared features in Agent Framework Toolkit.
 
 ## What is Agent Framework Toolkit?
-Agent Framework Toolkit and an opinionated C# wrapper on top of the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) that makes various things easier to work with:
+Agent Framework Toolkit is an opinionated C# wrapper on top of the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) that makes various things easier to work with:
 - Easier to set advanced Agent Options ([often only needing half or fewer lines of code to do the same things](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/README.md)) that normally would need the Breaking Glass approach.
 - Easier [Tools / MCP Tools Definition](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/README.md)
 
@@ -26,7 +26,7 @@ A: The specialized agents in Agent Framework Toolkit are all 100% compatible wit
 
 1. Install the 'AgentFrameworkToolkit.Google' NuGet Package (`dotnet add package AgentFrameworkToolkit.Google`)
 2. Get your [Google API Key](https://aistudio.google.com/app/api-keys)
-3. Create an `GoogleAgentFactory` instance (Namespace: AgentFrameworkToolkit.Google)
+3. Create a `GoogleAgentFactory` instance (Namespace: AgentFrameworkToolkit.Google)
 4. Use instance to create your `GoogleAgent` (which is a regular Microsoft Agent Framework `AIAgent` behind the scenes)
 
 ### Minimal Code Example

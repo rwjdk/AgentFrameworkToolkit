@@ -1,6 +1,6 @@
 # Agent Framework Toolkit @ Model Context Protocol
 
-> This package is aimed at making it eaiser to consume MCP Servers as AI Tools in [Microsoft Agent Framework](https://github.com/microsoft/agent-framework)
+> This package is aimed at making it easier to consume MCP Servers as AI Tools in [Microsoft Agent Framework](https://github.com/microsoft/agent-framework)
 
 Check out the [General README.md](https://github.com/rwjdk/AgentFrameworkToolkit/blob/main/README.md) for Agentfactory providers and other shared features in Agent Framework Toolkit.
 

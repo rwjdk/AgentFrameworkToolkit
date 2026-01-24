@@ -2,7 +2,7 @@
 
 This is a C# Implementation of the [AgentSkills Format](https://agentskills.io/)
 
-> This is part of [AgentFrameworkToolkit](https://github.com/rwjdk/AgentFrameworkToolkit) but can also be used on it's own.
+> This is part of [AgentFrameworkToolkit](https://github.com/rwjdk/AgentFrameworkToolkit) but can also be used on its own.
 
 ## Getting Started
 1. Install the 'AgentSkillsDotNet' NuGet Package (`dotnet add package AgentSkillsDotNet`)
@@ -22,7 +22,7 @@ IList<AITool> tools = agentSkills.GetAsTools();
 //Get instructions of available skills
 string instructions = agentSkills.GetInstructions(); 
 
-//Log of skills that where exclude (due to being invalid or filtered away by advanced filtering)
+//Log of skills that were excluded (due to being invalid or filtered away by advanced filtering)
 IList<string> log = agentSkills.ExcludedSkillsLog; 
 ```
 
@@ -103,7 +103,7 @@ IList<AITool> tools3 = agentSkills.GetAsTools(AgentSkillsAsToolsStrategy.Availab
 });
 ```
 
-### Get Inscructions about available tools
+### Get Instructions about available tools
 
 ```cs
 AgentSkillsFactory agentSkillsFactory = new AgentSkillsFactory();

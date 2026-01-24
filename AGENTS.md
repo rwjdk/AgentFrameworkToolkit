@@ -3,9 +3,11 @@
 Use this file as a quick map for where code lives, how it is styled, and how to add new providers.
 
 ## Repo layout
-- `src/AgentFrameworkToolkit/`: Core library (middleware, tooling, shared extensions).
+- `src/AgentFrameworkToolkit/`: Core library (middleware and shared extensions).
 - `src/AgentFrameworkToolkit.*`: Provider packages (one per provider).
+- `src/AgentFrameworkToolkit.Tools/`: Tools integration.
 - `src/AgentFrameworkToolkit.Tools.ModelContextProtocol/`: MCP tooling integration.
+- `src/AgentSkillsDotNet/`: Skills integration for agents.
 - `development/`: Sandbox, Secrets utility, and Tests.
 - `Directory.Packages.props`: Central package versions.
 - `Directory.Build.props`/`Directory.Build.targets`: Shared build and analyzer settings.
@@ -23,22 +25,22 @@ Use this file as a quick map for where code lives, how it is styled, and how to 
 Pick the smallest implementation path that matches the provider API.
 
 ### OpenAI-compatible providers
-Use the OpenAI package as the base (see `src/AgentFrameworkToolkit.OpenRouter/` and `src/AgentFrameworkToolkit.XAI/`).
+Use the OpenAI package as the base (see `src/AgentFrameworkToolkit.OpenRouter/`, `src/AgentFrameworkToolkit.XAI/`, and `src/AgentFrameworkToolkit.Cohere/`).
 1. Add `src/AgentFrameworkToolkit.<Provider>/` with a `.csproj` that references `AgentFrameworkToolkit.OpenAI` and `AgentFrameworkToolkit`.
 2. Create `<Provider>Connection : OpenAIConnection` with a `DefaultEndpoint`.
 3. Implement `<Provider>AgentFactory` that wraps `OpenAIAgentFactory` and defaults the endpoint.
-4. Implement `<Provider>Agent` that wraps `OpenAIAgent`.
+4. Implement `<Provider>Agent` that subclasses `AIAgent` and delegates to an inner agent.
 5. Add DI helpers in `ServiceCollectionExtensions`.
 6. Reuse `AgentFrameworkToolkit.OpenAI.AgentOptions` and `OpenAIEmbeddingFactory` if applicable.
 
 ### Custom providers
-Follow patterns in `src/AgentFrameworkToolkit.GitHub/`, `src/AgentFrameworkToolkit.Google/`, or `src/AgentFrameworkToolkit.Mistral/`.
+Follow patterns in `src/AgentFrameworkToolkit.GitHub/`, `src/AgentFrameworkToolkit.Google/`, `src/AgentFrameworkToolkit.Mistral/`, or `src/AgentFrameworkToolkit.Anthropic/`.
 1. Create `src/AgentFrameworkToolkit.<Provider>/` and a `.csproj` that references `AgentFrameworkToolkit`.
 2. Add a `<Provider>Connection` that builds the SDK client and supports raw HTTP inspection.
 3. Add `<Provider>AgentOptions` (model, instructions, tools, middleware, telemetry, logging, etc.).
 4. Add `<Provider>AgentFactory` that creates a `ChatClientAgent` and applies middleware (copy the `ApplyMiddleware` pattern).
 5. Add `<Provider>Agent` that subclasses `AIAgent` and delegates to an inner agent.
-6. Add `<Provider>ChatModels` constants for model IDs.
+6. (Optional) Add `<Provider>ChatModels` constants for model IDs.
 7. Add DI helpers in `ServiceCollectionExtensions` and optional embedding factory if the provider supports it.
 8. Add a provider `README.md` with install + usage samples.
 

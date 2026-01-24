@@ -13,9 +13,9 @@ But the second you need to do something slightly more advanced, you end up with 
 - How do you add Tool Calling Middleware?
 - How do you create Tools from a class or MCP Server?
 
-Things like the above, while doable, are very cumbersome and are not discoverable, as Microsoft Agent Framework have decided to be very generic.
+Things like the above, while doable, are very cumbersome and are not discoverable, as Microsoft Agent Framework has decided to be very generic.
 
-Agent Framework Toolkit resolves these issues by offering Provider-specific wrappers around Microsoft Agent Framwork, that are tailored to the specific provider while keeping 100% compatibility with the rest of Microsoft Agent Framework. The result is less code and much easier code for you to write.
+Agent Framework Toolkit resolves these issues by offering Provider-specific wrappers around Microsoft Agent Framework, that are tailored to the specific provider while keeping 100% compatibility with the rest of Microsoft Agent Framework. The result is less code and much easier code for you to write.
 
 ![With and Without Agent Framework Toolkit](https://i.imgur.com/NN18Ets.png)
 *The above sample shows how the code looks with and without the Agent Framework Toolkit. You can get more details in [this video](https://youtu.be/OWjy4vkj-8o).*
@@ -25,7 +25,7 @@ The following providers are currently supported (check out the individual README
 
 | Provider | Supported Features |   |  |
 |---|---|---|--|
-| **Antropic (Claude)** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Anthropic) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Anthropic/README.md) |
+| **Anthropic (Claude)** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Anthropic) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Anthropic/README.md) |
 | **Azure OpenAI** | `AgentFactory`, `AIToolsFactory`, `EmbeddingFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.AzureOpenAI) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.AzureOpenAI/README.md) |
 | **Cohere** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Cohere) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Cohere/README.md) |
 | **GitHub Models** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.GitHub) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.GitHub/README.md) |
@@ -75,7 +75,7 @@ public class MyTools
     }
 }
 
-//2. Get your tool by either instance or Type (if not contructor dependencies)
+//2. Get your tool by either instance or Type (if no constructor dependencies)
 
 IList<AITool> tools = aiToolsFactory.GetTools(typeof(MyTools));
 //or

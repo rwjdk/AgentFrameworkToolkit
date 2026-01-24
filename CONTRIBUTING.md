@@ -9,11 +9,11 @@ AgentFrameworkToolkit/
 ├── src/                                # Library packages
 │   ├── AgentFrameworkToolkit/          # Core library
 │   └── AgentFrameworkToolkit.*/        # Provider-specific packages
-├── development/                        # Development resoures and tests
+├── development/                        # Development resources and tests
 │   ├── Sandbox/                        # Sandbox area for various testing while coding
 │   ├── Secrets/                        # UserSecrets LLM API Keys etc.
 │   └── Tests/                          # Unit tests
-├-─ nuget-package.props                 # NuGet package metadata
+├── nuget-package.props                 # NuGet package metadata
 ├── Directory.Packages.props            # Central package version management
 ├── Directory.Build.props               # Shared build properties
 ├── Directory.Build.targets             # Shared build targets

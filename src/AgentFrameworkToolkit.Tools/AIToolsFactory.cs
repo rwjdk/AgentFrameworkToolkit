@@ -104,13 +104,18 @@ public class AIToolsFactory
     {
         GetTimeToolsOptions optionsToUse = options ?? new GetTimeToolsOptions();
         List<AITool> result = [];
-        if (optionsToUse.GetLocalNowTool)
+        if (optionsToUse.GetLocalNow)
         {
-            result.Add(TimeTools.GetNowLocal(optionsToUse.GetNowLocalOptions));
+            result.Add(TimeTools.GetNowLocal(
+                optionsToUse.GetNowLocalOptions,
+                optionsToUse.GetLocalNowToolName,
+                optionsToUse.GetLocalNowToolDescription));
         }
-        if (optionsToUse.GetUtcNowTool)
+        if (optionsToUse.GetUtcNow)
         {
-            result.Add(TimeTools.GetNowUtc());
+            result.Add(TimeTools.GetNowUtc(
+                optionsToUse.GetUtcNowToolName,
+                optionsToUse.GetUtcNowToolDescription));
         }
         return result;
     }
@@ -127,9 +132,12 @@ public class AIToolsFactory
             return WebsiteTools.All();
         }
         List<AITool> result = [];
-        if (options.GetContentOfPageTool)
+        if (options.GetContentOfPage)
         {
-            result.Add(WebsiteTools.GetContentOfPage(options.GetContentOfPageOptions));
+            result.Add(WebsiteTools.GetContentOfPage(
+                options.GetContentOfPageOptions,
+                options.GetContentOfPageToolName,
+                options.GetContentOfPageToolDescription));
         }
         return result;
     }
@@ -147,15 +155,69 @@ public class AIToolsFactory
     }
 }
 
+/// <summary>
+/// Options for GetWebsiteTools method
+/// </summary>
 public class GetWebsiteToolsOptions
 {
-    public bool GetContentOfPageTool { get; set; } = true;
+    /// <summary>
+    /// Include GetContentOfPage tool (Default: true)
+    /// </summary>
+    public bool GetContentOfPage { get; set; } = true;
+
+    /// <summary>
+    /// Options for GetContentOfPage tool
+    /// </summary>
     public GetContentOfPageOptions? GetContentOfPageOptions { get; set; }
+
+    /// <summary>
+    /// Optional name override for GetContentOfPage tool (Default: null)
+    /// </summary>
+    public string? GetContentOfPageToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for GetContentOfPage tool (Default: null)
+    /// </summary>
+    public string? GetContentOfPageToolDescription { get; set; }
 }
 
+/// <summary>
+/// Options for GetTimeTools method
+/// </summary>
 public class GetTimeToolsOptions
 {
-    public bool GetUtcNowTool { get; set; } = true;
-    public bool GetLocalNowTool { get; set; } = true;
+    /// <summary>
+    /// Include GetUtcNow tool (Default: true)
+    /// </summary>
+    public bool GetUtcNow { get; set; } = true;
+
+    /// <summary>
+    /// Include GetLocalNow tool (Default: true)
+    /// </summary>
+    public bool GetLocalNow { get; set; } = true;
+
+    /// <summary>
+    /// Options for GetNowLocal tool
+    /// </summary>
     public GetNowLocalOptions? GetNowLocalOptions { get; set; }
+
+    /// <summary>
+    /// Optional name override for GetUtcNow tool (Default: null)
+    /// </summary>
+    public string? GetUtcNowToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for GetUtcNow tool (Default: null)
+    /// </summary>
+    public string? GetUtcNowToolDescription { get; set; }
+
+    /// <summary>
+    /// Optional name override for GetLocalNow tool (Default: null)
+    /// </summary>
+    public string? GetLocalNowToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for GetLocalNow tool (Default: null)
+    /// </summary>
+    public string? GetLocalNowToolDescription { get; set; }
 }
