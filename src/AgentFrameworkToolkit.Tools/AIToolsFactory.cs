@@ -258,6 +258,60 @@ public class AIToolsFactory
         return result;
     }
 
+    /// <summary>
+    /// Get HTTP Client-related Tools
+    /// </summary>
+    /// <param name="options">Optional options</param>
+    /// <returns>Tools</returns>
+    public IList<AITool> GetHttpClientTools(GetHttpClientToolsOptions? options = null)
+    {
+        GetHttpClientToolsOptions optionsToUse = options ?? new GetHttpClientToolsOptions();
+        List<AITool> result = [];
+        if (optionsToUse.Get)
+        {
+            result.Add(HttpClientTools.Get(
+                optionsToUse.HttpClientToolsOptions,
+                optionsToUse.GetToolName,
+                optionsToUse.GetToolDescription));
+        }
+        if (optionsToUse.Post)
+        {
+            result.Add(HttpClientTools.Post(
+                optionsToUse.HttpClientToolsOptions,
+                optionsToUse.PostToolName,
+                optionsToUse.PostToolDescription));
+        }
+        if (optionsToUse.Put)
+        {
+            result.Add(HttpClientTools.Put(
+                optionsToUse.HttpClientToolsOptions,
+                optionsToUse.PutToolName,
+                optionsToUse.PutToolDescription));
+        }
+        if (optionsToUse.Patch)
+        {
+            result.Add(HttpClientTools.Patch(
+                optionsToUse.HttpClientToolsOptions,
+                optionsToUse.PatchToolName,
+                optionsToUse.PatchToolDescription));
+        }
+        if (optionsToUse.Delete)
+        {
+            result.Add(HttpClientTools.Delete(
+                optionsToUse.HttpClientToolsOptions,
+                optionsToUse.DeleteToolName,
+                optionsToUse.DeleteToolDescription));
+        }
+        if (optionsToUse.Head)
+        {
+            result.Add(HttpClientTools.Head(
+                optionsToUse.HttpClientToolsOptions,
+                optionsToUse.HeadToolName,
+                optionsToUse.HeadToolDescription));
+        }
+        return result;
+    }
+
     private static IEnumerable<MethodInfo> GetMethodsWithAttribute(Type type)
     {
         MethodInfo[] methods = type.GetMethods(
@@ -548,4 +602,105 @@ public class GetFileSystemToolsOptions
     /// Optional description override for CopyFolder tool (Default: null)
     /// </summary>
     public string? CopyFolderToolDescription { get; set; }
+}
+
+/// <summary>
+/// Options for GetHttpClientTools method
+/// </summary>
+public class GetHttpClientToolsOptions
+{
+    /// <summary>
+    /// Include HTTP GET tool (Default: true)
+    /// </summary>
+    public bool Get { get; set; } = true;
+
+    /// <summary>
+    /// Include HTTP POST tool (Default: true)
+    /// </summary>
+    public bool Post { get; set; } = true;
+
+    /// <summary>
+    /// Include HTTP PUT tool (Default: true)
+    /// </summary>
+    public bool Put { get; set; } = true;
+
+    /// <summary>
+    /// Include HTTP PATCH tool (Default: true)
+    /// </summary>
+    public bool Patch { get; set; } = true;
+
+    /// <summary>
+    /// Include HTTP DELETE tool (Default: true)
+    /// </summary>
+    public bool Delete { get; set; } = true;
+
+    /// <summary>
+    /// Include HTTP HEAD tool (Default: true)
+    /// </summary>
+    public bool Head { get; set; } = true;
+
+    /// <summary>
+    /// Options for HttpClientTools
+    /// </summary>
+    public HttpClientToolsOptions? HttpClientToolsOptions { get; set; }
+
+    /// <summary>
+    /// Optional name override for GET tool (Default: null)
+    /// </summary>
+    public string? GetToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for GET tool (Default: null)
+    /// </summary>
+    public string? GetToolDescription { get; set; }
+
+    /// <summary>
+    /// Optional name override for POST tool (Default: null)
+    /// </summary>
+    public string? PostToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for POST tool (Default: null)
+    /// </summary>
+    public string? PostToolDescription { get; set; }
+
+    /// <summary>
+    /// Optional name override for PUT tool (Default: null)
+    /// </summary>
+    public string? PutToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for PUT tool (Default: null)
+    /// </summary>
+    public string? PutToolDescription { get; set; }
+
+    /// <summary>
+    /// Optional name override for PATCH tool (Default: null)
+    /// </summary>
+    public string? PatchToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for PATCH tool (Default: null)
+    /// </summary>
+    public string? PatchToolDescription { get; set; }
+
+    /// <summary>
+    /// Optional name override for DELETE tool (Default: null)
+    /// </summary>
+    public string? DeleteToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for DELETE tool (Default: null)
+    /// </summary>
+    public string? DeleteToolDescription { get; set; }
+
+    /// <summary>
+    /// Optional name override for HEAD tool (Default: null)
+    /// </summary>
+    public string? HeadToolName { get; set; }
+
+    /// <summary>
+    /// Optional description override for HEAD tool (Default: null)
+    /// </summary>
+    public string? HeadToolDescription { get; set; }
 }

@@ -28,10 +28,10 @@ public static class WebsiteTools
     /// <param name="toolDescription">Description of Tool</param>
     /// </summary>
     /// <returns></returns>
-    public static AITool GetContentOfPage(GetContentOfPageOptions? options = null, string? toolName = "get_content_of_url", string? toolDescription = "Get the content of a webpage from a URL")
+    public static AITool GetContentOfPage(GetContentOfPageOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         GetContentOfPageOptions optionToUse = options ?? new GetContentOfPageOptions();
-        return AIFunctionFactory.Create(async (string url) => await GetContentAsync(url, optionToUse), toolName, toolDescription);
+        return AIFunctionFactory.Create(async (string url) => await GetContentAsync(url, optionToUse), toolName ?? "get_content_of_url", toolDescription ?? "Get the content of a webpage from a URL");
     }
 
     private static async Task<string> GetContentAsync(string url, GetContentOfPageOptions options)
@@ -46,8 +46,8 @@ public static class WebsiteTools
             throw new ArgumentException("URL must be an absolute HTTP/HTTPS URL.", nameof(url));
         }
 
-        using HttpClient httpClient = new();
-        using HttpResponseMessage response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+        HttpClient httpClient = options.HttpClientFactory?.Invoke() ?? new HttpClient();
+        HttpResponseMessage response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -80,6 +80,11 @@ public static class WebsiteTools
 /// </summary>
 public class GetContentOfPageOptions
 {
+    /// <summary>
+    /// HTTP Client Factory (if not specified a new HttpClient is generated)
+    /// </summary>
+    public Func<HttpClient>? HttpClientFactory { get; set; }
+
     /// <summary>
     /// If tool should Strip away markup (HTML, JS and CSS) leaving only raw text (Default = true)
     /// </summary>

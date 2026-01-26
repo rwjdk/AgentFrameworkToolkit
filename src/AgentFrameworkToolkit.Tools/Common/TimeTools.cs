@@ -27,9 +27,9 @@ public static class TimeTools
     /// <param name="toolDescription">Description of Tool</param>
     /// </summary>
     /// <returns>DateTimeOffset</returns>
-    public static AITool GetNowUtc(string? toolName = "get_now_utc", string? toolDescription = "Get current UTC time")
+    public static AITool GetNowUtc(string? toolName = null, string? toolDescription = null)
     {
-        return AIFunctionFactory.Create(() => DateTime.UtcNow, toolName, description: toolDescription);
+        return AIFunctionFactory.Create(() => DateTime.UtcNow, toolName ?? "get_now_utc", description: toolDescription ?? "Get current UTC time");
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public static class TimeTools
     /// <param name="toolDescription">Description of Tool</param>
     /// </summary>
     /// <returns>DateTimeOffset</returns>
-    public static AITool GetNowLocal(GetNowLocalOptions? options = null, string? toolName = "get_now_local", string? toolDescription = "Get current local time")
+    public static AITool GetNowLocal(GetNowLocalOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         GetNowLocalOptions getNowLocalOptions = options ?? new GetNowLocalOptions();
 
@@ -49,7 +49,7 @@ public static class TimeTools
             {
                 timeZoneId ??= getNowLocalOptions.DefaultLocalTimezoneIdIfNoneIsProvided;
                 return string.IsNullOrWhiteSpace(timeZoneId) ? DateTime.Now : GetDateTimeForTimezoneId(timeZoneId);
-            }, toolName, toolDescription);
+            }, toolName ?? "get_now_local", toolDescription ?? "Get current local time");
         }
         else
         {
@@ -57,7 +57,7 @@ public static class TimeTools
             {
                 string? timeZoneId = getNowLocalOptions.DefaultLocalTimezoneIdIfNoneIsProvided;
                 return string.IsNullOrWhiteSpace(timeZoneId) ? DateTime.Now : GetDateTimeForTimezoneId(timeZoneId);
-            }, toolName, toolDescription);
+            }, toolName ?? "get_now_local", toolDescription ?? "Get current local time");
         }
     }
 

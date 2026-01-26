@@ -33,15 +33,8 @@ public static class AzureOpenAI
         AIToolsFactory toolsFactory = new();
 
         List<AITool> tools = [];
-        tools.AddRange(toolsFactory.GetTimeTools());
-        tools.AddRange(WeatherTools.All(new OpenWeatherMapOptions
-        {
-            ApiKey = secrets.OpenWeatherApiKey,
-            PreferredUnits = WeatherOptionsUnits.Metric
-        }));
-        tools.AddRange(FileSystemTools.All());
-
-
+        tools.AddRange(toolsFactory.GetHttpClientTools());
+        
         AIAgent agent = factory.CreateAgent(new AgentOptions
         {
             Model = OpenAIChatModels.Gpt41Nano,
@@ -49,8 +42,8 @@ public static class AzureOpenAI
             RawToolCallDetails = Console.WriteLine
         });
 
-        AgentResponse response2 = await agent.RunAsync("How is the weather in paris?");
-        Console.WriteLine(response2);
+        AgentResponse response = await agent.RunAsync($"Using Trello API Key: '{secrets.TrelloApiKey}' and Token '{secrets.TrelloToken}', what boards do i have?");
+        Console.WriteLine(response);
     }
 
     static string MyTool()

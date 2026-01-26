@@ -61,13 +61,13 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool GetContentOfFile(FileSystemToolsOptions? options = null, string? toolName = "get_content_of_file", string? toolDescription = "Read and return the text content of a file")
+    public static AITool GetContentOfFile(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string filePath) =>
         {
             GuardThatOperationsAreWithinConfinedFolderPaths(filePath, options);
             return File.ReadAllText(filePath, options?.Encoding ?? Encoding.UTF8);
-        }, toolName, toolDescription);
+        }, toolName ?? "get_content_of_file", toolDescription ?? "Read and return the text content of a file");
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool GetFiles(FileSystemToolsOptions? options = null, string? toolName = "get_files", string? toolDescription = "Get a list of file paths in a folder")
+    public static AITool GetFiles(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create(
             (string folderPath, string searchPattern = "*",
@@ -85,7 +85,7 @@ public static class FileSystemTools
             {
                 GuardThatOperationsAreWithinConfinedFolderPaths(folderPath, options);
                 return Directory.GetFiles(folderPath, searchPattern, searchOption);
-            }, toolName, toolDescription);
+            }, toolName ?? "get_files", toolDescription ?? "Get a list of file paths in a folder");
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool GetFolders(FileSystemToolsOptions? options = null, string? toolName = "get_folders", string? toolDescription = "Get a list of folder paths in a folder")
+    public static AITool GetFolders(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create(
             (string folderPath, string searchPattern = "*",
@@ -103,7 +103,7 @@ public static class FileSystemTools
             {
                 GuardThatOperationsAreWithinConfinedFolderPaths(folderPath, options);
                 return Directory.GetDirectories(folderPath, searchPattern, searchOption);
-            }, toolName, toolDescription);
+            }, toolName ?? "get_folders", toolDescription ?? "Get a list of folder paths in a folder");
     }
 
     /// <summary>
@@ -113,13 +113,13 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool FileExists(FileSystemToolsOptions? options = null, string? toolName = "file_exists", string? toolDescription = "Check if a file exists at the specified path")
+    public static AITool FileExists(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string filePath) =>
         {
             GuardThatOperationsAreWithinConfinedFolderPaths(filePath, options);
             return File.Exists(filePath);
-        }, toolName, toolDescription);
+        }, toolName ?? "file_exists", toolDescription ?? "Check if a file exists at the specified path");
     }
 
     /// <summary>
@@ -129,13 +129,13 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool FolderExists(FileSystemToolsOptions? options = null, string? toolName = "folder_exists", string? toolDescription = "Check if a folder exists at the specified path")
+    public static AITool FolderExists(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string folderPath) =>
         {
             GuardThatOperationsAreWithinConfinedFolderPaths(folderPath, options);
             return Directory.Exists(folderPath);
-        }, toolName, toolDescription);
+        }, toolName ?? "folder_exists", toolDescription ?? "Check if a folder exists at the specified path");
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CreateFile(FileSystemToolsOptions? options = null, string? toolName = "create_file", string? toolDescription = "Create a new file with the specified content")
+    public static AITool CreateFile(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string filePath, string content, bool overwrite = true) =>
         {
@@ -158,7 +158,7 @@ public static class FileSystemTools
 
             File.WriteAllText(filePath, content, options?.Encoding ?? Encoding.UTF8);
             return filePath;
-        }, toolName, toolDescription);
+        }, toolName ?? "create_file", toolDescription ?? "Create a new file with the specified content");
     }
 
     /// <summary>
@@ -168,14 +168,14 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CreateFolder(FileSystemToolsOptions? options = null, string? toolName = "create_folder", string? toolDescription = "Create a new folder at the specified path")
+    public static AITool CreateFolder(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string folderPath) =>
         {
             GuardThatOperationsAreWithinConfinedFolderPaths(folderPath, options);
             Directory.CreateDirectory(folderPath);
             return folderPath;
-        }, toolName, toolDescription);
+        }, toolName ?? "create_folder", toolDescription ?? "Create a new folder at the specified path");
     }
 
     /// <summary>
@@ -185,7 +185,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool MoveFile(FileSystemToolsOptions? options = null, string? toolName = "move_file", string? toolDescription = "Move a file from source path to destination path")
+    public static AITool MoveFile(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string sourceFilePath, string destinationFilePath, bool overwrite = false) =>
         {
@@ -193,7 +193,7 @@ public static class FileSystemTools
             GuardThatOperationsAreWithinConfinedFolderPaths(destinationFilePath, options);
             File.Move(sourceFilePath, destinationFilePath, overwrite);
             return destinationFilePath;
-        }, toolName, toolDescription);
+        }, toolName ?? "move_file", toolDescription ?? "Move a file from source path to destination path");
     }
 
     /// <summary>
@@ -203,14 +203,14 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool DeleteFile(FileSystemToolsOptions? options = null, string? toolName = "delete_file", string? toolDescription = "Delete a file at the specified path")
+    public static AITool DeleteFile(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string filePath) =>
         {
             GuardThatOperationsAreWithinConfinedFolderPaths(filePath, options);
             File.Delete(filePath);
             return filePath;
-        }, toolName, toolDescription);
+        }, toolName ?? "delete_file", toolDescription ?? "Delete a file at the specified path");
     }
 
     /// <summary>
@@ -220,14 +220,14 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool DeleteFolder(FileSystemToolsOptions? options = null, string? toolName = "delete_folder", string? toolDescription = "Delete a folder at the specified path")
+    public static AITool DeleteFolder(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string folderPath, bool recursive = false) =>
         {
             GuardThatOperationsAreWithinConfinedFolderPaths(folderPath, options);
             Directory.Delete(folderPath, recursive);
             return folderPath;
-        }, toolName, toolDescription);
+        }, toolName ?? "delete_folder", toolDescription ?? "Delete a folder at the specified path");
     }
 
     /// <summary>
@@ -237,7 +237,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CopyFile(FileSystemToolsOptions? options = null, string? toolName = "copy_file", string? toolDescription = "Copy a file from source path to destination path")
+    public static AITool CopyFile(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string sourceFilePath, string destinationFilePath, bool overwrite = false) =>
         {
@@ -245,7 +245,7 @@ public static class FileSystemTools
             GuardThatOperationsAreWithinConfinedFolderPaths(destinationFilePath, options);
             File.Copy(sourceFilePath, destinationFilePath, overwrite);
             return destinationFilePath;
-        }, toolName, toolDescription);
+        }, toolName ?? "copy_file", toolDescription ?? "Copy a file from source path to destination path");
     }
 
     /// <summary>
@@ -255,7 +255,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CopyFolder(FileSystemToolsOptions? options = null, string? toolName = "copy_folder", string? toolDescription = "Copy a folder and its contents from source path to destination path")
+    public static AITool CopyFolder(FileSystemToolsOptions? options = null, string? toolName = null, string? toolDescription = null)
     {
         return AIFunctionFactory.Create((string sourceFolderPath, string destinationFolderPath, bool overwrite = false) =>
         {
@@ -263,7 +263,7 @@ public static class FileSystemTools
             GuardThatOperationsAreWithinConfinedFolderPaths(destinationFolderPath, options);
             CopyDirectory(sourceFolderPath, destinationFolderPath, overwrite);
             return destinationFolderPath;
-        }, toolName, toolDescription);
+        }, toolName ?? "copy_folder", toolDescription ?? "Copy a folder and its contents from source path to destination path");
     }
 
     private static void GuardThatOperationsAreWithinConfinedFolderPaths(string folderPath, FileSystemToolsOptions? options)
