@@ -16,7 +16,7 @@
     <PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
     <!-- Third-party AI SDKs -->
-    <PackageVersion Include="Google.GenAI" Version="0.12.0" />
+    <PackageVersion Include="Google.GenAI" Version="0.13.1" />
     <PackageVersion Include="Mistral.SDK" Version="2.3.1" />
     <PackageVersion Include="ModelContextProtocol" Version="0.6.0-preview.1" />
     <!-- Code analysis -->
