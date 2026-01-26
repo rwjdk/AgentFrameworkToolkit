@@ -27,7 +27,7 @@ public static class TimeTools
     /// <param name="toolDescription">Description of Tool</param>
     /// </summary>
     /// <returns>DateTimeOffset</returns>
-    public static AITool GetNowUtc(string ? toolName = "get_now_utc", string? toolDescription = "Get current UTC time")
+    public static AITool GetNowUtc(string? toolName = "get_now_utc", string? toolDescription = "Get current UTC time")
     {
         return AIFunctionFactory.Create(() => DateTime.UtcNow, toolName, description: toolDescription);
     }
