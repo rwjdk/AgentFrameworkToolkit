@@ -61,7 +61,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool GetContentOfFile(FileSystemToolsOptions? options = null, string? toolName = "get_content_of_file", string? toolDescription = null)
+    public static AITool GetContentOfFile(FileSystemToolsOptions? options = null, string? toolName = "get_content_of_file", string? toolDescription = "Read and return the text content of a file")
     {
         return AIFunctionFactory.Create((string filePath) =>
         {
@@ -77,7 +77,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool GetFiles(FileSystemToolsOptions? options = null, string? toolName = "get_files", string? toolDescription = null)
+    public static AITool GetFiles(FileSystemToolsOptions? options = null, string? toolName = "get_files", string? toolDescription = "Get a list of file paths in a folder")
     {
         return AIFunctionFactory.Create(
             (string folderPath, string searchPattern = "*",
@@ -95,7 +95,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool GetFolders(FileSystemToolsOptions? options = null, string? toolName = "get_folders", string? toolDescription = null)
+    public static AITool GetFolders(FileSystemToolsOptions? options = null, string? toolName = "get_folders", string? toolDescription = "Get a list of folder paths in a folder")
     {
         return AIFunctionFactory.Create(
             (string folderPath, string searchPattern = "*",
@@ -113,7 +113,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool FileExists(FileSystemToolsOptions? options = null, string? toolName = "file_exists", string? toolDescription = null)
+    public static AITool FileExists(FileSystemToolsOptions? options = null, string? toolName = "file_exists", string? toolDescription = "Check if a file exists at the specified path")
     {
         return AIFunctionFactory.Create((string filePath) =>
         {
@@ -129,7 +129,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool FolderExists(FileSystemToolsOptions? options = null, string? toolName = "folder_exists", string? toolDescription = null)
+    public static AITool FolderExists(FileSystemToolsOptions? options = null, string? toolName = "folder_exists", string? toolDescription = "Check if a folder exists at the specified path")
     {
         return AIFunctionFactory.Create((string folderPath) =>
         {
@@ -145,7 +145,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CreateFile(FileSystemToolsOptions? options = null, string? toolName = "create_file", string? toolDescription = null)
+    public static AITool CreateFile(FileSystemToolsOptions? options = null, string? toolName = "create_file", string? toolDescription = "Create a new file with the specified content")
     {
         return AIFunctionFactory.Create((string filePath, string content, bool overwrite = true) =>
         {
@@ -168,7 +168,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CreateFolder(FileSystemToolsOptions? options = null, string? toolName = "create_folder", string? toolDescription = null)
+    public static AITool CreateFolder(FileSystemToolsOptions? options = null, string? toolName = "create_folder", string? toolDescription = "Create a new folder at the specified path")
     {
         return AIFunctionFactory.Create((string folderPath) =>
         {
@@ -185,7 +185,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool MoveFile(FileSystemToolsOptions? options = null, string? toolName = "move_file", string? toolDescription = null)
+    public static AITool MoveFile(FileSystemToolsOptions? options = null, string? toolName = "move_file", string? toolDescription = "Move a file from source path to destination path")
     {
         return AIFunctionFactory.Create((string sourceFilePath, string destinationFilePath, bool overwrite = false) =>
         {
@@ -203,7 +203,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool DeleteFile(FileSystemToolsOptions? options = null, string? toolName = "delete_file", string? toolDescription = null)
+    public static AITool DeleteFile(FileSystemToolsOptions? options = null, string? toolName = "delete_file", string? toolDescription = "Delete a file at the specified path")
     {
         return AIFunctionFactory.Create((string filePath) =>
         {
@@ -220,7 +220,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool DeleteFolder(FileSystemToolsOptions? options = null, string? toolName = "delete_folder", string? toolDescription = null)
+    public static AITool DeleteFolder(FileSystemToolsOptions? options = null, string? toolName = "delete_folder", string? toolDescription = "Delete a folder at the specified path")
     {
         return AIFunctionFactory.Create((string folderPath, bool recursive = false) =>
         {
@@ -237,7 +237,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CopyFile(FileSystemToolsOptions? options = null, string? toolName = "copy_file", string? toolDescription = null)
+    public static AITool CopyFile(FileSystemToolsOptions? options = null, string? toolName = "copy_file", string? toolDescription = "Copy a file from source path to destination path")
     {
         return AIFunctionFactory.Create((string sourceFilePath, string destinationFilePath, bool overwrite = false) =>
         {
@@ -255,7 +255,7 @@ public static class FileSystemTools
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
     /// <returns>Tool</returns>
-    public static AITool CopyFolder(FileSystemToolsOptions? options = null, string? toolName = "copy_folder", string? toolDescription = null)
+    public static AITool CopyFolder(FileSystemToolsOptions? options = null, string? toolName = "copy_folder", string? toolDescription = "Copy a folder and its contents from source path to destination path")
     {
         return AIFunctionFactory.Create((string sourceFolderPath, string destinationFolderPath, bool overwrite = false) =>
         {
