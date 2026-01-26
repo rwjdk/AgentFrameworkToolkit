@@ -12,9 +12,9 @@ public class AmazonBedrockConnection
 {
     /// <summary>
     /// Amazon Bedrock API key (Bearer token). It will be applied via the
-    /// <c>AWS_BEARER_TOKEN_BEDROCK</c> environment variable (used by the AWS Bedrock MEAI extensions).
+    /// <c>AWS_BEARER_TOKEN_BEDROCK</c> environment variable if not already defined
     /// </summary>
-    public required string ApiKey { get; set; }
+    public string? ApiKey { get; set; }
 
     /// <summary>
     /// AWS region for Amazon Bedrock Runtime
@@ -32,7 +32,11 @@ public class AmazonBedrockConnection
     /// <returns>The Raw Client</returns>
     public IAmazonBedrockRuntime GetClient()
     {
-        Environment.SetEnvironmentVariable("AWS_BEARER_TOKEN_BEDROCK", ApiKey);
+        const string variable = "AWS_BEARER_TOKEN_BEDROCK";
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(variable)) && !string.IsNullOrWhiteSpace(ApiKey))
+        {
+            Environment.SetEnvironmentVariable(variable, ApiKey);
+        }
 
         AmazonBedrockRuntimeConfig config = new()
         {

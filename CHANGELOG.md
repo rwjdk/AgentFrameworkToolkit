@@ -3,6 +3,8 @@
 # Unreleased
 - Added Amazon Bedrock provider (`AgentFrameworkToolkit.AmazonBedrock`)
 - Moved AIToolsFactory to its own NuGetPackage (`AgentFrameworkToolkit.Tool` to allow usage without dependency on `Microsoft.Agents.AI`)
+- Google: Bump internal NuGet to 0.13.1
+- Google: Added `Networktimeout` option (so you don't need to define it in miliseconds via http-options)
 
 ---
 

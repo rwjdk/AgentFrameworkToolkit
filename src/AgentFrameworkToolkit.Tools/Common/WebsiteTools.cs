@@ -10,6 +10,18 @@ namespace AgentFrameworkToolkit.Tools.Common;
 public static class WebsiteTools
 {
     /// <summary>
+    /// Get All Website Tools
+    /// </summary>
+    /// <returns>The Tools</returns>
+    public static IList<AITool> All(GetContentOfPageOptions? getContentOfPageOptions = null)
+    {
+        return
+        [
+            GetContentOfPage(getContentOfPageOptions)
+        ];
+    }
+
+    /// <summary>
     /// Get the raw content of a website
     /// <param name="options">Optional options for tool</param>
     /// <param name="toolName">Name of tool</param>
@@ -60,18 +72,6 @@ public static class WebsiteTools
         string normalizedWhitespace = Regex.Replace(decoded, "\\s+", " ").Trim();
 
         return normalizedWhitespace;
-    }
-
-    /// <summary>
-    /// Get All Website Tools
-    /// </summary>
-    /// <returns>The Tools</returns>
-    public static IList<AITool> All(GetContentOfPageOptions? getContentOfPageOptions = null)
-    {
-        return
-        [
-            GetContentOfPage(getContentOfPageOptions)
-        ];
     }
 }
 

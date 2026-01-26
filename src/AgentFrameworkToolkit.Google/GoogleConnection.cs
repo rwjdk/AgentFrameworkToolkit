@@ -1,7 +1,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.GenAI;
 using Google.GenAI.Types;
-using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.Google;
 
@@ -26,6 +25,11 @@ public class GoogleConnection
     public ICredential? Credential { get; set; }
 
     /// <summary>
+    /// The timeout value of the LLM Call (if not defined the underlying infrastructure's default will be used)
+    /// </summary>
+    public TimeSpan? NetworkTimeout { get; set; }
+
+    /// <summary>
     /// Vertex Only: Optional String for the project ID. Find it here: https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects
     /// </summary>
     public string? Project { get; set; }
@@ -46,13 +50,29 @@ public class GoogleConnection
     /// <returns></returns>
     public Client GetClient()
     {
+        HttpOptions? httpOptions = HttpOptions;
+        if (NetworkTimeout.HasValue)
+        {
+            if (httpOptions == null)
+            {
+                httpOptions = new HttpOptions
+                {
+                    Timeout = Convert.ToInt32(NetworkTimeout.Value.TotalMicroseconds)
+                };
+            }
+            else
+            {
+                httpOptions.Timeout ??= Convert.ToInt32(NetworkTimeout.Value.TotalMicroseconds);
+            }
+        }
+
         Client client = new(
             vertexAI: VertexAI,
             apiKey: ApiKey,
             credential: Credential,
             project: Project,
             location: Location,
-            httpOptions: HttpOptions);
+            httpOptions: httpOptions);
 
         return client;
     }
