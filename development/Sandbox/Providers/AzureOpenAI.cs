@@ -34,16 +34,48 @@ public static class AzureOpenAI
 
         List<AITool> tools = [];
         tools.AddRange(toolsFactory.GetHttpClientTools());
+        tools.AddRange(toolsFactory.GetTimeTools());
+        tools.AddRange(toolsFactory.GetWeatherTools(new OpenWeatherMapOptions
+        {
+            ApiKey = secrets.OpenWeatherApiKey
+        }));
+        tools.AddRange(toolsFactory.GetFileSystemTools(new GetFileSystemToolsOptions
+        {
+            FileSystemToolsOptions = new FileSystemToolsOptions
+            {
+                ConfinedToTheseFolderPaths = ["C:\\TestAI"]
+            }
+        }));
+        tools.AddRange(toolsFactory.GetWebsiteTools());
         
         AIAgent agent = factory.CreateAgent(new AgentOptions
         {
+            Instructions = $"Using Trello API Key: '{secrets.TrelloApiKey}' and Token '{secrets.TrelloToken}' - your file operating folder it C:\\TestAI",
             Model = OpenAIChatModels.Gpt41Nano,
             Tools = tools,
             RawToolCallDetails = Console.WriteLine
         });
 
-        AgentResponse response = await agent.RunAsync($"Using Trello API Key: '{secrets.TrelloApiKey}' and Token '{secrets.TrelloToken}', what boards do i have?");
-        Console.WriteLine(response);
+        AgentThread thread = await agent.GetNewThreadAsync();
+        while (true)
+        {
+            Console.Write("> ");
+            string input = Console.ReadLine() ?? "";
+            if (input == "/new")
+            {
+                Console.Clear();
+                thread = await agent.GetNewThreadAsync();
+                continue;
+            }
+            AgentResponse response = await agent.RunAsync(input, thread);
+            Console.WriteLine(response);
+            Console.WriteLine($"(Input: {response.Usage!.InputTokenCount} - Output: {response.Usage.OutputTokenCount})");
+
+
+            Console.WriteLine();
+            Console.WriteLine("---");
+            Console.WriteLine();
+        }
     }
 
     static string MyTool()

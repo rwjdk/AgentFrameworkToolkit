@@ -275,9 +275,26 @@ public static class FileSystemTools
             return; //No confinements defined
         }
 
-        if (options.ConfinedToTheseFolderPaths.Any(x => folderPath.StartsWith(x, StringComparison.CurrentCultureIgnoreCase)))
+        string normalizedPath = Path.GetFullPath(folderPath);
+
+        foreach (string allowedPath in options.ConfinedToTheseFolderPaths)
         {
-            return; //Allowed Folder
+            string normalizedAllowedPath = Path.GetFullPath(allowedPath);
+
+            // Ensure the allowed path ends with a directory separator for proper comparison
+            if (!normalizedAllowedPath.EndsWith(Path.DirectorySeparatorChar.ToString()) &&
+                !normalizedAllowedPath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
+            {
+                normalizedAllowedPath += Path.DirectorySeparatorChar;
+            }
+
+            // Check if paths match exactly (without separator) or if the target path is within the allowed path
+            if (normalizedPath.Equals(normalizedAllowedPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                    StringComparison.OrdinalIgnoreCase) ||
+                normalizedPath.StartsWith(normalizedAllowedPath, StringComparison.OrdinalIgnoreCase))
+            {
+                return; //Allowed Folder
+            }
         }
 
         //If we reach here, then it means that we are not in an allowed folder
