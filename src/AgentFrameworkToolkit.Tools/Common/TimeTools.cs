@@ -23,9 +23,9 @@ public static class TimeTools
 
     /// <summary>
     /// UTC Now
+    /// </summary>
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
-    /// </summary>
     /// <returns>DateTimeOffset</returns>
     public static AITool GetNowUtc(string? toolName = null, string? toolDescription = null)
     {
@@ -34,10 +34,10 @@ public static class TimeTools
 
     /// <summary>
     /// Local Now (Machine, defined by options or AI provided timeZoneId)
+    /// </summary>
     /// <param name="options">Optional options</param>
     /// <param name="toolName">Name of tool</param>
     /// <param name="toolDescription">Description of Tool</param>
-    /// </summary>
     /// <returns>DateTimeOffset</returns>
     public static AITool GetNowLocal(GetNowLocalOptions? options = null, string? toolName = null, string? toolDescription = null)
     {

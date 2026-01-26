@@ -1,4 +1,5 @@
 using System.Text;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.Tools.Common;
@@ -6,6 +7,7 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools for file system operations
 /// </summary>
+[PublicAPI]
 public static class FileSystemTools
 {
     /// <summary>
@@ -308,6 +310,7 @@ public static class FileSystemTools
 /// <summary>
 /// Options for the File System Tools
 /// </summary>
+[PublicAPI]
 public class FileSystemToolsOptions
 {
     /// <summary>

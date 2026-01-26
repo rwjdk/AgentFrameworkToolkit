@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.Tools.Common;
@@ -5,6 +6,7 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools related to Weather
 /// </summary>
+[PublicAPI]
 public static class WeatherTools
 {
     /// <summary>
@@ -31,7 +33,7 @@ public static class WeatherTools
     {
         return AIFunctionFactory.Create(async (string city) =>
         {
-            HttpClient httpClient = options.HttpClientFactory?.Invoke() ?? new HttpClient();
+            HttpClient httpClient = GetHttpClient(options);
             string units = options.PreferredUnits switch
             {
                 WeatherOptionsUnits.Metric => "&units=metric",
@@ -43,17 +45,23 @@ public static class WeatherTools
             HttpResponseMessage response = await httpClient.GetAsync(requestUri);
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Unable to get weather: {response.StatusCode}: {response.ReasonPhrase}");
+                throw new HttpRequestException($"Unable to get weather: {response.StatusCode}: {response.ReasonPhrase}");
             }
 
             return await response.Content.ReadAsStringAsync();
         }, toolName ?? "get_weather_for_city", toolDescription ?? "Get weather for specified city. If country is needed to specify same name cities the define as <city>,<country_code>");
+    }
+
+    private static HttpClient GetHttpClient(OpenWeatherMapOptions options)
+    {
+        return options.HttpClientFactory?.Invoke() ?? new HttpClient();
     }
 }
 
 /// <summary>
 /// Options for the Weather Tools
 /// </summary>
+[PublicAPI]
 public class OpenWeatherMapOptions
 {
     /// <summary>
@@ -75,6 +83,7 @@ public class OpenWeatherMapOptions
 /// <summary>
 /// Units of the Weather (Metric or Imperial)
 /// </summary>
+[PublicAPI]
 public enum WeatherOptionsUnits
 {
     /// <summary>

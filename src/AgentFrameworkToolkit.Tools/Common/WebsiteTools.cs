@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -7,6 +8,7 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools Related to Website Content
 /// </summary>
+[PublicAPI]
 public static class WebsiteTools
 {
     /// <summary>
@@ -46,7 +48,7 @@ public static class WebsiteTools
             throw new ArgumentException("URL must be an absolute HTTP/HTTPS URL.", nameof(url));
         }
 
-        HttpClient httpClient = options.HttpClientFactory?.Invoke() ?? new HttpClient();
+        HttpClient httpClient = GetHttpClient(options);
         HttpResponseMessage response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
@@ -73,11 +75,17 @@ public static class WebsiteTools
 
         return normalizedWhitespace;
     }
+
+    private static HttpClient GetHttpClient(GetContentOfPageOptions options)
+    {
+        return options.HttpClientFactory?.Invoke() ?? new HttpClient();
+    }
 }
 
 /// <summary>
 /// Options of GetContentOfPageTool Tool
 /// </summary>
+[PublicAPI]
 public class GetContentOfPageOptions
 {
     /// <summary>

@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.Tools.Common;
@@ -7,6 +8,7 @@ namespace AgentFrameworkToolkit.Tools.Common;
 /// <summary>
 /// Tools for HTTP client operations
 /// </summary>
+[PublicAPI]
 public static class HttpClientTools
 {
     /// <summary>
@@ -186,6 +188,7 @@ public static class HttpClientTools
 /// <summary>
 /// Options for HTTP Client Tools
 /// </summary>
+[PublicAPI]
 public class HttpClientToolsOptions
 {
     /// <summary>
