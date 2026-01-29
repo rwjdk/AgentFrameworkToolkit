@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.260128.1
+- Upgraded to Microsoft Agent Framework v.1.0.0-preview.260128.1 (No changes)
+
+---
+
 ## Version 1.0.0-preview.260127.1
 - [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0.0-preview.260127.1 (`ChatHistoryProviderFactory` is now called `ChatHistoryProviderFactory`)
 
