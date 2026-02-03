@@ -1,5 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.260203.1
+- Bump Google.GenAI from 0.13.1 to 0.14.0 (PR#42)
+- Bump AWSSDK.BedrockRuntime and AWSSDK.Extensions.Bedrock.MEAI (PR#41)
+
+---
+
 ## Version 1.0.0-preview.260128.1
 - Upgraded to Microsoft Agent Framework v.1.0.0-preview.260128.1 (No changes)
 
