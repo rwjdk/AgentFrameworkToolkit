@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Description>An opinionated C# Toolkit targeting Cohere for Microsoft Agent Framework
-			that makes life easier</Description>
+		<Description>An opinionated C# Toolkit targeting Cohere for Microsoft Agent Framework that makes life easier</Description>
 	</PropertyGroup>
 
 	<Import Project="..\..\nuget-package.props" />

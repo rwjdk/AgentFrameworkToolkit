@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Description>An opinionated C# Toolkit targeting Model Context Protocol for Microsoft Agent
-			Framework Tools</Description>
+		<Description>An opinionated C# Toolkit targeting Model Context Protocol for Microsoft Agent Framework Tools</Description>
 	</PropertyGroup>
 
 	<Import Project="..\..\nuget-package.props" />

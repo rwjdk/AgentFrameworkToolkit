@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>
-      An opinionated C# Toolkit targeting AITools
-    </Description>
+    <Description>An opinionated C# Toolkit targeting AITools</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" />

@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Description>An opinionated C# Toolkit targeting Amazon Bedrock for Microsoft Agent Framework that
-			makes life eaisier</Description>
+		<Description>An opinionated C# Toolkit targeting Amazon Bedrock for Microsoft Agent Framework that makes life eaisier</Description>
 	</PropertyGroup>
 
 	<Import Project="..\..\nuget-package.props" />
