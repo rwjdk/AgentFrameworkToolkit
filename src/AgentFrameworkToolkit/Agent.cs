@@ -51,19 +51,19 @@ public class Agent(AIAgent innerAgent) : AIAgent
     }
 
     /// <inheritdoc />
-    public override ValueTask<AgentSession> CreateSessionAsync(CancellationToken cancellationToken = default)
+    protected override ValueTask<AgentSession> CreateSessionCoreAsync(CancellationToken cancellationToken = default)
     {
         return innerAgent.CreateSessionAsync(cancellationToken);
     }
 
     /// <inheritdoc />
-    public override JsonElement SerializeSession(AgentSession session, JsonSerializerOptions? jsonSerializerOptions = null)
+    protected override JsonElement SerializeSessionCore(AgentSession session, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         return innerAgent.SerializeSession(session, jsonSerializerOptions);
     }
 
     /// <inheritdoc />
-    public override ValueTask<AgentSession> DeserializeSessionAsync(JsonElement serializedSession, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
+    protected override ValueTask<AgentSession> DeserializeSessionCoreAsync(JsonElement serializedSession, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default)
     {
         return innerAgent.DeserializeSessionAsync(serializedSession, jsonSerializerOptions, cancellationToken);
     }

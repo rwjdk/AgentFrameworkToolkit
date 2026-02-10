@@ -1,6 +1,7 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.0.0-preview.260209.1
+- [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0.0-preview.260209.1
 - Added domain confinement options for `HttpClientTools` and `WebsiteTools` to allow restricting calls to exact allowed domains.
 
 ---
