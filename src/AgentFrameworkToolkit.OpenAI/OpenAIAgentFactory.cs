@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Chat;
 using OpenAI.Responses;
-
 #pragma warning disable OPENAI001
 
 namespace AgentFrameworkToolkit.OpenAI;
@@ -154,48 +153,62 @@ public class OpenAIAgentFactory
                 break;
         }
 
-        if (!string.IsNullOrWhiteSpace(reasoningEffortAsString) && !OpenAIChatModels.NonReasoningModels.Contains(options.Model))
+        ClientType clientType = options.ClientType ?? defaultClientType;
+        switch (clientType)
         {
-            anyOptionsSet = true;
-
-            OpenAIReasoningSummaryVerbosity? summaryVerbosity = options.ReasoningSummaryVerbosity;
-            switch (options.ClientType)
-            {
-                case ClientType.ChatClient:
-                    chatOptions = chatOptions.WithOpenAIChatClientReasoning(new ChatReasoningEffortLevel(reasoningEffortAsString));
-                    break;
-                case ClientType.ResponsesApi:
-                    chatOptions = summaryVerbosity switch
+            case ClientType.ChatClient:
+                {
+                    bool anyRawOptionsSet = false;
+                    ChatCompletionOptions rawOptions = new();
+                    if (!string.IsNullOrWhiteSpace(reasoningEffortAsString) && !OpenAIChatModels.NonReasoningModels.Contains(options.Model))
                     {
-                        OpenAIReasoningSummaryVerbosity.Auto => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Auto),
-                        OpenAIReasoningSummaryVerbosity.Concise => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Concise),
-                        OpenAIReasoningSummaryVerbosity.Detailed => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Detailed),
-                        null => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString)),
-                        _ => chatOptions
-                    };
+                        anyRawOptionsSet = true;
+                        rawOptions.ReasoningEffortLevel = new ChatReasoningEffortLevel(reasoningEffortAsString);
+                    }
 
-                    break;
-                case null:
-                    chatOptions = defaultClientType switch
+                    if (options.ServiceTier.HasValue)
                     {
-                        ClientType.ChatClient => chatOptions.WithOpenAIChatClientReasoning(new ChatReasoningEffortLevel(reasoningEffortAsString)),
-                        ClientType.ResponsesApi => summaryVerbosity switch
+                        anyRawOptionsSet = true;
+                        rawOptions.ServiceTier = ChatClientServiceTierParser();
+                    }
+
+                    if (anyRawOptionsSet)
+                    {
+                        anyOptionsSet = true;
+                        chatOptions.RawRepresentationFactory = _ => rawOptions;
+                    }
+                    break;
+                }
+            case ClientType.ResponsesApi:
+                {
+                    bool anyRawOptionsSet = false;
+                    CreateResponseOptions rawOptions = new();
+                    if (!string.IsNullOrWhiteSpace(reasoningEffortAsString) && !OpenAIChatModels.NonReasoningModels.Contains(options.Model))
+                    {
+                        anyRawOptionsSet = true;
+                        rawOptions.ReasoningOptions = new ResponseReasoningOptions
                         {
-                            OpenAIReasoningSummaryVerbosity.Auto => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Auto),
-                            OpenAIReasoningSummaryVerbosity.Concise => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Concise),
-                            OpenAIReasoningSummaryVerbosity.Detailed => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString), ResponseReasoningSummaryVerbosity.Detailed),
-                            null => chatOptions.WithOpenAIResponsesApiReasoning(new ResponseReasoningEffortLevel(reasoningEffortAsString)),
-                            _ => chatOptions
-                        },
-                        _ => throw new ArgumentOutOfRangeException()
-                    };
+                            ReasoningEffortLevel = new ResponseReasoningEffortLevel(reasoningEffortAsString),
+                            ReasoningSummaryVerbosity = ResponseReasonSummaryVerbosityParser()
+                        };
+                    }
 
+                    if (options.ServiceTier.HasValue)
+                    {
+                        anyRawOptionsSet = true;
+                        rawOptions.ServiceTier = ResponseServiceTierParser();
+                    }
+                    if (anyRawOptionsSet)
+                    {
+                        anyOptionsSet = true;
+                        chatOptions.RawRepresentationFactory = _ => rawOptions;
+                    }
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
+        
         ChatClientAgentOptions chatClientAgentOptions = new()
         {
             Name = options.Name,
@@ -204,6 +217,7 @@ public class OpenAIAgentFactory
             AIContextProviderFactory = options.AIContextProviderFactory,
             ChatHistoryProviderFactory = options.ChatHistoryProviderFactory,
         };
+
         if (anyOptionsSet)
         {
             chatClientAgentOptions.ChatOptions = chatOptions;
@@ -212,5 +226,43 @@ public class OpenAIAgentFactory
         options.AdditionalChatClientAgentOptions?.Invoke(chatClientAgentOptions);
 
         return chatClientAgentOptions;
+
+        ResponseServiceTier? ResponseServiceTierParser()
+        {
+            return options.ServiceTier switch
+            {
+                OpenAiServiceTier.Auto => new ResponseServiceTier("auto"),
+                OpenAiServiceTier.Flex => new ResponseServiceTier("flex"),
+                OpenAiServiceTier.Default => new ResponseServiceTier("default"),
+                OpenAiServiceTier.Priority => new ResponseServiceTier("priority"),
+                null => (ResponseServiceTier?)null,
+                _ => throw new ArgumentOutOfRangeException(nameof(options.ServiceTier), options.ServiceTier, null)
+            };
+        }
+
+        ChatServiceTier? ChatClientServiceTierParser()
+        {
+            return options.ServiceTier switch
+            {
+                OpenAiServiceTier.Auto => new ChatServiceTier("auto"),
+                OpenAiServiceTier.Flex => new ChatServiceTier("flex"),
+                OpenAiServiceTier.Default => new ChatServiceTier("default"),
+                OpenAiServiceTier.Priority => new ChatServiceTier("priority"),
+                null => (ChatServiceTier?)null,
+                _ => throw new ArgumentOutOfRangeException(nameof(options.ServiceTier), options.ServiceTier, null)
+            };
+        }
+
+        ResponseReasoningSummaryVerbosity? ResponseReasonSummaryVerbosityParser()
+        {
+            return options.ReasoningSummaryVerbosity switch
+            {
+                OpenAIReasoningSummaryVerbosity.Auto => ResponseReasoningSummaryVerbosity.Auto,
+                OpenAIReasoningSummaryVerbosity.Concise => ResponseReasoningSummaryVerbosity.Concise,
+                OpenAIReasoningSummaryVerbosity.Detailed => ResponseReasoningSummaryVerbosity.Detailed,
+                null => (ResponseReasoningSummaryVerbosity?)null,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
     }
 }

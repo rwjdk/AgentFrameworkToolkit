@@ -3,6 +3,7 @@
 ## Unreleased
 - Added `RandomTools` (Suggest random number since AI is not good at that)
 - Added `EmailTools` (Send basic SMTP Emails via AI)
+- OpenAI: Added option to set `service_tier`
 
 ---
 

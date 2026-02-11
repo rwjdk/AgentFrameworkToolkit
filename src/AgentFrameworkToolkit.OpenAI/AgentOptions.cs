@@ -123,4 +123,9 @@ public class AgentOptions
     /// provide additional context for each agent run.
     /// </summary>
     public Func<AIContextProviderFactoryContext, CancellationToken, ValueTask<AIContextProvider>>? AIContextProviderFactory { get; set; }
+
+    /// <summary>
+    /// What service Tier to use (Only works for OpenAI directly)
+    /// </summary>
+    public OpenAiServiceTier? ServiceTier { get; set; }
 }
