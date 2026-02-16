@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-preview.260216.1
+- [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0.0-preview.260212.1
+
+---
+
 ## Version 1.0.0-preview.260212.1
 - Added `RandomTools` (Suggest random number since AI is not good at that)
 - Added `EmailTools` (Send basic SMTP Emails via AI)

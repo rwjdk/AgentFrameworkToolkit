@@ -57,9 +57,9 @@ public class Agent(AIAgent innerAgent) : AIAgent
     }
 
     /// <inheritdoc />
-    protected override JsonElement SerializeSessionCore(AgentSession session, JsonSerializerOptions? jsonSerializerOptions = null)
+    protected override ValueTask<JsonElement> SerializeSessionCoreAsync(AgentSession session, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = new CancellationToken())
     {
-        return innerAgent.SerializeSession(session, jsonSerializerOptions);
+        return innerAgent.SerializeSessionAsync(session, jsonSerializerOptions, cancellationToken);
     }
 
     /// <inheritdoc />
