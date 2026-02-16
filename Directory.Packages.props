@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Microsoft Agents AI Framework -->
-    <PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.260209.1" />
+    <PackageVersion Include="Microsoft.Agents.AI" Version="1.0.0-preview.260212.1" />
     <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.260209.1" />
     <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.0.0-preview.260209.1" />
     <!-- Azure -->
