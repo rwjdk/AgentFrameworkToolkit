@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- AgentSkills: Fixed the body of the skill did not add line breaks ([PR#46](https://github.com/rwjdk/AgentFrameworkToolkit/pull/46) : Thanks to [@visasnouski](https://github.com/) for the fix 👍)
+
+---
+
 ## Version 1.0.0-preview.260216.1
 - [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0.0-preview.260212.1
 
