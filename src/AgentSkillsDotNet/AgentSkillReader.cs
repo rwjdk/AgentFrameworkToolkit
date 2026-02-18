@@ -36,7 +36,7 @@ internal class AgentSkillReader
                 //Not first matter delimiter so must be second matter delimiter so rest of file is body
                 for (int lineNumberAfterFrontMatter = lineNumber + 1; lineNumberAfterFrontMatter < lines.Length; lineNumberAfterFrontMatter++)
                 {
-                    body += lines[lineNumberAfterFrontMatter];
+                    body += lines[lineNumberAfterFrontMatter] + Environment.NewLine;
                 }
 
                 break;
