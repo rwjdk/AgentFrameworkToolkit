@@ -147,7 +147,7 @@ public abstract class TestsBase
     {
         TestLoggerFactory testLogger = new();
         AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Normal, testLogger);
-        ChatClientAgentResponse<MovieResult> response = await agent.RunAsync<MovieResult>("Top 3 IMDB Movies", cancellationToken: TestContext.Current.CancellationToken);
+        AgentResponse<MovieResult> response = await agent.RunAsync<MovieResult>("Top 3 IMDB Movies", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(3, response.Result.Movies.Count);
     }
 

@@ -39,13 +39,13 @@ public sealed class XAITests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddXAIAgentFactory(secrets.XAiGrokApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<XAIAgentFactory>()
             .CreateAgent(XAIChatModels.Grok41FastNonReasoning)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -55,7 +55,7 @@ public sealed class XAITests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddXAIAgentFactory(new XAIConnection
         {
@@ -65,7 +65,7 @@ public sealed class XAITests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<XAIAgentFactory>()
             .CreateAgent(XAIChatModels.Grok41FastNonReasoning)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;

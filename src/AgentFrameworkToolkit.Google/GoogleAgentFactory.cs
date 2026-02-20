@@ -1,4 +1,3 @@
-using Google.GenAI;
 using Google.GenAI.Types;
 using JetBrains.Annotations;
 using Microsoft.Agents.AI;
@@ -144,8 +143,8 @@ public class GoogleAgentFactory
             Name = options.Name,
             Description = options.Description,
             Id = options.Id,
-            AIContextProviderFactory = options.AIContextProviderFactory,
-            ChatHistoryProviderFactory = options.ChatHistoryProviderFactory,
+            AIContextProviders = options.AIContextProviders,
+            ChatHistoryProvider = options.ChatHistoryProvider,
         };
         if (anyOptionsSet)
         {

@@ -15,6 +15,7 @@ namespace AgentFrameworkToolkit;
 /// Various Extensions for an AI Agent
 /// </summary>
 [PublicAPI]
+[Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
 public static class AIAgentExtensions
 {
     /// <summary>
@@ -28,10 +29,6 @@ public static class AIAgentExtensions
     /// </param>
     /// <param name="serializerOptions">The JSON serialization options to use.</param>
     /// <param name="options">Optional configuration parameters for controlling the agent's invocation behavior.</param>
-    /// <param name="useJsonSchemaResponseFormat">
-    /// <see langword="true" /> to set a JSON schema on the <see cref="ChatResponseFormat"/>; otherwise, <see langword="false" />. The default is <see langword="true" />.
-    /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
-    /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
@@ -46,18 +43,18 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="session"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
+    [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
+    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
         this AIAgent agent,
         IEnumerable<ChatMessage> messages,
         AgentSession? session = null,
         JsonSerializerOptions? serializerOptions = null,
         AgentRunOptions? options = null,
-        bool? useJsonSchemaResponseFormat = null,
         CancellationToken cancellationToken = default)
     {
         if (agent is ChatClientAgent chatClientAgent)
         {
-            return await chatClientAgent.RunAsync<T>(messages, session, serializerOptions, options, useJsonSchemaResponseFormat, cancellationToken);
+            return await chatClientAgent.RunAsync<T>(messages, session, serializerOptions, options, cancellationToken);
         }
 
         JsonSerializerOptions jsonSerializerOptions;
@@ -148,7 +145,11 @@ public static class AIAgentExtensions
             }
         }
 
-        return new ChatClientAgentResponse<T>(chatResponse);
+        AgentResponse finalAgentResponse = new(chatResponse);
+        return new AgentResponse<T>(finalAgentResponse, jsonSerializerOptions)
+        {
+            IsWrappedInObject = isWrappedInObject
+        };
     }
 
     static bool SchemaRepresentsObject(JsonElement schemaElement)
@@ -179,10 +180,6 @@ public static class AIAgentExtensions
     /// </param>
     /// <param name="serializerOptions">The JSON serialization options to use.</param>
     /// <param name="options">Optional configuration parameters for controlling the agent's invocation behavior.</param>
-    /// <param name="useJsonSchemaResponseFormat">
-    /// <see langword="true" /> to set a JSON schema on the <see cref="ChatResponseFormat"/>; otherwise, <see langword="false" />. The default is <see langword="true" />.
-    /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
-    /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
@@ -197,14 +194,14 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="session"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
+    [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
+    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
         this AIAgent agent,
         AgentSession? session = null,
         JsonSerializerOptions? serializerOptions = null,
         AgentRunOptions? options = null,
-        bool? useJsonSchemaResponseFormat = null,
         CancellationToken cancellationToken = default) =>
-        await agent.RunAsync<T>([], session, serializerOptions, options, useJsonSchemaResponseFormat, cancellationToken);
+        await RunAsStructuredOutputAsync<T>(agent, [], session, serializerOptions, options, cancellationToken);
 
     /// <summary>
     /// Runs the agent with a collection of chat messages, requesting a response of the specified type <typeparamref name="T"/>.
@@ -217,10 +214,6 @@ public static class AIAgentExtensions
     /// </param>
     /// <param name="serializerOptions">The JSON serialization options to use.</param>
     /// <param name="options">Optional configuration parameters for controlling the agent's invocation behavior.</param>
-    /// <param name="useJsonSchemaResponseFormat">
-    /// <see langword="true" /> to set a JSON schema on the <see cref="ChatResponseFormat"/>; otherwise, <see langword="false" />. The default is <see langword="true" />.
-    /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
-    /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
@@ -235,16 +228,16 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="session"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
+    [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
+    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
         this AIAgent agent,
         string message,
         AgentSession? session = null,
         JsonSerializerOptions? serializerOptions = null,
         AgentRunOptions? options = null,
-        bool? useJsonSchemaResponseFormat = null,
         CancellationToken cancellationToken = default)
     {
-        return await agent.RunAsync<T>(new ChatMessage(ChatRole.User, message), session, serializerOptions, options, useJsonSchemaResponseFormat, cancellationToken);
+        return await RunAsStructuredOutputAsync<T>(agent, new ChatMessage(ChatRole.User, message), session, serializerOptions, options, cancellationToken);
     }
 
     /// <summary>
@@ -258,10 +251,6 @@ public static class AIAgentExtensions
     /// </param>
     /// <param name="serializerOptions">The JSON serialization options to use.</param>
     /// <param name="options">Optional configuration parameters for controlling the agent's invocation behavior.</param>
-    /// <param name="useJsonSchemaResponseFormat">
-    /// <see langword="true" /> to set a JSON schema on the <see cref="ChatResponseFormat"/>; otherwise, <see langword="false" />. The default is <see langword="true" />.
-    /// Using a JSON schema improves reliability if the underlying model supports native structured output with a schema, but might cause an error if the model does not support it.
-    /// </param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests. The default is <see cref="CancellationToken.None"/>.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="AgentResponse"/> with the agent's output.</returns>
     /// <typeparam name="T">The type of structured output to request.</typeparam>
@@ -276,15 +265,15 @@ public static class AIAgentExtensions
     /// The agent's response will also be added to <paramref name="session"/> if one is provided.
     /// </para>
     /// </remarks>
-    public static async Task<ChatClientAgentResponse<T>> RunAsync<T>(
+    [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
+    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
         this AIAgent agent,
         ChatMessage message,
         AgentSession? session = null,
         JsonSerializerOptions? serializerOptions = null,
         AgentRunOptions? options = null,
-        bool? useJsonSchemaResponseFormat = null,
         CancellationToken cancellationToken = default)
     {
-        return await agent.RunAsync<T>([message], session, serializerOptions, options, useJsonSchemaResponseFormat, cancellationToken);
+        return await RunAsStructuredOutputAsync<T>(agent, [message], session, serializerOptions, options, cancellationToken);
     }
 }

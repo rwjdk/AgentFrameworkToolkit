@@ -27,13 +27,13 @@ public sealed class CohereTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddCohereAgentFactory(secrets.CohereApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<CohereAgentFactory>()
             .CreateAgent("command-a-03-2025")
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -43,7 +43,7 @@ public sealed class CohereTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddCohereAgentFactory(new CohereConnection
         {
@@ -53,7 +53,7 @@ public sealed class CohereTests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<CohereAgentFactory>()
             .CreateAgent("command-a-03-2025")
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;

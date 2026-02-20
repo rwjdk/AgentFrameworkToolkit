@@ -28,13 +28,13 @@ public sealed class GoogleTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddGoogleAgentFactory(secrets.GoogleGeminiApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<GoogleAgentFactory>()
             .CreateAgent(GoogleChatModels.Gemini25Flash)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -44,7 +44,7 @@ public sealed class GoogleTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddGoogleAgentFactory(new GoogleConnection
         {
@@ -53,7 +53,7 @@ public sealed class GoogleTests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<GoogleAgentFactory>()
             .CreateAgent(GoogleChatModels.Gemini25Flash)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -73,14 +73,14 @@ public sealed class GoogleTests : TestsBase
     [Fact]
     public async Task EmbeddingFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddGoogleEmbeddingFactory(secrets.GoogleGeminiApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
         GoogleEmbeddingFactory embeddingFactory = provider.GetRequiredService<GoogleEmbeddingFactory>();
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         Embedding<float> embedding = await embeddingFactory.GetEmbeddingGenerator(GoogleEmbeddingModels.GoogleEmbedding001)
             .GenerateAsync("Hello", cancellationToken: cancellationToken);
         Assert.Equal(3072, embedding.Dimensions);

@@ -121,8 +121,8 @@ public class AnthropicAgentFactory
             Description = options.Description,
             Id = options.Id,
             ChatOptions = chatOptions,
-            AIContextProviderFactory = options.AIContextProviderFactory,
-            ChatHistoryProviderFactory = options.ChatHistoryProviderFactory,
+            AIContextProviders = options.AIContextProviders,
+            ChatHistoryProvider = options.ChatHistoryProvider,
         };
 
         options.AdditionalChatClientAgentOptions?.Invoke(chatClientAgentOptions);

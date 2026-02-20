@@ -43,13 +43,13 @@ public sealed class MistralTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddMistralAgentFactory(secrets.MistralApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<MistralAgentFactory>()
             .CreateAgent(MistalChatModels.MistralSmall)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -59,7 +59,7 @@ public sealed class MistralTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddMistralAgentFactory(new MistralConnection
         {
@@ -69,7 +69,7 @@ public sealed class MistralTests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<MistralAgentFactory>()
             .CreateAgent(MistalChatModels.MistralSmall)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;

@@ -18,7 +18,7 @@ public static class Anthropic
 
 
 //Create your Agent
-        AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
+        AIAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
         {
             //Mandatory
             Model = AnthropicChatModels.ClaudeHaiku45, //Model to use

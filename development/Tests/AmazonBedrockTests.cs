@@ -34,7 +34,7 @@ public sealed class AmazonBedrockTests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<AmazonBedrockAgentFactory>()
             .CreateAgent("eu.anthropic.claude-haiku-4-5-20251001-v1:0")
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -55,7 +55,7 @@ public sealed class AmazonBedrockTests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<AmazonBedrockAgentFactory>()
             .CreateAgent("eu.anthropic.claude-haiku-4-5-20251001-v1:0")
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;

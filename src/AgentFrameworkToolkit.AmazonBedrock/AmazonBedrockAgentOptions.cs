@@ -79,15 +79,12 @@ public class AmazonBedrockAgentOptions
     public LoggingMiddleware? LoggingMiddleware { get; set; }
 
     /// <summary>
-    /// Gets or sets a factory function to create an instance of <see cref="ChatHistoryMemoryProvider"/>
-    /// which will be used to store chat messages for this agent.
+    /// Gets or sets the <see cref="ChatHistoryProvider"/> instance to use for providing chat history for this agent.
     /// </summary>
-    public Func<ChatHistoryProviderFactoryContext, CancellationToken, ValueTask<ChatHistoryProvider>>? ChatHistoryProviderFactory { get; set; }
+    public ChatHistoryProvider? ChatHistoryProvider { get; set; }
 
     /// <summary>
-    /// Gets or sets a factory function to create an instance of <see cref="AIContextProvider"/>
-    /// which will be used to create a context provider for each new session, and can then
-    /// provide additional context for each agent run.
+    /// Gets or sets the list of <see cref="AIContextProvider"/> instances to use for providing additional context for each agent run.
     /// </summary>
-    public Func<AIContextProviderFactoryContext, CancellationToken, ValueTask<AIContextProvider>>? AIContextProviderFactory { get; set; }
+    public IEnumerable<AIContextProvider>? AIContextProviders { get; set; }
 }

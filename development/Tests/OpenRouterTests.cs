@@ -40,13 +40,13 @@ public sealed class OpenRouterTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddOpenRouterAgentFactory(secrets.OpenRouterApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<OpenRouterAgentFactory>()
             .CreateAgent(OpenRouterChatModels.OpenAI.Gpt5Nano)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -56,7 +56,7 @@ public sealed class OpenRouterTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddOpenRouterAgentFactory(new OpenRouterConnection
         {
@@ -66,7 +66,7 @@ public sealed class OpenRouterTests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<OpenRouterAgentFactory>()
             .CreateAgent(OpenRouterChatModels.OpenAI.Gpt5Nano)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -86,14 +86,14 @@ public sealed class OpenRouterTests : TestsBase
     [Fact]
     public async Task EmbeddingFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddOpenRouterEmbeddingFactory(secrets.OpenRouterApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
         OpenRouterEmbeddingFactory embeddingFactory = provider.GetRequiredService<OpenRouterEmbeddingFactory>();
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         Embedding<float> embedding = await embeddingFactory.GetEmbeddingGenerator("openai/text-embedding-3-small")
             .GenerateAsync("Hello", cancellationToken: cancellationToken);
         Assert.Equal(1536, embedding.Dimensions);

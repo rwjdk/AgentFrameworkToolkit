@@ -214,8 +214,8 @@ public class OpenAIAgentFactory
             Name = options.Name,
             Description = options.Description,
             Id = options.Id,
-            AIContextProviderFactory = options.AIContextProviderFactory,
-            ChatHistoryProviderFactory = options.ChatHistoryProviderFactory,
+            AIContextProviders = options.AIContextProviders,
+            ChatHistoryProvider = options.ChatHistoryProvider,
         };
 
         if (anyOptionsSet)

@@ -46,13 +46,13 @@ public sealed class OpenAITests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddOpenAIAgentFactory(secrets.OpenAiApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<OpenAIAgentFactory>()
             .CreateAgent(OpenAIChatModels.Gpt5Nano)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -62,7 +62,7 @@ public sealed class OpenAITests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddOpenAIAgentFactory(new OpenAIConnection
         {
@@ -72,7 +72,7 @@ public sealed class OpenAITests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<OpenAIAgentFactory>()
             .CreateAgent(OpenAIChatModels.Gpt5Nano)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -92,14 +92,14 @@ public sealed class OpenAITests : TestsBase
     [Fact]
     public async Task EmbeddingFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddOpenAIEmbeddingFactory(secrets.OpenAiApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
         OpenAIEmbeddingFactory embeddingFactory = provider.GetRequiredService<OpenAIEmbeddingFactory>();
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         Embedding<float> embedding = await embeddingFactory.GetEmbeddingGenerator("text-embedding-3-small")
             .GenerateAsync("Hello", cancellationToken: cancellationToken);
         Assert.Equal(1536, embedding.Dimensions);

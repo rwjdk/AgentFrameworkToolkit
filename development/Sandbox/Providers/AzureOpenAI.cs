@@ -5,6 +5,7 @@ using AgentFrameworkToolkit.Tools;
 using AgentFrameworkToolkit.Tools.Common;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using OpenAI.Chat;
 using OpenAI.Responses;
 using Secrets;
 
@@ -30,7 +31,17 @@ public static class AzureOpenAI
             Endpoint = secrets.AzureOpenAiEndpoint,
             ApiKey = secrets.AzureOpenAiKey,
         });
-        
+
+        AIAgent aiAgent = factory.CreateAgent(new AgentOptions
+        {
+            Model = "gpt-4.1-mini",
+            RawToolCallDetails = Console.WriteLine
+        });
+
+#pragma warning disable CS0618 // Type or member is obsolete
+        AgentResponse<int> runAsync = await aiAgent.RunAsStructuredOutputAsync<int>("What is 2+2");
+#pragma warning restore CS0618 // Type or member is obsolete
+
         List<AITool> tools = [];
         tools.AddRange(EmailTools.All(new EmailToolsOptions
         {
@@ -51,6 +62,12 @@ public static class AzureOpenAI
             RawToolCallDetails = Console.WriteLine 
         });
 
+
         AgentResponse agentResponse = await agent.RunAsync("send a mail to rwj@relewise.com with a poem about ducks");
+    }
+
+    public class MathResult
+    {
+        public required int Result { get; set; }
     }
 }

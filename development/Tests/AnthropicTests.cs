@@ -24,13 +24,13 @@ public sealed class AnthropicTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddAnthropicAgentFactory(secrets.AnthropicApiKey);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<AnthropicAgentFactory>()
             .CreateAgent(AnthropicChatModels.ClaudeHaiku45, 2000)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
@@ -40,7 +40,7 @@ public sealed class AnthropicTests : TestsBase
     [Fact]
     public async Task AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddAnthropicAgentFactory(new AnthropicConnection
         {
@@ -50,7 +50,7 @@ public sealed class AnthropicTests : TestsBase
 
         ServiceProvider provider = services.BuildServiceProvider();
 
-        var cancellationToken = TestContext.Current.CancellationToken;
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
         string text = (await provider.GetRequiredService<AnthropicAgentFactory>()
             .CreateAgent(AnthropicChatModels.ClaudeHaiku45, 2000)
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;

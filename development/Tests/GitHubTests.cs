@@ -28,7 +28,7 @@ public sealed class GitHubTests : TestsBase
     [Fact]
     public void AgentFactory_DependencyInjection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddGitHubAgentFactory(secrets.GitHubPatToken);
 
@@ -42,7 +42,7 @@ public sealed class GitHubTests : TestsBase
     [Fact]
     public void AgentFactory_DependencyInjection_Connection()
     {
-        var secrets = SecretsManager.GetSecrets();
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
         ServiceCollection services = new();
         services.AddGitHubAgentFactory(new GitHubConnection
         {
