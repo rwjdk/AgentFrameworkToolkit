@@ -8,7 +8,6 @@ using Microsoft.Extensions.AI;
 using OpenAI.Chat;
 using OpenAI.Responses;
 using Secrets;
-using AgentFrameworkToolkit;
 
 #pragma warning disable OPENAI001
 
