@@ -1,6 +1,8 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.0.0-rc1 (21st of Feb 2026)
+- [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0-rc1
+  - Important Note: AF now have `.RunAsync<T>(...)` directly on AIAgent, which on paper make `AIAgentExtensions.cs` not needed anymore, but due to a bug in RC1 (https://github.com/microsoft/agent-framework/issues/4118) it is currently used as polyfill for Microsoft's bug. This however have a side-effect that if you use the AgentFactories, but consume the agents as `AIAgent` I can't serve the polyfill version to you due to new real (buggy) implementation and polyfill have same name. Workaround for this is to consume factor as named Agent (example `OpenAIAgent` or my generic version `Agent` or use the extension method like this `AIAgentExtensions.RunAsync<T>()`). Once Microsoft fix their issue the polyfill workaround can go away and all scenarions will work again
 - AgentSkills: Fixed the body of the skill did not add line breaks ([PR#46](https://github.com/rwjdk/AgentFrameworkToolkit/pull/46) : Thanks to [@visasnouski](https://github.com/) for the fix 👍)
 
 ---

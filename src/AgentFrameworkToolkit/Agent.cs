@@ -102,7 +102,7 @@ public class Agent(AIAgent innerAgent) : AIAgent
         AgentRunOptions? options = null,
         CancellationToken cancellationToken = default) =>
 #pragma warning disable CS0618 // Type or member is obsolete
-        AIAgentExtensions.RunAsStructuredOutputAsync<T>(innerAgent, [], session, serializerOptions, options, cancellationToken);
+        AIAgentExtensions.RunAsync<T>(innerAgent, [], session, serializerOptions, options, cancellationToken);
 #pragma warning restore CS0618 // Type or member is obsolete
 
     /// <summary>
@@ -131,7 +131,7 @@ public class Agent(AIAgent innerAgent) : AIAgent
         CancellationToken cancellationToken = default)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-        return AIAgentExtensions.RunAsStructuredOutputAsync<T>(innerAgent, new ChatMessage(ChatRole.User, message), session, serializerOptions, options, cancellationToken);
+        return AIAgentExtensions.RunAsync<T>(innerAgent, new ChatMessage(ChatRole.User, message), session, serializerOptions, options, cancellationToken);
 #pragma warning restore CS0618 // Type or member is obsolete
     }
 
@@ -157,7 +157,7 @@ public class Agent(AIAgent innerAgent) : AIAgent
         CancellationToken cancellationToken = default)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-        return AIAgentExtensions.RunAsStructuredOutputAsync<T>(innerAgent, [message], session, serializerOptions, options, cancellationToken);
+        return AIAgentExtensions.RunAsync<T>(innerAgent, [message], session, serializerOptions, options, cancellationToken);
 #pragma warning restore CS0618 // Type or member is obsolete
     }
 
@@ -192,7 +192,7 @@ public class Agent(AIAgent innerAgent) : AIAgent
         CancellationToken cancellationToken = default)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-        return AIAgentExtensions.RunAsStructuredOutputAsync<T>(InnerAgent, messages, session, serializerOptions, options, cancellationToken);
+        return AIAgentExtensions.RunAsync<T>(InnerAgent, messages, session, serializerOptions, options, cancellationToken);
 #pragma warning restore CS0618 // Type or member is obsolete
     }
 }

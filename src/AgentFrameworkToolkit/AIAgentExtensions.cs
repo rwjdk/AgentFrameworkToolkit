@@ -44,7 +44,7 @@ public static class AIAgentExtensions
     /// </para>
     /// </remarks>
     [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
-    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
+    public static async Task<AgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         IEnumerable<ChatMessage> messages,
         AgentSession? session = null,
@@ -195,13 +195,13 @@ public static class AIAgentExtensions
     /// </para>
     /// </remarks>
     [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
-    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
+    public static async Task<AgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         AgentSession? session = null,
         JsonSerializerOptions? serializerOptions = null,
         AgentRunOptions? options = null,
         CancellationToken cancellationToken = default) =>
-        await RunAsStructuredOutputAsync<T>(agent, [], session, serializerOptions, options, cancellationToken);
+        await RunAsync<T>(agent, [], session, serializerOptions, options, cancellationToken);
 
     /// <summary>
     /// Runs the agent with a collection of chat messages, requesting a response of the specified type <typeparamref name="T"/>.
@@ -229,7 +229,7 @@ public static class AIAgentExtensions
     /// </para>
     /// </remarks>
     [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
-    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
+    public static async Task<AgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         string message,
         AgentSession? session = null,
@@ -237,7 +237,7 @@ public static class AIAgentExtensions
         AgentRunOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        return await RunAsStructuredOutputAsync<T>(agent, new ChatMessage(ChatRole.User, message), session, serializerOptions, options, cancellationToken);
+        return await RunAsync<T>(agent, new ChatMessage(ChatRole.User, message), session, serializerOptions, options, cancellationToken);
     }
 
     /// <summary>
@@ -266,7 +266,7 @@ public static class AIAgentExtensions
     /// </para>
     /// </remarks>
     [Obsolete("These extension methods are still here for polyfill reasons and will go away once Microsoft Fix https://github.com/microsoft/agent-framework/issues/4118")]
-    public static async Task<AgentResponse<T>> RunAsStructuredOutputAsync<T>(
+    public static async Task<AgentResponse<T>> RunAsync<T>(
         this AIAgent agent,
         ChatMessage message,
         AgentSession? session = null,
@@ -274,6 +274,6 @@ public static class AIAgentExtensions
         AgentRunOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        return await RunAsStructuredOutputAsync<T>(agent, [message], session, serializerOptions, options, cancellationToken);
+        return await RunAsync<T>(agent, [message], session, serializerOptions, options, cancellationToken);
     }
 }

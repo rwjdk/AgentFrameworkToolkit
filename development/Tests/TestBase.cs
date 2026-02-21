@@ -49,7 +49,7 @@ public abstract class TestsBase
 
     protected async Task SimpleAgentTestsAsync(AgentProvider provider)
     {
-        AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Simple);
+        Agent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Simple);
         Assert.NotNull(agent.Id);
         Assert.Equal(TestName, agent.Name);
         AgentResponse response = await agent.RunAsync("Hello", cancellationToken: TestContext.Current.CancellationToken);
@@ -60,7 +60,7 @@ public abstract class TestsBase
     protected async Task NormalAgentTestsAsync(AgentProvider provider)
     {
         TestLoggerFactory testLogger = new();
-        AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Normal, testLogger);
+        Agent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Normal, testLogger);
         Assert.NotNull(agent.Id);
         Assert.Equal(TestName, agent.Name);
         Assert.Equal(TestDescription, agent.Description);
@@ -90,7 +90,7 @@ public abstract class TestsBase
     {
         _openTelemetryDisplayName = null;
         TestLoggerFactory testLogger = new();
-        AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.OpenTelemetryAndLoggingMiddleware, testLogger);
+        Agent agent = await GetAgentForScenarioAsync(provider, AgentScenario.OpenTelemetryAndLoggingMiddleware, testLogger);
         Assert.NotNull(agent.Id);
         Assert.Equal(TestName, agent.Name);
         Assert.Equal(TestDescription, agent.Description);
@@ -124,7 +124,7 @@ public abstract class TestsBase
     {
         TestLoggerFactory testLogger = new();
         ToolCallingMiddlewareCity = null;
-        AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.ToolCall, testLogger);
+        Agent agent = await GetAgentForScenarioAsync(provider, AgentScenario.ToolCall, testLogger);
         AgentResponse response = await agent.RunAsync("What is the weather like in Paris", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Single(response.Messages.Where(x => x.Role == ChatRole.Tool).ToList());
         Assert.Equal(3, response.Messages.Count);
@@ -137,7 +137,7 @@ public abstract class TestsBase
     protected async Task McpToolCallAgentTestsAsync(AgentProvider provider)
     {
         TestLoggerFactory testLogger = new();
-        AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.McpToolCall, testLogger);
+        Agent agent = await GetAgentForScenarioAsync(provider, AgentScenario.McpToolCall, testLogger);
         AgentResponse response = await agent.RunAsync("Call the 'getting_started' tool to find what URL the nuget is on", cancellationToken: TestContext.Current.CancellationToken);
         Assert.True(response.Messages.Count(x => x.Role == ChatRole.Tool) > 0);
         Assert.Contains("www.nuget.org/packages/TrelloDotNet".ToUpperInvariant(), response.Text.ToUpperInvariant());
@@ -146,7 +146,7 @@ public abstract class TestsBase
     protected async Task StructuredOutputAgentTestsAsync(AgentProvider provider)
     {
         TestLoggerFactory testLogger = new();
-        AIAgent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Normal, testLogger);
+        Agent agent = await GetAgentForScenarioAsync(provider, AgentScenario.Normal, testLogger);
         AgentResponse<MovieResult> response = await agent.RunAsync<MovieResult>("Top 3 IMDB Movies", cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(3, response.Result.Movies.Count);
     }
@@ -158,7 +158,7 @@ public abstract class TestsBase
     [UsedImplicitly]
     private record Movie(string Title, int YearOfRelease);
 
-    private async Task<AIAgent> GetAgentForScenarioAsync(AgentProvider provider, AgentScenario scenario, TestLoggerFactory? testLogger = null)
+    private async Task<Agent> GetAgentForScenarioAsync(AgentProvider provider, AgentScenario scenario, TestLoggerFactory? testLogger = null)
     {
         string sourceName = "AiSource";
         TracerProviderBuilder tracerProviderBuilder = Sdk.CreateTracerProviderBuilder()

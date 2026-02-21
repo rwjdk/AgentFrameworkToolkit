@@ -8,6 +8,7 @@ using Microsoft.Extensions.AI;
 using OpenAI.Chat;
 using OpenAI.Responses;
 using Secrets;
+using AgentFrameworkToolkit;
 
 #pragma warning disable OPENAI001
 
@@ -32,15 +33,13 @@ public static class AzureOpenAI
             ApiKey = secrets.AzureOpenAiKey,
         });
 
-        AIAgent aiAgent = factory.CreateAgent(new AgentOptions
+        AzureOpenAIAgent aiAgent = factory.CreateAgent(new AgentOptions
         {
             Model = "gpt-4.1-mini",
             RawToolCallDetails = Console.WriteLine
         });
 
-#pragma warning disable CS0618 // Type or member is obsolete
-        AgentResponse<int> runAsync = await aiAgent.RunAsStructuredOutputAsync<int>("What is 2+2");
-#pragma warning restore CS0618 // Type or member is obsolete
+        AgentResponse<int> runAsync = await aiAgent.RunAsync<int>("What is 2+2");
 
         List<AITool> tools = [];
         tools.AddRange(EmailTools.All(new EmailToolsOptions
