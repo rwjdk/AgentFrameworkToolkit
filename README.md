@@ -13,15 +13,15 @@ But the second you need to do something slightly more advanced, you end up with 
 - How do you add Tool Calling Middleware?
 - How do you create Tools from a class or MCP Server?
 
-Things like the above, while doable, are very cumbersome and are not discoverable, as Microsoft Agent Framework has decided to be very generic.
+Things like the above, while doable, are very cumbersome and are not discoverable in Microsoft Agent Framework, as it has decided to be very generic.
 
-Agent Framework Toolkit resolves these issues by offering Provider-specific wrappers around Microsoft Agent Framework, that are tailored to the specific provider while keeping 100% compatibility with the rest of Microsoft Agent Framework. The result is less code and much easier code for you to write.
+Agent Framework Toolkit resolves these issues by offering Provider-specific wrappers around Microsoft Agent Framework that are tailored to the specific provider while keeping 100% compatibility with the rest of Microsoft Agent Framework. The result is less code and much easier code for you to write.
 
 ![With and Without Agent Framework Toolkit](https://i.imgur.com/NN18Ets.png)
 *The above sample shows how the code looks with and without the Agent Framework Toolkit. You can get more details in [this video](https://youtu.be/OWjy4vkj-8o).*
 
 ## Supported Providers
-The following providers are currently supported (check out the individual README's for details and samples)
+The following providers are currently supported (check out the individual READMEs for details and samples)
 
 | Provider | Supported Features |   |  |
 |---|---|---|--|
