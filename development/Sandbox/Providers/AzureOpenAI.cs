@@ -42,10 +42,6 @@ public static class AzureOpenAI
         
         AgentResponse<MathResult> response2B = await agent2B.RunAsync<MathResult>(question); //Fail do to Microsoft Bug
 
-#pragma warning disable CS0618 // Type or member is obsolete
-        AgentResponse<MathResult> response2BFix1 = await AgentFrameworkToolkit.AIAgentExtensions.RunAsync<MathResult>(agent2B, question);
-#pragma warning restore CS0618 // Type or member is obsolete
-
         AgentResponse<MathResult> response3Fix2 = await ((Agent)agent2B).RunAsync<MathResult>(question);
 
     }
