@@ -1,7 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
 ## Unreleased
+- Bump Microsoft Agent Framework from v.1.0-rc1 to v.1.0-rc2
 - Added dedicated Constructors for the various Connection-Classes for easier construction.
+- Bump ModelContextProtocol NuGet from 0.8.0-preview1 to 1.0.0
+- Bump AWSSDK.BedrockRuntime" NuGet from 4.0.16 to 4.0.16.1
+- Bump AWSSDK.Extensions.Bedrock.MEAI Nuget from 4.0.5.7 to 4.0.5.8
 
 ---
 
