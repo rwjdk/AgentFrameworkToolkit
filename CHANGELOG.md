@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Bump Google.GenAI NuGet from 1.1.0 to 1.2.0
+
+---
+
 ## Version 1.0.0-rc2 (26th of Feb 2026)
 - Bump Microsoft Agent Framework from v.1.0-rc1 to v.1.0-rc2
 - Removed `.RunAsync<T>(...)` polyfill (AIAgentExtensnions.cs) that dealt with [AF Issue #4118](https://github.com/microsoft/agent-framework/issues/4118) as it is now fixed.
