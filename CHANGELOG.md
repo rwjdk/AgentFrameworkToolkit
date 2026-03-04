@@ -1,7 +1,9 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.0.0-rc2 (4th of March 2026)
+- Bump Agent Framework from rc2 to rc3
 - Bump Google.GenAI NuGet from 1.1.0 to 1.2.0
+- Bump Azure.Identity from 1.17.1 to 1.18.0
 
 ---
 
