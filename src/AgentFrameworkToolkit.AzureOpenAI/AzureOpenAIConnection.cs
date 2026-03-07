@@ -105,7 +105,8 @@ public class AzureOpenAIConnection
         string endpointUrl = Endpoint;
         if (AutoCorrectFoundryEndpoint)
         {
-            endpointUrl = AzureAiUrlHelper.RemoveSuffixIfMatches(endpointUrl);
+            endpointUrl = AzureAiUrlHelper.RemoveSuffixIfMatches(AzureAiUrlHelper.ProjectPattern, endpointUrl);
+            endpointUrl = AzureAiUrlHelper.RemoveSuffixIfMatches(AzureAiUrlHelper.OpenAiPattern, endpointUrl);
         }
 
         Uri endpoint = new(endpointUrl);
@@ -125,13 +126,17 @@ public class AzureOpenAIConnection
 
     internal static class AzureAiUrlHelper
     {
-        private static readonly Regex Pattern = new(
+        internal static readonly Regex ProjectPattern = new(
             @"^https://.+?\.services\.ai\.azure\.com(?<suffix>/api/projects/.+)$",
             RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
-        public static string RemoveSuffixIfMatches(string input)
+        public static readonly Regex OpenAiPattern = new(
+            @"^https://.+?\.openai\.azure\.com(?<suffix>/openai/v1(?:/.+)?)$",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        
+        public static string RemoveSuffixIfMatches(Regex regex, string input)
         {
-            Match match = Pattern.Match(input);
+            Match match = regex.Match(input);
             if (!match.Success)
             {
                 return input;

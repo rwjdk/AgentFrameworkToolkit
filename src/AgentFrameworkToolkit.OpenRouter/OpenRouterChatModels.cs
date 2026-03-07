@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.OpenRouter;
 
@@ -87,6 +87,11 @@ public static class OpenRouterChatModels
         public const string ClaudeSonnet45 = "anthropic/claude-sonnet-4-5";
 
         /// <summary>
+        /// Claude Sonnet 4.6
+        /// </summary>
+        public const string ClaudeSonnet46 = "anthropic/claude-sonnet-4-6";
+
+        /// <summary>
         /// Claude Opus 4
         /// </summary>
         public const string ClaudeOpus4 = "anthropic/claude-opus-4";
@@ -95,6 +100,16 @@ public static class OpenRouterChatModels
         /// Claude Opus 4.1
         /// </summary>
         public const string ClaudeOpus41 = "anthropic/claude-opus-4-1";
+
+        /// <summary>
+        /// Claude Opus 4.5
+        /// </summary>
+        public const string ClaudeOpus45 = "anthropic/claude-opus-4-5";
+
+        /// <summary>
+        /// Claude Opus 4.6
+        /// </summary>
+        public const string ClaudeOpus46 = "anthropic/claude-opus-4-6";
 
         /// <summary>
         /// Claude Haiku 3.5
@@ -119,9 +134,39 @@ public static class OpenRouterChatModels
     public static class OpenAI
     {
         /// <summary>
+        /// GPT-5.4 Pro (Reasoning)
+        /// </summary>
+        public const string Gpt54Pro = "openai/gpt-5.4-pro";
+
+        /// <summary>
+        /// GPT-5.4 (Reasoning)
+        /// </summary>
+        public const string Gpt54 = "openai/gpt-5.4";
+
+        /// <summary>
+        /// GPT-5.2 Pro (Reasoning)
+        /// </summary>
+        public const string Gpt52Pro = "openai/gpt-5.2-pro";
+
+        /// <summary>
+        /// GPT-5.2 (Reasoning)
+        /// </summary>
+        public const string Gpt52 = "openai/gpt-5.2";
+
+        /// <summary>
         /// GPT-5.1 (Reasoning)
         /// </summary>
         public const string Gpt51 = "openai/gpt-5.1";
+
+        /// <summary>
+        /// GPT-5.3 Codex (Reasoning) [NB: Only work with Responses API]
+        /// </summary>
+        public const string Gpt53Codex = "openai/gpt-5.3-codex";
+
+        /// <summary>
+        /// GPT-5.2 Codex (Reasoning) [NB: Only work with Responses API]
+        /// </summary>
+        public const string Gpt52Codex = "openai/gpt-5.2-codex";
 
         /// <summary>
         /// GPT-5.1 Codex (Reasoning) [NB: Only work with Responses API]

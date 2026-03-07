@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.OpenAI;
 
@@ -8,6 +8,16 @@ namespace AgentFrameworkToolkit.OpenAI;
 [PublicAPI]
 public static class OpenAIChatModels
 {
+    /// <summary>
+    /// GPT-5.4 Pro (Reasoning)
+    /// </summary>
+    public const string Gpt54Pro = "gpt-5.4-pro";
+
+    /// <summary>
+    /// GPT-5.4 (Reasoning)
+    /// </summary>
+    public const string Gpt54 = "gpt-5.4";
+
     /// <summary>
     /// GPT-5.2 Pro (Reasoning)
     /// </summary>
@@ -24,9 +34,19 @@ public static class OpenAIChatModels
     public const string Gpt51 = "gpt-5.1";
 
     /// <summary>
+    /// GPT-5.3 Codex (Reasoning) [NB: Only work with Responses API]
+    /// </summary>
+    public const string Gpt53Codex = "gpt-5.3-codex";
+
+    /// <summary>
+    /// GPT-5.2 Codex (Reasoning) [NB: Only work with Responses API]
+    /// </summary>
+    public const string Gpt52Codex = "gpt-5.2-codex";
+
+    /// <summary>
     /// GPT-5.1 Codex (Reasoning) [NB: Only work with Responses API]
     /// </summary>
-    public const string Gpt51CodexMax = "gpt-5.1-codex-max";
+    public const string Gpt51CodexMax = "gpt-5.1-codex";
 
     /// <summary>
     /// GPT-5.1 Codex (Reasoning) [NB: Only work with Responses API]
@@ -91,5 +111,5 @@ public static class OpenAIChatModels
     /// <summary>
     /// Known Reasoning Models
     /// </summary>
-    public static string[] ReasoningModels = [Gpt5, Gpt5Pro, Gpt51, Gpt5Mini, Gpt5Nano, Gpt5Codex, Gpt51Codex, Gpt51CodexMax, Gpt52Pro, Gpt52];
+    public static string[] ReasoningModels = [Gpt5, Gpt5Pro, Gpt51, Gpt5Mini, Gpt5Nano, Gpt5Codex, Gpt51Codex, Gpt51CodexMax, Gpt52Pro, Gpt52, Gpt52Codex, Gpt53Codex, Gpt54, Gpt54Pro];
 }

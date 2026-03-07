@@ -2,6 +2,7 @@ using AgentFrameworkToolkit;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using Secrets;
 
 namespace Sandbox.Providers;
@@ -20,30 +21,16 @@ public static class AzureOpenAI
 
         AzureOpenAIAgent agent = factory.CreateAgent(new AgentOptions
         {
-            Model = "gpt-4.1-mini",
+            Model = "gpt-5-mini",
+            ReasoningEffort = OpenAIReasoningEffort.Low,
             RawToolCallDetails = Console.WriteLine
         });
 
-        AIAgent agent2A = factory.CreateAgent(new AgentOptions
-        {
-            Model = "gpt-4.1-mini",
-        });
+        AgentSession session = await agent.CreateSessionAsync();
 
-        AIAgent agent2B = factory.CreateAgent(new AgentOptions
-        {
-            Model = "gpt-4.1-mini",
-            RawToolCallDetails = Console.WriteLine
-        });
-        string question = "What is 2+2";
+        AgentResponse response = await agent.RunAsync("What is the capital of France?", session);
 
-        AgentResponse<MathResult> response1 = await agent.RunAsync<MathResult>(question);
-
-        AgentResponse<MathResult> response2A = await agent2A.RunAsync<MathResult>(question); //Fail do to Microsoft Bug
-        
-        AgentResponse<MathResult> response2B = await agent2B.RunAsync<MathResult>(question); //Fail do to Microsoft Bug
-
-        AgentResponse<MathResult> response3Fix2 = await ((Agent)agent2B).RunAsync<MathResult>(question);
-
+        IList<ChatMessage> chatMessages = session.GetMessages();
     }
 
     public class MathResult

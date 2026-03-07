@@ -27,6 +27,11 @@ public static class AnthropicChatModels
     /// Claude Sonnet 4.5
     /// </summary>
     public const string ClaudeSonnet45 = "claude-sonnet-4-5";
+    
+    /// <summary>
+    /// Claude Sonnet 4.6
+    /// </summary>
+    public const string ClaudeSonnet46 = "claude-sonnet-4-6";
 
     /// <summary>
     /// Claude Opus 4
