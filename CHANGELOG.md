@@ -1,10 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.0.0-rc3.1 (8th of March 2026)
 - Anthropic: Added Support for Structured Output (custom implementation as Anthropic doe not adhere to common practice, but outcome is the same).
 - Update the various Model Constants with the latest releases
 - AzureOpenAI: Endpoint Pattern `https://<name>.openai.azure.com/openai/v1` is now also auto-corrected by default (to: `https://<name>.openai.azure.com`)
 - Added `AgentSession.GetMessages()` extension method for easier discoverability on getting messages from a session (Require that session belong to an agent that use the default InMemoryChatHistory)
+- Added Cerebras provider (`AgentFrameworkToolkit.Cerebras`)
 
 ---
 

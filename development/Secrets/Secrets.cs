@@ -13,6 +13,7 @@ public record Secrets(
     string HuggingFaceApiKey,
     string OpenRouterApiKey,
     string CohereApiKey,
+    string CerebrasApiKey,
     string ApplicationInsightsConnectionString,
     string GoogleGeminiApiKey,
     string XAiGrokApiKey,

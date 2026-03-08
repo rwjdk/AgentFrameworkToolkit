@@ -2,6 +2,7 @@ using Amazon;
 using AgentFrameworkToolkit.AmazonBedrock;
 using AgentFrameworkToolkit.Anthropic;
 using AgentFrameworkToolkit.AzureOpenAI;
+using AgentFrameworkToolkit.Cerebras;
 using AgentFrameworkToolkit.Cohere;
 using AgentFrameworkToolkit.GitHub;
 using AgentFrameworkToolkit.Google;
@@ -78,6 +79,7 @@ public abstract class TestsBase
             case AgentProvider.OpenAIResponsesApi:
             case AgentProvider.OpenRouterChatClient:
             case AgentProvider.OpenRouterResponsesApi:
+            case AgentProvider.CerebrasChatClient:
             case AgentProvider.CohereChatClient:
             case AgentProvider.XAIChatClient:
             case AgentProvider.XAIResponsesApi:
@@ -112,6 +114,7 @@ public abstract class TestsBase
             case AgentProvider.OpenAIResponsesApi:
             case AgentProvider.OpenRouterChatClient:
             case AgentProvider.OpenRouterResponsesApi:
+            case AgentProvider.CerebrasChatClient:
             case AgentProvider.CohereChatClient:
             case AgentProvider.XAIChatClient:
             case AgentProvider.XAIResponsesApi:
@@ -320,6 +323,20 @@ public abstract class TestsBase
                     _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, OpenRouterConnection.DefaultEndpoint, ClientType.ResponsesApi)),
                 };
             }
+            case AgentProvider.CerebrasChatClient:
+            {
+                CerebrasAgentFactory factory = new(new CerebrasConnection
+                {
+                    ApiKey = secrets.CerebrasApiKey,
+                    DefaultClientType = ClientType.ChatClient
+                });
+                string model = CerebrasChatModels.GptOss120B;
+                return scenario switch
+                {
+                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
+                    _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, CerebrasConnection.DefaultEndpoint, ClientType.ChatClient)),
+                };
+            }
             case AgentProvider.CohereChatClient:
             {
                 CohereAgentFactory factory = new(new CohereConnection
@@ -394,6 +411,7 @@ public abstract class TestsBase
                         case AgentProvider.AzureOpenAIChatClient:
                         case AgentProvider.OpenAIChatClient:
                         case AgentProvider.OpenRouterChatClient:
+                        case AgentProvider.CerebrasChatClient:
                         case AgentProvider.CohereChatClient:
                         case AgentProvider.XAIChatClient:
                             Assert.Contains("\"max_completion_tokens\": 2000", details.RequestData);
@@ -688,6 +706,7 @@ public enum AgentProvider
     AmazonBedrock,
     OpenRouterChatClient,
     OpenRouterResponsesApi,
+    CerebrasChatClient,
     CohereChatClient,
     XAIChatClient,
     XAIResponsesApi,

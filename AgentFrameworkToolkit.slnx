@@ -3,6 +3,7 @@
     <Project Path="src/AgentFrameworkToolkit.AmazonBedrock/AgentFrameworkToolkit.AmazonBedrock.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Anthropic/AgentFrameworkToolkit.Anthropic.csproj" />
     <Project Path="src/AgentFrameworkToolkit.AzureOpenAI/AgentFrameworkToolkit.AzureOpenAI.csproj" />
+    <Project Path="src/AgentFrameworkToolkit.Cerebras/AgentFrameworkToolkit.Cerebras.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Cohere/AgentFrameworkToolkit.Cohere.csproj" />
     <Project Path="src/AgentFrameworkToolkit.GitHub/AgentFrameworkToolkit.GitHub.csproj" />
     <Project Path="src/AgentFrameworkToolkit.Google/AgentFrameworkToolkit.Google.csproj" />
