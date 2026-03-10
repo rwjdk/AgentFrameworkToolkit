@@ -41,6 +41,43 @@ AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
 
+## Batch Jobs
+
+You can create Azure OpenAI batch jobs with `BatchRunner`. Each `BatchRunLine` becomes one JSONL entry, while `BatchRunOptions` applies shared settings such as model, endpoint type, reasoning, and token limits to every request in the batch.
+
+```cs
+BatchRunner batchRunner = new BatchRunner("<Endpoint>", "<API Key>");
+
+BatchRun batchRun = await batchRunner.CreateBatchAsync(
+    new BatchRunOptions
+    {
+        Model = "gpt-4.1-nano-batch",
+        ClientType = BatchClientType.ChatClient
+    },
+    [
+        new BatchRunLine
+        {
+            CustomId = "question-1",
+            Messages =
+            [
+                new ChatMessage(ChatRole.System, "You are a nice AI"),
+                new ChatMessage(ChatRole.User, "Why is the sky blue?")
+            ]
+        },
+        new BatchRunLine
+        {
+            CustomId = "question-2",
+            Messages =
+            [
+                new ChatMessage(ChatRole.System, "You are a nice AI"),
+                new ChatMessage(ChatRole.User, "What is a JSONL file?")
+            ]
+        }
+    ]);
+
+IReadOnlyList<BatchRunResultLine> results = await batchRun.DownloadResultsAsync();
+```
+
 ### Normal Code Example (API KEY)
 ```cs
 //Create your AgentFactory

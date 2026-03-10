@@ -21,15 +21,18 @@ public static class AzureOpenAI
         };
 
         BatchRunner batchRunner = new BatchRunner(connection);
-        BatchRun run = await batchRunner.CreateBatchAsync(new BatchOptions
+        BatchRun run = await batchRunner.CreateBatchAsync(new BatchRunOptions
         {
-            ClientType = BatchClientType.ChatClient,
-            WaitUntilCompleted = false
+            Model = "gpt-5-mini",
+            WaitUntilCompleted = true
         },
-        [
-            new ChatMessage(ChatRole.User, "What is the capital of France?"),
-            new ChatMessage(ChatRole.User, "How to made soup?")
-        ]);
+            [
+              new BatchRunLine
+              {
+                  Messages = [new ChatMessage(ChatRole.User, "What is the capital of France?")]
+              }  
+            ]
+            );
 
 
         AzureOpenAIAgentFactory factory = new AzureOpenAIAgentFactory(connection);

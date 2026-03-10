@@ -106,4 +106,102 @@ public sealed class AzureOpenAITests : TestsBase
             .GenerateAsync("Hello", cancellationToken: cancellationToken);
         Assert.Equal(1536, embedding.Dimensions);
     }
+
+    [Fact]
+    public async Task BatchRunner_SingleLine_WaitUntilCompleted()
+    {
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
+        BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+
+        try
+        {
+            BatchRun batchRun = await batchRunner.CreateBatchAsync(
+                new BatchRunOptions
+                {
+                    Model = "gpt-4.1-nano-batch",
+                    ClientType = BatchClientType.ChatClient,
+                    WaitUntilCompleted = true,
+                    MaxOutputTokens = 128,
+                    RawHttpCallDetails = details =>
+                    {
+                        Console.WriteLine("REQUEST URL:");
+                        Console.WriteLine(details.RequestUrl);
+                        Console.WriteLine("REQUEST DATA:");
+                        Console.WriteLine(details.RequestData);
+                        Console.WriteLine("RESPONSE DATA:");
+                        Console.WriteLine(details.ResponseData);
+                    }
+                },
+                [
+                    new BatchRunLine
+                    {
+                        CustomId = "live-test-1",
+                        Messages =
+                        [
+                            new ChatMessage(ChatRole.System, "You are a concise assistant."),
+                            new ChatMessage(ChatRole.User, "Reply with the single word: pong")
+                        ]
+                    }
+                ]);
+
+            Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
+
+            IReadOnlyList<BatchRunResultLine> results = await batchRun.DownloadResultsAsync();
+            BatchRunResultLine result = Assert.Single(results);
+            ChatMessage message = Assert.Single(result.Messages);
+
+            Assert.Equal(ChatRole.Assistant, message.Role);
+            Assert.NotEmpty(message.Text);
+        }
+        catch (AgentFrameworkToolkitException ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+    }
+
+    [Fact]
+    public async Task BatchRunner_SingleLine_ResponsesApi_WaitUntilCompleted()
+    {
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
+        BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+
+        BatchRun batchRun = await batchRunner.CreateBatchAsync(
+            new BatchRunOptions
+            {
+                Model = "gpt-4.1-nano-batch",
+                ClientType = BatchClientType.ResponsesApi,
+                WaitUntilCompleted = true,
+                MaxOutputTokens = 128,
+                RawHttpCallDetails = details =>
+                {
+                    Console.WriteLine("REQUEST URL:");
+                    Console.WriteLine(details.RequestUrl);
+                    Console.WriteLine("REQUEST DATA:");
+                    Console.WriteLine(details.RequestData);
+                    Console.WriteLine("RESPONSE DATA:");
+                    Console.WriteLine(details.ResponseData);
+                }
+            },
+            [
+                new BatchRunLine
+                {
+                    CustomId = "live-test-responses-1",
+                    Messages =
+                    [
+                        new ChatMessage(ChatRole.System, "You are a concise assistant."),
+                        new ChatMessage(ChatRole.User, "Reply with the single word: pong")
+                    ]
+                }
+            ]);
+
+        Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
+
+        IReadOnlyList<BatchRunResultLine> results = await batchRun.DownloadResultsAsync();
+        BatchRunResultLine result = Assert.Single(results);
+        ChatMessage message = Assert.Single(result.Messages);
+
+        Assert.Equal(ChatRole.Assistant, message.Role);
+        Assert.NotEmpty(message.Text);
+    }
 }
