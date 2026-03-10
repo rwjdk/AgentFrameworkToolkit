@@ -13,11 +13,26 @@ public static class AzureOpenAI
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
 
-        AzureOpenAIAgentFactory factory = new AzureOpenAIAgentFactory(new AzureOpenAIConnection
+
+        AzureOpenAIConnection connection = new AzureOpenAIConnection
         {
             Endpoint = secrets.AzureOpenAiEndpoint,
             ApiKey = secrets.AzureOpenAiKey,
-        });
+        };
+
+        AzureOpenAIBatchRunner batchRunner = new AzureOpenAIBatchRunner(connection);
+        BatchRun run = await batchRunner.CreateBatchAsync(new BatchOptions
+        {
+            ClientType = BatchClientType.ChatClient,
+            WaitUntilCompleted = false
+        },
+        [
+            new ChatMessage(ChatRole.User, "What is the capital of France?"),
+            new ChatMessage(ChatRole.User, "How to made soup?")
+        ]);
+
+
+        AzureOpenAIAgentFactory factory = new AzureOpenAIAgentFactory(connection);
 
         AzureOpenAIAgent agent = factory.CreateAgent(new AgentOptions
         {
