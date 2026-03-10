@@ -7,7 +7,7 @@ namespace AgentFrameworkToolkit.AzureOpenAI;
 /// <summary>
 /// Azure OpenAI Runner for BatchJobs
 /// </summary>
-public class AzureOpenAIBatchRunner
+public class BatchRunner
 {
     /// <summary>
     /// Connection
@@ -19,7 +19,7 @@ public class AzureOpenAIBatchRunner
     /// </summary>
     /// <param name="endpoint">Your AzureOpenAI Endpoint (not to be confused with a Microsoft Foundry Endpoint. format: 'https://YourName.openai.azure.com' or 'https://YourName.services.azure.com')</param>
     /// <param name="apiKey">Your AzureOpenAI API Key (if you need a more advanced connection use the constructor overload)</param>
-    public AzureOpenAIBatchRunner(string endpoint, string apiKey)
+    public BatchRunner(string endpoint, string apiKey)
     {
         Connection = new AzureOpenAIConnection
         {
@@ -33,7 +33,7 @@ public class AzureOpenAIBatchRunner
     /// </summary>
     /// <param name="endpoint">Your AzureOpenAI Endpoint (not to be confused with a Microsoft Foundry Endpoint. format: 'https://YourName.openai.azure.com' or 'https://YourName.services.azure.com')</param>
     /// <param name="credentials">Your RBAC Credentials (if you need a more advanced connection use the constructor overload)</param>
-    public AzureOpenAIBatchRunner(string endpoint, TokenCredential credentials)
+    public BatchRunner(string endpoint, TokenCredential credentials)
     {
         Connection = new AzureOpenAIConnection
         {
@@ -46,7 +46,7 @@ public class AzureOpenAIBatchRunner
     /// Constructor
     /// </summary>
     /// <param name="connection">Connection Details</param>
-    public AzureOpenAIBatchRunner(AzureOpenAIConnection connection)
+    public BatchRunner(AzureOpenAIConnection connection)
     {
         Connection = connection;
     }

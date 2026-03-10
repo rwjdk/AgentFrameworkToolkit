@@ -20,7 +20,7 @@ public static class AzureOpenAI
             ApiKey = secrets.AzureOpenAiKey,
         };
 
-        AzureOpenAIBatchRunner batchRunner = new AzureOpenAIBatchRunner(connection);
+        BatchRunner batchRunner = new BatchRunner(connection);
         BatchRun run = await batchRunner.CreateBatchAsync(new BatchOptions
         {
             ClientType = BatchClientType.ChatClient,
