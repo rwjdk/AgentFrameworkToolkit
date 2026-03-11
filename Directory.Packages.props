@@ -18,7 +18,7 @@
     <!-- Third-party AI SDKs -->
     <PackageVersion Include="Google.GenAI" Version="1.2.0" />
     <PackageVersion Include="Mistral.SDK" Version="2.3.1" />
-    <PackageVersion Include="ModelContextProtocol" Version="1.0.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="1.1.0" />
     <PackageVersion Include="AWSSDK.BedrockRuntime" Version="4.0.16.1" />
     <PackageVersion Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.5.8" />
     <!-- Code analysis -->
