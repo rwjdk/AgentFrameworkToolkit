@@ -3,6 +3,8 @@
 ## Unreleased
 - Updated ModelContextProtocol from 1.0.0 to 1.1.0.
 
+---
+
 ## Version 1.0.0-rc3.1 (8th of March 2026)
 - Anthropic: Added Support for Structured Output (custom implementation, as Anthropic does not adhere to common practice, but the outcome is the same).
 - Update the various Model Constants with the latest releases
