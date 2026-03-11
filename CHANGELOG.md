@@ -1,10 +1,13 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Updated ModelContextProtocol from 1.0.0 to 1.1.0.
+
 ## Version 1.0.0-rc3.1 (8th of March 2026)
-- Anthropic: Added Support for Structured Output (custom implementation as Anthropic doe not adhere to common practice, but outcome is the same).
+- Anthropic: Added Support for Structured Output (custom implementation, as Anthropic does not adhere to common practice, but the outcome is the same).
 - Update the various Model Constants with the latest releases
 - AzureOpenAI: Endpoint Pattern `https://<name>.openai.azure.com/openai/v1` is now also auto-corrected by default (to: `https://<name>.openai.azure.com`)
-- Added `AgentSession.GetMessages()` extension method for easier discoverability on getting messages from a session (Require that session belong to an agent that use the default InMemoryChatHistory)
+- Added `AgentSession.GetMessages()` extension method for easier discoverability on getting messages from a session (Require that the session belongs to an agent that uses the default InMemoryChatHistory)
 - Added Cerebras provider (`AgentFrameworkToolkit.Cerebras`)
 
 ---
@@ -18,8 +21,8 @@
 
 ## Version 1.0.0-rc2 (26th of Feb 2026)
 - Bump Microsoft Agent Framework from v.1.0-rc1 to v.1.0-rc2
-- Removed `.RunAsync<T>(...)` polyfill (AIAgentExtensnions.cs) that dealt with [AF Issue #4118](https://github.com/microsoft/agent-framework/issues/4118) as it is now fixed.
-- Added dedicated Constructors for the various Connection-Classes for easier construction.
+- Removed `.RunAsync<T>(...)` polyfill (AIAgentExtensions.cs) that dealt with [AF Issue #4118](https://github.com/microsoft/agent-framework/issues/4118) as it is now fixed.
+- Added dedicated Constructors for the various connection classes for easier construction.
 - Bump ModelContextProtocol NuGet from 0.8.0-preview1 to 1.0.0
 - Bump AWSSDK.BedrockRuntime" NuGet from 4.0.16 to 4.0.16.1
 - Bump AWSSDK.Extensions.Bedrock.MEAI Nuget from 4.0.5.7 to 4.0.5.8
@@ -28,7 +31,7 @@
 
 ## Version 1.0.0-rc1 (21st of Feb 2026)
 - [BREAKING] Upgraded and fixed breaking changes from Microsoft Agent Framework v.1.0-rc1
-  - Important Note: AF now have `.RunAsync<T>(...)` directly on AIAgent, which on paper make `AIAgentExtensions.cs` not needed anymore, but due to a bug in RC1 (https://github.com/microsoft/agent-framework/issues/4118) it is currently used as polyfill for Microsoft's bug. This however have a side-effect that if you use the AgentFactories, but consume the agents as `AIAgent` I can't serve the polyfill version to you due to new real (buggy) implementation and polyfill have same name. Workaround for this is to consume factor as named Agent (example `OpenAIAgent` or my generic version `Agent` or use the extension method like this `AIAgentExtensions.RunAsync<T>()`). Once Microsoft fix their issue the polyfill workaround can go away and all scenarions will work again
+  - Important Note: AF now has `.RunAsync<T>(...)` directly on AIAgent, which, on paper, makes `AIAgentExtensions.cs` not needed anymore, but due to a bug in RC1 (https://github.com/microsoft/agent-framework/issues/4118) it is currently used as a polyfill for Microsoft's bug. This however, has a side-effect that if you use the AgentFactories, but consume the agents as `AIAgent` I can't serve the polyfill version to you due to new real (buggy) implementation and polyfill have same name. Workaround for this is to consume factor as named Agent (example `OpenAIAgent` or my generic version `Agent` or use the extension method like this `AIAgentExtensions.RunAsync<T>()`). Once Microsoft fix their issue the polyfill workaround can go away and all scenarions will work again
 - AgentSkills: Fixed the body of the skill did not add line breaks ([PR#46](https://github.com/rwjdk/AgentFrameworkToolkit/pull/46) : Thanks to [@visasnouski](https://github.com/) for the fix 👍)
 
 ---
