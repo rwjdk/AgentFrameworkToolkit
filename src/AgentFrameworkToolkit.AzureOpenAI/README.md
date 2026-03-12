@@ -52,7 +52,8 @@ BatchRun batchRun = await batchRunner.CreateBatchAsync(
     new BatchRunOptions
     {
         Model = "gpt-4.1-nano-batch",
-        ClientType = BatchClientType.ChatClient
+        ClientType = BatchClientType.ChatClient,
+        Instructions = "You are a nice AI"
     },
     [
         new BatchRunLine
@@ -60,7 +61,6 @@ BatchRun batchRun = await batchRunner.CreateBatchAsync(
             CustomId = "question-1",
             Messages =
             [
-                new ChatMessage(ChatRole.System, "You are a nice AI"),
                 new ChatMessage(ChatRole.User, "Why is the sky blue?")
             ]
         },
@@ -69,7 +69,6 @@ BatchRun batchRun = await batchRunner.CreateBatchAsync(
             CustomId = "question-2",
             Messages =
             [
-                new ChatMessage(ChatRole.System, "You are a nice AI"),
                 new ChatMessage(ChatRole.User, "What is a JSONL file?")
             ]
         }

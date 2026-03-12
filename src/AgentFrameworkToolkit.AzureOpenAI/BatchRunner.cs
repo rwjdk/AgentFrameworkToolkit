@@ -216,6 +216,7 @@ public class BatchRunner
 
     internal static JsonObject BuildRequestBody(BatchRunOptions options, BatchRunLine line)
     {
+        IList<ChatMessage> messages = GetMessages(options, line);
         JsonObject body = new()
         {
             ["model"] = options.Model
@@ -224,11 +225,11 @@ public class BatchRunner
         switch (options.ClientType)
         {
             case BatchClientType.ChatClient:
-                body["messages"] = BuildChatCompletionMessages(line.Messages);
+                body["messages"] = BuildChatCompletionMessages(messages);
                 ApplySharedChatCompletionOptions(body, options);
                 break;
             case BatchClientType.ResponsesApi:
-                body["input"] = BuildResponsesInput(line.Messages);
+                body["input"] = BuildResponsesInput(messages);
                 ApplySharedResponsesOptions(body, options);
                 break;
             default:
@@ -236,6 +237,26 @@ public class BatchRunner
         }
 
         return body;
+    }
+
+    private static IList<ChatMessage> GetMessages(BatchRunOptions options, BatchRunLine line)
+    {
+        if (string.IsNullOrWhiteSpace(options.Instructions))
+        {
+            return line.Messages;
+        }
+
+        List<ChatMessage> messages =
+        [
+            new(ChatRole.System, options.Instructions)
+        ];
+
+        foreach (ChatMessage message in line.Messages)
+        {
+            messages.Add(message);
+        }
+
+        return messages;
     }
 
     private static JsonArray BuildChatCompletionMessages(IList<ChatMessage> messages)
@@ -586,6 +607,11 @@ public class BatchRunOptions
     /// Gets or sets the batch completion window. Azure currently supports <c>24h</c>.
     /// </summary>
     public string CompletionWindow { get; set; } = "24h";
+
+    /// <summary>
+    /// Gets or sets instructions that are prepended to every batch line as a system message.
+    /// </summary>
+    public string? Instructions { get; set; }
 
     /// <summary>
     /// Gets or sets the maximum number of output tokens per request.

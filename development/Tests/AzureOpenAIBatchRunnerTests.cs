@@ -14,6 +14,7 @@ public sealed class AzureOpenAIBatchRunnerTests
         {
             Model = "gpt-5-nano-batch",
             ClientType = BatchClientType.ChatClient,
+            Instructions = "You are a batch system instruction",
             MaxOutputTokens = 256,
             ReasoningEffort = OpenAIReasoningEffort.Low
         };
@@ -41,11 +42,13 @@ public sealed class AzureOpenAIBatchRunnerTests
         Assert.Equal("low", body["reasoning_effort"]?.GetValue<string>());
 
         JsonArray messages = body["messages"]?.AsArray() ?? throw new InvalidOperationException();
-        Assert.Equal(2, messages.Count);
+        Assert.Equal(3, messages.Count);
         Assert.Equal("system", messages[0]?["role"]?.GetValue<string>());
-        Assert.Equal("You are helpful", messages[0]?["content"]?.GetValue<string>());
-        Assert.Equal("user", messages[1]?["role"]?.GetValue<string>());
-        Assert.Equal("Hello", messages[1]?["content"]?.GetValue<string>());
+        Assert.Equal("You are a batch system instruction", messages[0]?["content"]?.GetValue<string>());
+        Assert.Equal("system", messages[1]?["role"]?.GetValue<string>());
+        Assert.Equal("You are helpful", messages[1]?["content"]?.GetValue<string>());
+        Assert.Equal("user", messages[2]?["role"]?.GetValue<string>());
+        Assert.Equal("Hello", messages[2]?["content"]?.GetValue<string>());
     }
 
     [Fact]
@@ -55,6 +58,7 @@ public sealed class AzureOpenAIBatchRunnerTests
         {
             Model = "gpt-5-mini-batch",
             ClientType = BatchClientType.ResponsesApi,
+            Instructions = "You are a batch system instruction",
             MaxOutputTokens = 128,
             ReasoningEffort = OpenAIReasoningEffort.Low,
             ReasoningSummaryVerbosity = OpenAIReasoningSummaryVerbosity.Concise
@@ -82,10 +86,13 @@ public sealed class AzureOpenAIBatchRunnerTests
         Assert.Equal("concise", reasoning["summary"]?.GetValue<string>());
 
         JsonArray input = body["input"]?.AsArray() ?? throw new InvalidOperationException();
-        Assert.Single(input);
+        Assert.Equal(2, input.Count);
         Assert.Equal("message", input[0]?["type"]?.GetValue<string>());
-        Assert.Equal("user", input[0]?["role"]?.GetValue<string>());
-        Assert.Equal("Say hi", input[0]?["content"]?.GetValue<string>());
+        Assert.Equal("system", input[0]?["role"]?.GetValue<string>());
+        Assert.Equal("You are a batch system instruction", input[0]?["content"]?.GetValue<string>());
+        Assert.Equal("message", input[1]?["type"]?.GetValue<string>());
+        Assert.Equal("user", input[1]?["role"]?.GetValue<string>());
+        Assert.Equal("Say hi", input[1]?["content"]?.GetValue<string>());
     }
 
     [Fact]
