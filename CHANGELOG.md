@@ -1,10 +1,15 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.0.0-r4 (12th of March 2026)
+- Updated Agent Framework from rc3 to rc4
 - Updated ModelContextProtocol from 1.0.0 to 1.1.0.
+- Updated AWSSDK.BedrockRuntime from 4.0.16.1 to 4.0.16.2
+- Updated AWSSDK.Extensions.Bedrock.MEAI from 4.0.5.8 to 4.0.5.9
+- Updated Azure.Identity from 1.18.0 to 1.19.0
+- Updated Google.GenAI from 1.2.0 to 1.3.0
 
 ---
-
+ 
 ## Version 1.0.0-rc3.1 (8th of March 2026)
 - Anthropic: Added Support for Structured Output (custom implementation, as Anthropic does not adhere to common practice, but the outcome is the same).
 - Update the various Model Constants with the latest releases
