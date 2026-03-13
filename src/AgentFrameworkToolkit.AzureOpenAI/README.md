@@ -43,7 +43,7 @@ Console.WriteLine(response);
 
 ## Batch Jobs
 
-You can create Azure OpenAI batch jobs with `BatchRunner`. Each `BatchRunLine` becomes one JSONL entry, while `BatchRunOptions` applies shared settings such as model, endpoint type, reasoning, and token limits to every request in the batch.
+You can create Azure OpenAI batch jobs with `BatchRunner`. Each `BatchRunLine` becomes one JSONL entry, while `BatchRunOptions` applies shared settings such as model, endpoint type, reasoning, and token limits to every request in the batch. Once the run status is `completed`, `GetResult()` returns the original request together with the matched response and error for each line.
 
 ```cs
 BatchRunner batchRunner = new BatchRunner("<Endpoint>", "<API Key>");
@@ -74,7 +74,9 @@ BatchRun batchRun = await batchRunner.CreateBatchAsync(
         }
     ]);
 
-IReadOnlyList<BatchRunResultLine> results = await batchRun.DownloadResultsAsync();
+IReadOnlyList<BatchRunItem> results = await batchRun.GetResult();
+BatchRunItem firstResult = results[0];
+ChatMessage responseMessage = firstResult.Response!.Messages[0];
 ```
 
 If every line in the batch should return the same structured output type, use the generic overload:
@@ -98,8 +100,8 @@ BatchRun<MovieAnswer> batchRun = await batchRunner.CreateBatchAsync<MovieAnswer>
         }
     ]);
 
-IReadOnlyList<BatchRunStructuredResultLine<MovieAnswer>> structuredResults = await batchRun.DownloadStructuredResultsAsync();
-MovieAnswer answer = structuredResults[0].Result!;
+IReadOnlyList<BatchRunItem<MovieAnswer>> structuredResults = await batchRun.GetResult();
+MovieAnswer answer = structuredResults[0].Response!.Result!;
 ```
 
 ### Normal Code Example (API KEY)

@@ -27,7 +27,7 @@ public static class AzureOpenAI
         };
 
         BatchRunner batchRunner = new BatchRunner(connection);
-        BatchRun<MyObject> run = await batchRunner.CreateBatchAsync<MyObject>(new BatchRunOptions
+        BatchRun run = await batchRunner.CreateBatchAsync<MyObject>(new BatchRunOptions
         {
             Model = "gpt-4.1-nano-batch",
             WaitUntilCompleted = true
@@ -41,9 +41,8 @@ public static class AzureOpenAI
             );
 
 
-        run.DownloadStructuredResultsAsync<>()
-        IReadOnlyList<BatchRunStructuredResultLine<MyObject>> batchRunStructuredResultLines = await run.DownloadStructuredResultsAsync();
-
+        IReadOnlyList<BatchRunItem> items = await run.GetResult();
+        
         AzureOpenAIAgentFactory factory = new AzureOpenAIAgentFactory(connection);
 
         AzureOpenAIAgent agent = factory.CreateAgent(new AgentOptions

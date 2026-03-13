@@ -203,4 +203,52 @@ public sealed class AzureOpenAIBatchRunnerTests
         string[] values = Assert.IsType<string[]>(result.Result);
         Assert.Equal(["alpha", "beta"], values);
     }
+
+    [Fact]
+    public void BuildResultItems_MatchesRequestResponseAndErrorByCustomId()
+    {
+        const string inputJsonl =
+            """
+            {"custom_id":"line-1","method":"POST","url":"/chat/completions","body":{"model":"gpt-4.1-nano-batch","messages":[{"role":"user","content":"Hello"}]}}
+            {"custom_id":"line-2","method":"POST","url":"/chat/completions","body":{"model":"gpt-4.1-nano-batch","messages":[{"role":"user","content":"Fail"}]}}
+            """;
+        const string outputJsonl =
+            """
+            {"custom_id":"line-1","response":{"status_code":200,"request_id":"req_1","body":{"choices":[{"message":{"role":"assistant","content":"Hi"}}]}}}
+            """;
+        const string errorJsonl =
+            """
+            {"custom_id":"line-2","error":{"code":"bad_request","message":"Nope"}}
+            """;
+
+        IReadOnlyList<BatchRunItem> results = BatchRun.BuildResultItems(inputJsonl, outputJsonl, errorJsonl, "/chat/completions");
+
+        Assert.Equal(2, results.Count);
+
+        BatchRunItem success = Assert.Single(results, result => result.Request.CustomId == "line-1");
+        Assert.Equal("Hello", Assert.Single(success.Request.Messages).Text);
+        Assert.NotNull(success.Response);
+        Assert.Null(success.Error);
+
+        BatchRunItem failure = Assert.Single(results, result => result.Request.CustomId == "line-2");
+        Assert.Equal("Fail", Assert.Single(failure.Request.Messages).Text);
+        Assert.Null(failure.Response);
+        Assert.Equal("bad_request", failure.Error?.ErrorCode);
+    }
+
+    [Fact]
+    public async Task GetResultAsync_WhenBatchIsNotCompleted_ReturnsEmptyCollection()
+    {
+        BatchRun batchRun = new(new AzureOpenAIConnection
+        {
+            Endpoint = "https://example.invalid"
+        })
+        {
+            Status = "in_progress"
+        };
+
+        IReadOnlyList<BatchRunItem> results = await batchRun.GetResultAsync();
+
+        Assert.Empty(results);
+    }
 }

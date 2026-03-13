@@ -152,12 +152,15 @@ public sealed class AzureOpenAITests : TestsBase
 
             Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-            IReadOnlyList<BatchRunResultLine> results = await batchRun.DownloadResultsAsync();
-            BatchRunResultLine result = Assert.Single(results);
-            ChatMessage message = Assert.Single(result.Messages);
+            IReadOnlyList<BatchRunItem> results = await batchRun.GetResult();
+            BatchRunItem result = Assert.Single(results);
+            Assert.Equal("live-test-1", result.Request.CustomId);
+            BatchRunResultLine response = Assert.IsType<BatchRunResultLine>(result.Response);
+            ChatMessage message = Assert.Single(response.Messages);
 
             Assert.Equal(ChatRole.Assistant, message.Role);
             Assert.NotEmpty(message.Text);
+            Assert.Null(result.Error);
         }
         catch (AgentFrameworkToolkitException ex)
         {
@@ -203,12 +206,15 @@ public sealed class AzureOpenAITests : TestsBase
 
         Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-        IReadOnlyList<BatchRunResultLine> results = await batchRun.DownloadResultsAsync();
-        BatchRunResultLine result = Assert.Single(results);
-        ChatMessage message = Assert.Single(result.Messages);
+        IReadOnlyList<BatchRunItem> results = await batchRun.GetResult();
+        BatchRunItem result = Assert.Single(results);
+        Assert.Equal("live-test-responses-1", result.Request.CustomId);
+        BatchRunResultLine response = Assert.IsType<BatchRunResultLine>(result.Response);
+        ChatMessage message = Assert.Single(response.Messages);
 
         Assert.Equal(ChatRole.Assistant, message.Role);
         Assert.NotEmpty(message.Text);
+        Assert.Null(result.Error);
     }
 
     [Fact]
@@ -239,21 +245,23 @@ public sealed class AzureOpenAITests : TestsBase
 
         Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-        IReadOnlyList<BatchRunStructuredResultLine<BatchStructuredReply>> results = await batchRun.DownloadStructuredResultsAsync();
+        IReadOnlyList<BatchRunItem<BatchStructuredReply>> results = await batchRun.GetResult();
         if (results.Count == 0)
         {
-            IReadOnlyList<BatchRunErrorLine> errors = await batchRun.DownloadErrorsAsync();
             string errorSummary = string.Join(
                 Environment.NewLine,
-                errors.Select(error => $"{error.CustomId}: {error.ErrorCode} - {error.ErrorMessage} - RawError={error.RawError?.ToJsonString()}"));
+                results.Select(result => $"{result.Request.CustomId}: {result.Error?.ErrorCode} - {result.Error?.ErrorMessage} - RawError={result.Error?.RawError?.ToJsonString()}"));
 
             throw new Xunit.Sdk.XunitException(
                 $"Expected one structured batch result, but none were returned. Status={batchRun.Status}; " +
                 $"Completed={batchRun.Counts.Completed}; Failed={batchRun.Counts.Failed}.{Environment.NewLine}{errorSummary}");
         }
 
-        BatchRunStructuredResultLine<BatchStructuredReply> result = Assert.Single(results);
-        BatchStructuredReply structuredReply = Assert.IsType<BatchStructuredReply>(result.Result);
+        BatchRunItem<BatchStructuredReply> result = Assert.Single(results);
+        Assert.Equal("live-test-responses-structured-1", result.Request.CustomId);
+        Assert.Null(result.Error);
+        BatchRunStructuredResultLine<BatchStructuredReply> response = Assert.IsType<BatchRunStructuredResultLine<BatchStructuredReply>>(result.Response);
+        BatchStructuredReply structuredReply = Assert.IsType<BatchStructuredReply>(response.Result);
 
         Assert.Equal("pong", structuredReply.Answer, ignoreCase: true, ignoreLineEndingDifferences: false, ignoreWhiteSpaceDifferences: false, ignoreAllWhiteSpace: false);
     }
