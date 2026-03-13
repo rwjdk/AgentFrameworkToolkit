@@ -1,6 +1,6 @@
 # Changelog - Agent Framework Toolkit
 
-## Version 1.0.0-r4 (12th of March 2026)
+## Version 1.0.0-rc4 (12th of March 2026)
 - Updated Agent Framework from rc3 to rc4
 - Updated ModelContextProtocol from 1.0.0 to 1.1.0.
 - Updated AWSSDK.BedrockRuntime from 4.0.16.1 to 4.0.16.2
