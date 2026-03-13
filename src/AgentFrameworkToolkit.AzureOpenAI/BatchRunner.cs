@@ -24,8 +24,6 @@ public class BatchRunner
         WriteIndented = false
     };
 
-    private static readonly UTF8Encoding Utf8WithoutBom = new(false);
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BatchRunner"/> class.
     /// </summary>
@@ -101,49 +99,38 @@ public class BatchRunner
         OpenAIFileClient fileClient = client.GetOpenAIFileClient();
         BatchClient batchClient = client.GetBatchClient();
 
-        string tempPath = Path.Combine(Path.GetTempPath(), $"aft-batch-{Guid.NewGuid():N}.jsonl");
+        string jsonl = BuildJsonl(options, lines);
+        byte[] jsonlBytes = new UTF8Encoding(false).GetBytes(jsonl);
+        using MemoryStream jsonlStream = new(jsonlBytes);
 
+        OpenAIFile inputFile = await fileClient.UploadFileAsync(jsonlStream, "batch.jsonl", new FileUploadPurpose("batch"));
+
+        JsonObject batchPayload = new()
+        {
+            ["input_file_id"] = inputFile.Id,
+            ["endpoint"] = GetEndpoint(options.ClientType),
+            ["completion_window"] = options.CompletionWindow
+        };
+
+        CreateBatchOperation batchOperation;
         try
         {
-            string jsonl = BuildJsonl(options, lines);
-            await File.WriteAllTextAsync(tempPath, jsonl, Utf8WithoutBom);
-
-            OpenAIFile inputFile = await fileClient.UploadFileAsync(tempPath, new FileUploadPurpose("batch"));
-
-            JsonObject batchPayload = new()
-            {
-                ["input_file_id"] = inputFile.Id,
-                ["endpoint"] = GetEndpoint(options.ClientType),
-                ["completion_window"] = options.CompletionWindow
-            };
-
-            CreateBatchOperation batchOperation;
-            try
-            {
-                batchOperation =
-                    await batchClient.CreateBatchAsync(
-                        BinaryContent.CreateJson(batchPayload),
-                        waitUntilCompleted: options.WaitUntilCompleted);
-            }
-            catch (ClientResultException ex) when (ex.Status == 400)
-            {
-                string responseData = latestRawCall?.ResponseData ?? string.Empty;
-                throw new AgentFrameworkToolkitException(
-                    "Azure OpenAI rejected the batch request with HTTP 400. " +
-                    "Common causes are using a non-batch deployment name, using the wrong batch endpoint, or uploading JSONL with invalid encoding/content. " +
-                    $"Service response: {responseData}",
-                    ex);
-            }
-
-            return await GetBatchAsync(batchOperation.BatchId);
+            batchOperation =
+                await batchClient.CreateBatchAsync(
+                    BinaryContent.CreateJson(batchPayload),
+                    waitUntilCompleted: options.WaitUntilCompleted);
         }
-        finally
+        catch (ClientResultException ex) when (ex.Status == 400)
         {
-            if (File.Exists(tempPath))
-            {
-                File.Delete(tempPath);
-            }
+            string responseData = latestRawCall?.ResponseData ?? string.Empty;
+            throw new AgentFrameworkToolkitException(
+                "Azure OpenAI rejected the batch request with HTTP 400. " +
+                "Common causes are using a non-batch deployment name, using the wrong batch endpoint, or uploading JSONL with invalid encoding/content. " +
+                $"Service response: {responseData}",
+                ex);
         }
+
+        return await GetBatchAsync(batchOperation.BatchId);
     }
 
     /// <summary>
@@ -182,17 +169,6 @@ public class BatchRunner
         return jsonObject;
     }
 
-    internal static JsonArray ParseJsonArray(string json)
-    {
-        JsonNode? node = JsonNode.Parse(json);
-        if (node is not JsonArray jsonArray)
-        {
-            throw new AgentFrameworkToolkitException("Expected a JSON array.");
-        }
-
-        return jsonArray;
-    }
-
     internal static string BuildJsonl(BatchRunOptions options, IList<BatchRunLine> lines)
     {
         List<string> jsonLines = [];
@@ -202,7 +178,7 @@ public class BatchRunner
             BatchRunLine line = lines[i];
             JsonObject payload = new()
             {
-                ["custom_id"] = string.IsNullOrWhiteSpace(line.CustomId) ? $"line-{i}" : line.CustomId,
+                ["custom_id"] = string.IsNullOrWhiteSpace(line.CustomId) ? Guid.NewGuid().ToString() : line.CustomId,
                 ["method"] = "POST",
                 ["url"] = GetEndpoint(options.ClientType),
                 ["body"] = BuildRequestBody(options, line)
@@ -241,22 +217,17 @@ public class BatchRunner
 
     private static IList<ChatMessage> GetMessages(BatchRunOptions options, BatchRunLine line)
     {
-        if (string.IsNullOrWhiteSpace(options.Instructions))
+        if (!string.IsNullOrWhiteSpace(options.Instructions))
         {
-            return line.Messages;
+            return
+            [
+                new ChatMessage(ChatRole.System, options.Instructions),
+                ..line.Messages
+            ];
         }
 
-        List<ChatMessage> messages =
-        [
-            new(ChatRole.System, options.Instructions)
-        ];
+        return line.Messages;
 
-        foreach (ChatMessage message in line.Messages)
-        {
-            messages.Add(message);
-        }
-
-        return messages;
     }
 
     private static JsonArray BuildChatCompletionMessages(IList<ChatMessage> messages)
@@ -332,9 +303,7 @@ public class BatchRunner
                 jsonMessage["tool_calls"] = toolCalls;
             }
 
-            if (contentParts.Count == 1 &&
-                contentParts[0] is JsonObject firstPart &&
-                string.Equals(firstPart["type"]?.GetValue<string>(), "text", StringComparison.Ordinal))
+            if (contentParts is [JsonObject firstPart] && string.Equals(firstPart["type"]?.GetValue<string>(), "text", StringComparison.Ordinal))
             {
                 jsonMessage["content"] = firstPart["text"]?.GetValue<string>();
             }
@@ -425,8 +394,7 @@ public class BatchRunner
             {
                 ["type"] = "message",
                 ["role"] = message.Role.Value,
-                ["content"] = contentParts.Count == 1 &&
-                              contentParts[0] is JsonObject firstPart &&
+                ["content"] = contentParts is [JsonObject firstPart] &&
                               string.Equals(firstPart["type"]?.GetValue<string>(), "input_text", StringComparison.Ordinal)
                     ? firstPart["text"]?.GetValue<string>()
                     : contentParts
