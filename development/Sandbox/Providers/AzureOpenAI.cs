@@ -7,6 +7,12 @@ using Secrets;
 
 namespace Sandbox.Providers;
 
+class MyObject
+{
+    public required string City { get; set; }
+    public required int PopulationInMillion { get; set; }
+}
+
 public static class AzureOpenAI
 {
     public static async Task RunAsync()
@@ -21,9 +27,9 @@ public static class AzureOpenAI
         };
 
         BatchRunner batchRunner = new BatchRunner(connection);
-        BatchRun run = await batchRunner.CreateBatchAsync(new BatchRunOptions
+        BatchRun<MyObject> run = await batchRunner.CreateBatchAsync<MyObject>(new BatchRunOptions
         {
-            Model = "gpt-5-mini",
+            Model = "gpt-4.1-nano-batch",
             WaitUntilCompleted = true
         },
             [
@@ -34,6 +40,9 @@ public static class AzureOpenAI
             ]
             );
 
+
+        run.DownloadStructuredResultsAsync<>()
+        IReadOnlyList<BatchRunStructuredResultLine<MyObject>> batchRunStructuredResultLines = await run.DownloadStructuredResultsAsync();
 
         AzureOpenAIAgentFactory factory = new AzureOpenAIAgentFactory(connection);
 

@@ -72,7 +72,40 @@ public class BatchRunner
     /// <param name="options">Options applied to every entry in the batch.</param>
     /// <param name="lines">The batch entries to submit.</param>
     /// <returns>The created batch run.</returns>
-    public async Task<BatchRun> CreateBatchAsync(BatchRunOptions options, IList<BatchRunLine> lines)
+    public Task<BatchRun> CreateBatchAsync(BatchRunOptions options, IList<BatchRunLine> lines)
+    {
+        return CreateBatchAsync(options, lines, structuredOutput: null);
+    }
+
+    /// <summary>
+    /// Creates a new batch run with structured output for every line.
+    /// </summary>
+    /// <typeparam name="T">The structured output type returned for each line.</typeparam>
+    /// <param name="options">Options applied to every entry in the batch.</param>
+    /// <param name="lines">The batch entries to submit.</param>
+    /// <param name="serializerOptions">Optional serializer options used for schema generation and result deserialization.</param>
+    /// <returns>The created structured batch run.</returns>
+    public Task<BatchRun<T>> CreateBatchAsync<T>(BatchRunOptions options, IList<BatchRunLine> lines, JsonSerializerOptions? serializerOptions = null)
+    {
+        StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
+        return CreateBatchAsync<T>(options, lines, structuredOutput);
+    }
+
+    private async Task<BatchRun> CreateBatchAsync(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition? structuredOutput)
+    {
+        string batchId = await CreateBatchIdAsync(options, lines, structuredOutput);
+        return await GetBatchAsync(batchId);
+    }
+
+    private async Task<BatchRun<T>> CreateBatchAsync<T>(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition structuredOutput)
+    {
+        ArgumentNullException.ThrowIfNull(structuredOutput);
+
+        string batchId = await CreateBatchIdAsync(options, lines, structuredOutput);
+        return await GetBatchAsync<T>(batchId, structuredOutput);
+    }
+
+    private async Task<string> CreateBatchIdAsync(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition? structuredOutput)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(lines);
@@ -99,7 +132,7 @@ public class BatchRunner
         OpenAIFileClient fileClient = client.GetOpenAIFileClient();
         BatchClient batchClient = client.GetBatchClient();
 
-        string jsonl = BuildJsonl(options, lines);
+        string jsonl = BuildJsonl(options, lines, structuredOutput);
         byte[] jsonlBytes = new UTF8Encoding(false).GetBytes(jsonl);
         using MemoryStream jsonlStream = new(jsonlBytes);
 
@@ -130,7 +163,7 @@ public class BatchRunner
                 ex);
         }
 
-        return await GetBatchAsync(batchOperation.BatchId);
+        return batchOperation.BatchId;
     }
 
     /// <summary>
@@ -138,7 +171,39 @@ public class BatchRunner
     /// </summary>
     /// <param name="batchId">The batch identifier.</param>
     /// <returns>The batch run.</returns>
-    public async Task<BatchRun> GetBatchAsync(string batchId)
+    public Task<BatchRun> GetBatchAsync(string batchId)
+    {
+        return GetBatchAsyncCore(batchId);
+    }
+
+    /// <summary>
+    /// Gets an existing structured batch run.
+    /// </summary>
+    /// <typeparam name="T">The structured output type returned for each line.</typeparam>
+    /// <param name="batchId">The batch identifier.</param>
+    /// <param name="serializerOptions">Optional serializer options used for schema generation and result deserialization.</param>
+    /// <returns>The structured batch run.</returns>
+    public Task<BatchRun<T>> GetBatchAsync<T>(string batchId, JsonSerializerOptions? serializerOptions = null)
+    {
+        StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
+        return GetBatchAsync<T>(batchId, structuredOutput);
+    }
+
+    private async Task<BatchRun> GetBatchAsyncCore(string batchId)
+    {
+        JsonObject batchObject = await GetBatchObjectAsync(batchId);
+        return BatchRun.FromJson(batchObject, Connection);
+    }
+
+    private async Task<BatchRun<T>> GetBatchAsync<T>(string batchId, StructuredOutputSchemaDefinition structuredOutput)
+    {
+        ArgumentNullException.ThrowIfNull(structuredOutput);
+        JsonObject batchObject = await GetBatchObjectAsync(batchId);
+
+        return BatchRun.FromJson<T>(batchObject, Connection, structuredOutput);
+    }
+
+    private async Task<JsonObject> GetBatchObjectAsync(string batchId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(batchId);
 
@@ -146,9 +211,7 @@ public class BatchRunner
         BatchClient batchClient = client.GetBatchClient();
 
         System.ClientModel.ClientResult result = await batchClient.GetBatchAsync(batchId, new RequestOptions());
-        JsonObject batchObject = ParseJsonObject(result.GetRawResponse().Content.ToString());
-
-        return BatchRun.FromJson(batchObject, Connection);
+        return ParseJsonObject(result.GetRawResponse().Content.ToString());
     }
 
     internal static BatchClientType ParseClientType(string? endpoint)
@@ -171,6 +234,17 @@ public class BatchRunner
 
     internal static string BuildJsonl(BatchRunOptions options, IList<BatchRunLine> lines)
     {
+        return BuildJsonl(options, lines, structuredOutput: null);
+    }
+
+    internal static string BuildJsonl<T>(BatchRunOptions options, IList<BatchRunLine> lines, JsonSerializerOptions? serializerOptions = null)
+    {
+        StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
+        return BuildJsonl(options, lines, structuredOutput);
+    }
+
+    internal static string BuildJsonl(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition? structuredOutput)
+    {
         List<string> jsonLines = [];
 
         for (int i = 0; i < lines.Count; i++)
@@ -181,7 +255,7 @@ public class BatchRunner
                 ["custom_id"] = string.IsNullOrWhiteSpace(line.CustomId) ? Guid.NewGuid().ToString() : line.CustomId,
                 ["method"] = "POST",
                 ["url"] = GetEndpoint(options.ClientType),
-                ["body"] = BuildRequestBody(options, line)
+                ["body"] = BuildRequestBody(options, line, structuredOutput)
             };
 
             jsonLines.Add(payload.ToJsonString(JsonSerializerOptions));
@@ -191,6 +265,11 @@ public class BatchRunner
     }
 
     internal static JsonObject BuildRequestBody(BatchRunOptions options, BatchRunLine line)
+    {
+        return BuildRequestBody(options, line, structuredOutput: null);
+    }
+
+    internal static JsonObject BuildRequestBody(BatchRunOptions options, BatchRunLine line, StructuredOutputSchemaDefinition? structuredOutput)
     {
         IList<ChatMessage> messages = GetMessages(options, line);
         JsonObject body = new()
@@ -203,10 +282,12 @@ public class BatchRunner
             case BatchClientType.ChatClient:
                 body["messages"] = BuildChatCompletionMessages(messages);
                 ApplySharedChatCompletionOptions(body, options);
+                ApplyStructuredOutput(body, options.ClientType, structuredOutput);
                 break;
             case BatchClientType.ResponsesApi:
                 body["input"] = BuildResponsesInput(messages);
                 ApplySharedResponsesOptions(body, options);
+                ApplyStructuredOutput(body, options.ClientType, structuredOutput);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(options.ClientType), options.ClientType, null);
@@ -460,6 +541,69 @@ public class BatchRunner
         {
             body["service_tier"] = ToServiceTierString(options.ServiceTier.Value);
         }
+    }
+
+    private static void ApplyStructuredOutput(JsonObject body, BatchClientType clientType, StructuredOutputSchemaDefinition? structuredOutput)
+    {
+        if (structuredOutput == null)
+        {
+            return;
+        }
+
+        if (!structuredOutput.ResponseFormat.Schema.HasValue)
+        {
+            throw new InvalidOperationException("Structured output requires a valid JSON schema.");
+        }
+
+        JsonElement normalizedSchema = StructuredOutputSchemaHelper.NormalizeObjectSchemas(structuredOutput.ResponseFormat.Schema.Value);
+        JsonNode? schemaNode = StructuredOutputSchemaHelper.JsonElementToJsonNode(normalizedSchema);
+        if (schemaNode is not JsonObject schemaObject)
+        {
+            throw new InvalidOperationException("Structured output schema root must be an object.");
+        }
+
+        switch (clientType)
+        {
+            case BatchClientType.ChatClient:
+                body["response_format"] = new JsonObject
+                {
+                    ["type"] = "json_schema",
+                    ["json_schema"] = BuildChatJsonSchemaPayload(structuredOutput, schemaObject)
+                };
+                break;
+            case BatchClientType.ResponsesApi:
+                body["text"] = new JsonObject
+                {
+                    ["format"] = BuildResponsesJsonSchemaPayload(structuredOutput, schemaObject)
+                };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(clientType), clientType, null);
+        }
+    }
+
+    private static JsonObject BuildChatJsonSchemaPayload(StructuredOutputSchemaDefinition structuredOutput, JsonObject schemaObject)
+    {
+        JsonObject payload = new()
+        {
+            ["name"] = structuredOutput.SchemaName,
+            ["schema"] = schemaObject,
+            ["strict"] = true
+        };
+
+        if (!string.IsNullOrWhiteSpace(structuredOutput.ResponseFormat.SchemaDescription))
+        {
+            payload["description"] = structuredOutput.ResponseFormat.SchemaDescription;
+        }
+
+        return payload;
+    }
+
+    private static JsonObject BuildResponsesJsonSchemaPayload(StructuredOutputSchemaDefinition structuredOutput, JsonObject schemaObject)
+    {
+        JsonObject payload = BuildChatJsonSchemaPayload(structuredOutput, schemaObject);
+        payload["type"] = "json_schema";
+        return payload;
     }
 
     private static string GetEndpoint(BatchClientType clientType)

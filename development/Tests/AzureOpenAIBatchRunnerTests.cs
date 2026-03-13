@@ -7,6 +7,11 @@ namespace AgentFrameworkToolkit.Tests;
 
 public sealed class AzureOpenAIBatchRunnerTests
 {
+    private sealed class StructuredReply
+    {
+        public required string Answer { get; set; }
+    }
+
     [Fact]
     public void BuildJsonl_ChatClient_UsesAzureBatchEndpointAndSharedOptions()
     {
@@ -113,5 +118,89 @@ public sealed class AzureOpenAIBatchRunnerTests
         ChatMessage message = Assert.Single(result.Messages);
         Assert.Equal(ChatRole.Assistant, message.Role);
         Assert.Equal("Hello back", message.Text);
+    }
+
+    [Fact]
+    public void BuildJsonl_ChatClient_StructuredOutput_UsesJsonSchemaResponseFormat()
+    {
+        BatchRunOptions options = new()
+        {
+            Model = "gpt-4.1-nano-batch",
+            ClientType = BatchClientType.ChatClient
+        };
+
+        BatchRunLine line = new()
+        {
+            Messages =
+            [
+                new ChatMessage(ChatRole.User, "Return a structured answer")
+            ]
+        };
+
+        string jsonl = BatchRunner.BuildJsonl<StructuredReply>(options, [line]);
+        JsonObject payload = BatchRunner.ParseJsonObject(jsonl);
+        JsonObject body = payload["body"]?.AsObject() ?? throw new InvalidOperationException();
+        JsonObject responseFormat = body["response_format"]?.AsObject() ?? throw new InvalidOperationException();
+
+        Assert.Equal("json_schema", responseFormat["type"]?.GetValue<string>());
+
+        JsonObject jsonSchema = responseFormat["json_schema"]?.AsObject() ?? throw new InvalidOperationException();
+        Assert.Equal("StructuredReply", jsonSchema["name"]?.GetValue<string>());
+        Assert.True(jsonSchema["strict"]?.GetValue<bool>());
+
+        JsonObject schema = jsonSchema["schema"]?.AsObject() ?? throw new InvalidOperationException();
+        Assert.Equal("object", schema["type"]?.GetValue<string>());
+        Assert.True(schema["additionalProperties"]?.GetValue<bool>() == false);
+        Assert.NotNull(schema["properties"]?["answer"]);
+    }
+
+    [Fact]
+    public void BuildJsonl_ResponsesApi_StructuredOutput_WrapsArraySchemaInDataObject()
+    {
+        BatchRunOptions options = new()
+        {
+            Model = "gpt-4.1-nano-batch",
+            ClientType = BatchClientType.ResponsesApi
+        };
+
+        BatchRunLine line = new()
+        {
+            Messages =
+            [
+                new ChatMessage(ChatRole.User, "Return a JSON array")
+            ]
+        };
+
+        string jsonl = BatchRunner.BuildJsonl<string[]>(options, [line]);
+        JsonObject payload = BatchRunner.ParseJsonObject(jsonl);
+        JsonObject body = payload["body"]?.AsObject() ?? throw new InvalidOperationException();
+        JsonObject text = body["text"]?.AsObject() ?? throw new InvalidOperationException();
+        JsonObject format = text["format"]?.AsObject() ?? throw new InvalidOperationException();
+
+        Assert.Equal("json_schema", format["type"]?.GetValue<string>());
+        Assert.False(string.IsNullOrWhiteSpace(format["name"]?.GetValue<string>()));
+
+        JsonObject schema = format["schema"]?.AsObject() ?? throw new InvalidOperationException();
+        Assert.Equal("object", schema["type"]?.GetValue<string>());
+        Assert.Equal("array", schema["properties"]?["data"]?["type"]?.GetValue<string>());
+
+        JsonArray required = schema["required"]?.AsArray() ?? throw new InvalidOperationException();
+        Assert.Contains(required, node => string.Equals(node?.GetValue<string>(), "data", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ParseStructuredResultLines_ResponsesApi_UnwrapsArrayPayload()
+    {
+        const string jsonl =
+            """
+            {"custom_id":"line-9","response":{"status_code":200,"request_id":"req_789","body":{"output":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"{\"data\":[\"alpha\",\"beta\"]}"}]}]}}}
+            """;
+
+        IReadOnlyList<BatchRunStructuredResultLine<string[]>> resultLines = BatchRun.ParseStructuredResultLines<string[]>(jsonl, "/responses");
+
+        BatchRunStructuredResultLine<string[]> result = Assert.Single(resultLines);
+        Assert.Equal("line-9", result.CustomId);
+        string[] values = Assert.IsType<string[]>(result.Result);
+        Assert.Equal(["alpha", "beta"], values);
     }
 }

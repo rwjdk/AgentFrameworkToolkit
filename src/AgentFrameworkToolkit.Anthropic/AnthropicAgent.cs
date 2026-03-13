@@ -146,8 +146,8 @@ public class AnthropicAgent(AIAgent innerAgent) : Agent(innerAgent)
         CancellationToken cancellationToken = default)
     {
         JsonSerializerOptions effectiveSerializerOptions = serializerOptions ?? AgentAbstractionsJsonUtilities.DefaultOptions;
-        ChatResponseFormatJson responseFormat = ChatResponseFormat.ForJsonSchema<T>(effectiveSerializerOptions);
-        (ChatResponseFormatJson wrappedResponseFormat, bool isWrappedInObject) = WrapNonObjectSchema(responseFormat);
+        StructuredOutputSchemaDefinition structuredOutputSchema = StructuredOutputSchemaHelper.Create<T>(effectiveSerializerOptions);
+        ChatResponseFormatJson wrappedResponseFormat = structuredOutputSchema.ResponseFormat;
 
         OutputConfig outputConfig = CreateOutputConfig(wrappedResponseFormat);
         ChatClientAgentRunOptions runOptions = CreateRunOptionsWithOutputConfig(options, outputConfig);
@@ -156,7 +156,7 @@ public class AnthropicAgent(AIAgent innerAgent) : Agent(innerAgent)
         AgentResponse response = await RunAsync(messages, session, runOptions, cancellationToken).ConfigureAwait(false);
         return new AgentResponse<T>(response, effectiveSerializerOptions)
         {
-            IsWrappedInObject = isWrappedInObject
+            IsWrappedInObject = structuredOutputSchema.IsWrappedInObject
         };
     }
 
@@ -279,7 +279,7 @@ public class AnthropicAgent(AIAgent innerAgent) : Agent(innerAgent)
 
     private static JsonElement NormalizeSchemaForAnthropic(JsonElement schema)
     {
-        JsonNode? rootNode = JsonElementToJsonNode(schema);
+        JsonNode? rootNode = StructuredOutputSchemaHelper.JsonElementToJsonNode(schema);
         if (rootNode is not JsonObject rootObject)
         {
             return schema;
@@ -345,69 +345,6 @@ public class AnthropicAgent(AIAgent innerAgent) : Agent(innerAgent)
         return jsonObject["properties"] is JsonObject ||
                jsonObject["required"] is JsonArray ||
                jsonObject["patternProperties"] is JsonObject;
-    }
-
-    private static (ChatResponseFormatJson ResponseFormat, bool IsWrappedInObject) WrapNonObjectSchema(ChatResponseFormatJson responseFormat)
-    {
-        if (!responseFormat.Schema.HasValue)
-        {
-            throw new InvalidOperationException("The response format must have a valid JSON schema.");
-        }
-
-        if (SchemaRepresentsObject(responseFormat.Schema.Value))
-        {
-            return (responseFormat, false);
-        }
-
-        JsonObject wrappedSchema = new()
-        {
-            ["$schema"] = "https://json-schema.org/draft/2020-12/schema",
-            ["type"] = "object",
-            ["properties"] = new JsonObject
-            {
-                ["data"] = JsonElementToJsonNode(responseFormat.Schema.Value)
-            },
-            ["additionalProperties"] = false
-        };
-
-        JsonArray requiredProperties =
-        [
-            "data"
-        ];
-        wrappedSchema["required"] = requiredProperties;
-
-        JsonElement schema = JsonSerializer.SerializeToElement(wrappedSchema, AIJsonUtilities.DefaultOptions.GetTypeInfo(typeof(JsonObject)));
-        ChatResponseFormatJson wrappedResponseFormat = ChatResponseFormat.ForJsonSchema(schema, responseFormat.SchemaName, responseFormat.SchemaDescription);
-        return (wrappedResponseFormat, true);
-    }
-
-    private static bool SchemaRepresentsObject(JsonElement schema)
-    {
-        if (schema.ValueKind != JsonValueKind.Object)
-        {
-            return false;
-        }
-
-        foreach (JsonProperty property in schema.EnumerateObject())
-        {
-            if (property.NameEquals("type"u8))
-            {
-                return property.Value.ValueKind == JsonValueKind.String && property.Value.ValueEquals("object"u8);
-            }
-        }
-
-        return false;
-    }
-
-    private static JsonNode? JsonElementToJsonNode(JsonElement element)
-    {
-        return element.ValueKind switch
-        {
-            JsonValueKind.Null => null,
-            JsonValueKind.Array => JsonArray.Create(element),
-            JsonValueKind.Object => JsonObject.Create(element),
-            _ => JsonValue.Create(element)
-        };
     }
 }
 

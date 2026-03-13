@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Extensions.AI;
@@ -8,6 +9,11 @@ namespace AgentFrameworkToolkit.Tests;
 
 public sealed class AzureOpenAITests : TestsBase
 {
+    private sealed class BatchStructuredReply
+    {
+        public required string Answer { get; set; }
+    }
+
     [Fact]
     public Task AgentFactory_Simple_ChatClient() => SimpleAgentTestsAsync(AgentProvider.AzureOpenAIChatClient);
 
@@ -203,5 +209,52 @@ public sealed class AzureOpenAITests : TestsBase
 
         Assert.Equal(ChatRole.Assistant, message.Role);
         Assert.NotEmpty(message.Text);
+    }
+
+    [Fact]
+    public async Task BatchRunner_SingleLine_ResponsesApi_StructuredOutput_WaitUntilCompleted()
+    {
+        Secrets.Secrets secrets = SecretsManager.GetSecrets();
+        BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+
+        BatchRun<BatchStructuredReply> batchRun = await batchRunner.CreateBatchAsync<BatchStructuredReply>(
+            new BatchRunOptions
+            {
+                Model = "gpt-4.1-nano-batch",
+                ClientType = BatchClientType.ResponsesApi,
+                WaitUntilCompleted = true,
+                MaxOutputTokens = 128,
+                Instructions = "Return only the requested structured answer."
+            },
+            [
+                new BatchRunLine
+                {
+                    CustomId = "live-test-responses-structured-1",
+                    Messages =
+                    [
+                        new ChatMessage(ChatRole.User, "Set answer to the single word pong.")
+                    ]
+                }
+            ]);
+
+        Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
+
+        IReadOnlyList<BatchRunStructuredResultLine<BatchStructuredReply>> results = await batchRun.DownloadStructuredResultsAsync();
+        if (results.Count == 0)
+        {
+            IReadOnlyList<BatchRunErrorLine> errors = await batchRun.DownloadErrorsAsync();
+            string errorSummary = string.Join(
+                Environment.NewLine,
+                errors.Select(error => $"{error.CustomId}: {error.ErrorCode} - {error.ErrorMessage} - RawError={error.RawError?.ToJsonString()}"));
+
+            throw new Xunit.Sdk.XunitException(
+                $"Expected one structured batch result, but none were returned. Status={batchRun.Status}; " +
+                $"Completed={batchRun.Counts.Completed}; Failed={batchRun.Counts.Failed}.{Environment.NewLine}{errorSummary}");
+        }
+
+        BatchRunStructuredResultLine<BatchStructuredReply> result = Assert.Single(results);
+        BatchStructuredReply structuredReply = Assert.IsType<BatchStructuredReply>(result.Result);
+
+        Assert.Equal("pong", structuredReply.Answer, ignoreCase: true, ignoreLineEndingDifferences: false, ignoreWhiteSpaceDifferences: false, ignoreAllWhiteSpace: false);
     }
 }

@@ -77,6 +77,31 @@ BatchRun batchRun = await batchRunner.CreateBatchAsync(
 IReadOnlyList<BatchRunResultLine> results = await batchRun.DownloadResultsAsync();
 ```
 
+If every line in the batch should return the same structured output type, use the generic overload:
+
+```cs
+BatchRun<MovieAnswer> batchRun = await batchRunner.CreateBatchAsync<MovieAnswer>(
+    new BatchRunOptions
+    {
+        Model = "gpt-4.1-nano-batch",
+        ClientType = BatchClientType.ResponsesApi,
+        Instructions = "Return only the requested structured answer."
+    },
+    [
+        new BatchRunLine
+        {
+            CustomId = "movie-1",
+            Messages =
+            [
+                new ChatMessage(ChatRole.User, "Set title to Inception and year to 2010.")
+            ]
+        }
+    ]);
+
+IReadOnlyList<BatchRunStructuredResultLine<MovieAnswer>> structuredResults = await batchRun.DownloadStructuredResultsAsync();
+MovieAnswer answer = structuredResults[0].Result!;
+```
+
 ### Normal Code Example (API KEY)
 ```cs
 //Create your AgentFactory

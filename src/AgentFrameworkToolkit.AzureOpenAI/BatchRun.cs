@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using AgentFrameworkToolkit;
 using Microsoft.Extensions.AI;
 using OpenAI.Files;
 
@@ -12,52 +13,59 @@ namespace AgentFrameworkToolkit.AzureOpenAI;
 public class BatchRun
 {
     private readonly AzureOpenAIConnection _connection;
+    private readonly StructuredOutputSchemaDefinition? _structuredOutput;
 
-    internal BatchRun(AzureOpenAIConnection connection)
+    internal BatchRun(AzureOpenAIConnection connection, StructuredOutputSchemaDefinition? structuredOutput = null)
     {
         _connection = connection;
+        _structuredOutput = structuredOutput;
     }
 
     /// <summary>
     /// Gets the batch identifier.
     /// </summary>
-    public required string BatchId { get; init; }
+    public string BatchId { get; internal set; } = string.Empty;
 
     /// <summary>
     /// Gets the batch status.
     /// </summary>
     [JsonPropertyName("status")]
-    public required string Status { get; init; }
+    public string Status { get; internal set; } = string.Empty;
 
     /// <summary>
     /// Gets the request counts.
     /// </summary>
     [JsonPropertyName("request_counts")]
-    public required BatchResponseCounts Counts { get; init; }
+    public BatchResponseCounts Counts { get; internal set; } = new()
+    {
+        Total = 0,
+        Completed = 0,
+        Failed = 0
+    };
 
     /// <summary>
     /// Gets the input file id.
     /// </summary>
     [JsonPropertyName("input_file_id")]
-    public string? InputFileId { get; init; }
+    public string? InputFileId { get; internal set; }
 
     /// <summary>
     /// Gets the batch endpoint.
     /// </summary>
     [JsonPropertyName("endpoint")]
-    public string? Endpoint { get; init; }
+    public string? Endpoint { get; internal set; }
 
     /// <summary>
     /// Gets the output file id.
     /// </summary>
     [JsonPropertyName("output_file_id")]
-    public required string? OutputFileId { get; init; }
+    public string? OutputFileId { get; internal set; }
 
     /// <summary>
     /// Gets the error file id.
     /// </summary>
     [JsonPropertyName("error_file_id")]
-    public required string? ErrorFileId { get; init; }
+    public string? ErrorFileId { get; internal set; }
 
     /// <summary>
     /// Downloads the successful output lines and converts them back into chat messages.
@@ -72,6 +80,28 @@ public class BatchRun
 
         string fileContent = await DownloadFileAsStringAsync(OutputFileId);
         return ParseResultLines(fileContent, Endpoint);
+    }
+
+    /// <summary>
+    /// Downloads the successful output lines and converts them into structured results.
+    /// </summary>
+    /// <typeparam name="T">The structured output type returned for each line.</typeparam>
+    /// <returns>The parsed output lines.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the batch run was not created or retrieved with structured output metadata.</exception>
+    public async Task<IReadOnlyList<BatchRunStructuredResultLine<T>>> DownloadStructuredResultsAsync<T>()
+    {
+        if (_structuredOutput == null)
+        {
+            throw new InvalidOperationException("This batch run was not created with structured output metadata. Use CreateBatchAsync<T>() or GetBatchAsync<T>().");
+        }
+
+        if (string.IsNullOrWhiteSpace(OutputFileId))
+        {
+            return [];
+        }
+
+        string fileContent = await DownloadFileAsStringAsync(OutputFileId);
+        return ParseStructuredResultLines<T>(fileContent, Endpoint, _structuredOutput);
     }
 
     /// <summary>
@@ -130,8 +160,8 @@ public class BatchRun
                 CustomId = lineObject["custom_id"]?.GetValue<string>() ?? string.Empty,
                 StatusCode = responseObject?["status_code"]?.GetValue<int>(),
                 RequestId = responseObject?["request_id"]?.GetValue<string>(),
-                ErrorCode = errorObject?["code"]?.GetValue<string>(),
-                ErrorMessage = errorObject?["message"]?.GetValue<string>(),
+                ErrorCode = GetStringValue(errorObject?["code"]),
+                ErrorMessage = GetStringValue(errorObject?["message"]),
                 RawError = errorObject?.DeepClone() as JsonObject,
                 RawBody = bodyObject?.DeepClone() as JsonObject
             });
@@ -142,23 +172,174 @@ public class BatchRun
 
     internal static BatchRun FromJson(JsonObject batchObject, AzureOpenAIConnection connection)
     {
-        return new BatchRun(connection)
+        return PopulateFromJson(new BatchRun(connection), batchObject);
+    }
+
+    internal static BatchRun<T> FromJson<T>(JsonObject batchObject, AzureOpenAIConnection connection, StructuredOutputSchemaDefinition structuredOutput)
+    {
+        return PopulateFromJson(new BatchRun<T>(connection, structuredOutput), batchObject);
+    }
+
+    internal static IReadOnlyList<BatchRunStructuredResultLine<T>> ParseStructuredResultLines<T>(
+        string fileContent,
+        string? endpoint,
+        JsonSerializerOptions? serializerOptions = null)
+    {
+        StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
+        return ParseStructuredResultLines<T>(fileContent, endpoint, structuredOutput);
+    }
+
+    internal static IReadOnlyList<BatchRunStructuredResultLine<T>> ParseStructuredResultLines<T>(
+        string fileContent,
+        string? endpoint,
+        StructuredOutputSchemaDefinition structuredOutput)
+    {
+        List<BatchRunStructuredResultLine<T>> results = [];
+
+        foreach (BatchRunResultLine resultLine in ParseResultLines(fileContent, endpoint))
         {
-            BatchId = batchObject["id"]?.GetValue<string>()
-                      ?? throw new AgentFrameworkToolkitException("Batch response did not contain an id."),
-            Status = batchObject["status"]?.GetValue<string>()
-                     ?? throw new AgentFrameworkToolkitException("Batch response did not contain a status."),
-            Counts = new BatchResponseCounts
+            results.Add(new BatchRunStructuredResultLine<T>
             {
-                Total = batchObject["request_counts"]?["total"]?.GetValue<int>() ?? 0,
-                Completed = batchObject["request_counts"]?["completed"]?.GetValue<int>() ?? 0,
-                Failed = batchObject["request_counts"]?["failed"]?.GetValue<int>() ?? 0
-            },
-            InputFileId = batchObject["input_file_id"]?.GetValue<string>(),
-            Endpoint = batchObject["endpoint"]?.GetValue<string>(),
-            OutputFileId = batchObject["output_file_id"]?.GetValue<string>(),
-            ErrorFileId = batchObject["error_file_id"]?.GetValue<string>()
+                CustomId = resultLine.CustomId,
+                StatusCode = resultLine.StatusCode,
+                RequestId = resultLine.RequestId,
+                Messages = resultLine.Messages,
+                RawBody = resultLine.RawBody?.DeepClone() as JsonObject,
+                Result = DeserializeStructuredResult<T>(resultLine, structuredOutput)
+            });
+        }
+
+        return results;
+    }
+
+    private static T? DeserializeStructuredResult<T>(BatchRunResultLine resultLine, StructuredOutputSchemaDefinition structuredOutput)
+    {
+        string json = ExtractStructuredResultJson(resultLine);
+
+        if (structuredOutput.IsWrappedInObject)
+        {
+            JsonObject wrappedObject = BatchRunner.ParseJsonObject(json);
+            JsonNode? dataNode = wrappedObject["data"];
+            return dataNode == null
+                ? default
+                : dataNode.Deserialize<T>(structuredOutput.SerializerOptions);
+        }
+
+        return JsonSerializer.Deserialize<T>(json, structuredOutput.SerializerOptions);
+    }
+
+    private static string ExtractStructuredResultJson(BatchRunResultLine resultLine)
+    {
+        if (resultLine.RawBody == null)
+        {
+            throw new AgentFrameworkToolkitException($"Batch result line '{resultLine.CustomId}' did not contain a response body.");
+        }
+
+        string? structuredJson = ExtractStructuredResultJson(resultLine.RawBody);
+        if (string.IsNullOrWhiteSpace(structuredJson))
+        {
+            throw new AgentFrameworkToolkitException($"Batch result line '{resultLine.CustomId}' did not contain a structured JSON response.");
+        }
+
+        return structuredJson;
+    }
+
+    private static string? ExtractStructuredResultJson(JsonObject bodyObject)
+    {
+        if (bodyObject["choices"] is JsonArray choices)
+        {
+            JsonObject? messageObject = choices[0]?["message"] as JsonObject;
+            return messageObject == null ? null : ExtractTextContent(messageObject["content"], "text");
+        }
+
+        if (bodyObject["output"] is not JsonArray output)
+        {
+            return null;
+        }
+
+        foreach (JsonNode? itemNode in output)
+        {
+            if (itemNode is not JsonObject itemObject || !string.Equals(itemObject["type"]?.GetValue<string>(), "message", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            string? text = ExtractTextContent(itemObject["content"], "output_text", "input_text");
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                return text;
+            }
+        }
+
+        return null;
+    }
+
+    private static string? ExtractTextContent(JsonNode? contentNode, params string[] allowedTypes)
+    {
+        if (contentNode is JsonValue contentValue && contentValue.TryGetValue(out string? textContent))
+        {
+            return textContent;
+        }
+
+        if (contentNode is not JsonArray contentArray)
+        {
+            return null;
+        }
+
+        List<string> textParts = [];
+        foreach (JsonNode? partNode in contentArray)
+        {
+            if (partNode is not JsonObject partObject)
+            {
+                continue;
+            }
+
+            string? type = partObject["type"]?.GetValue<string>();
+            if (type == null || !allowedTypes.Contains(type, StringComparer.Ordinal))
+            {
+                continue;
+            }
+
+            string? partText = partObject["text"]?.GetValue<string>();
+            if (!string.IsNullOrWhiteSpace(partText))
+            {
+                textParts.Add(partText);
+            }
+        }
+
+        return textParts.Count == 0 ? null : string.Concat(textParts);
+    }
+
+    private static string? GetStringValue(JsonNode? node)
+    {
+        if (node == null)
+        {
+            return null;
+        }
+
+        return node is JsonValue jsonValue && jsonValue.TryGetValue(out string? stringValue)
+            ? stringValue
+            : node.ToJsonString();
+    }
+
+    private static TBatchRun PopulateFromJson<TBatchRun>(TBatchRun batchRun, JsonObject batchObject)
+        where TBatchRun : BatchRun
+    {
+        batchRun.BatchId = batchObject["id"]?.GetValue<string>()
+                           ?? throw new AgentFrameworkToolkitException("Batch response did not contain an id.");
+        batchRun.Status = batchObject["status"]?.GetValue<string>()
+                          ?? throw new AgentFrameworkToolkitException("Batch response did not contain a status.");
+        batchRun.Counts = new BatchResponseCounts
+        {
+            Total = batchObject["request_counts"]?["total"]?.GetValue<int>() ?? 0,
+            Completed = batchObject["request_counts"]?["completed"]?.GetValue<int>() ?? 0,
+            Failed = batchObject["request_counts"]?["failed"]?.GetValue<int>() ?? 0
         };
+        batchRun.InputFileId = batchObject["input_file_id"]?.GetValue<string>();
+        batchRun.Endpoint = batchObject["endpoint"]?.GetValue<string>();
+        batchRun.OutputFileId = batchObject["output_file_id"]?.GetValue<string>();
+        batchRun.ErrorFileId = batchObject["error_file_id"]?.GetValue<string>();
+        return batchRun;
     }
 
     private async Task<string> DownloadFileAsStringAsync(string fileId)
@@ -410,6 +591,27 @@ public class BatchRun
 }
 
 /// <summary>
+/// Represents a structured batch run and exposes typed helpers for downloading results.
+/// </summary>
+/// <typeparam name="T">The structured output type returned for each line.</typeparam>
+public class BatchRun<T> : BatchRun
+{
+    internal BatchRun(AzureOpenAIConnection connection, StructuredOutputSchemaDefinition structuredOutput)
+        : base(connection, structuredOutput)
+    {
+    }
+
+    /// <summary>
+    /// Downloads the successful output lines and converts them into structured results.
+    /// </summary>
+    /// <returns>The parsed structured output lines.</returns>
+    public Task<IReadOnlyList<BatchRunStructuredResultLine<T>>> DownloadStructuredResultsAsync()
+    {
+        return base.DownloadStructuredResultsAsync<T>();
+    }
+}
+
+/// <summary>
 /// Request counts for a batch run.
 /// </summary>
 public class BatchResponseCounts
@@ -462,6 +664,18 @@ public class BatchRunResultLine
     /// Gets or sets the raw JSON response body.
     /// </summary>
     public JsonObject? RawBody { get; init; }
+}
+
+/// <summary>
+/// A successful parsed line from the batch output file with structured output.
+/// </summary>
+/// <typeparam name="T">The structured output type returned for the line.</typeparam>
+public class BatchRunStructuredResultLine<T> : BatchRunResultLine
+{
+    /// <summary>
+    /// Gets or sets the structured result for the line.
+    /// </summary>
+    public T? Result { get; init; }
 }
 
 /// <summary>
