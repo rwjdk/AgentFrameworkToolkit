@@ -722,7 +722,7 @@ public sealed class CustomOpenTelemetryExporter : BaseExporter<Activity>
         _onExport = onExport;
     }
 
-    public override ExportResult Export(in Batch<Activity> batch)
+    public override ExportResult Export(in OpenTelemetry.Batch<Activity> batch)
     {
         foreach (Activity activity in batch)
         {

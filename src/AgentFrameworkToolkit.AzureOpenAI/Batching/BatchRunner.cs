@@ -3,7 +3,6 @@ using System.ClientModel.Primitives;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using AgentFrameworkToolkit;
 using AgentFrameworkToolkit.OpenAI;
 using Azure.Core;
 using Microsoft.Extensions.AI;
@@ -12,7 +11,7 @@ using OpenAI.Files;
 
 #pragma warning disable OPENAI001
 
-namespace AgentFrameworkToolkit.AzureOpenAI;
+namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
 
 /// <summary>
 /// Azure OpenAI runner for batch jobs.
@@ -72,9 +71,10 @@ public class BatchRunner
     /// <param name="options">Options applied to every entry in the batch.</param>
     /// <param name="lines">The batch entries to submit.</param>
     /// <returns>The created batch run.</returns>
-    public Task<BatchRun> CreateBatchAsync(BatchRunOptions options, IList<BatchRunLine> lines)
+    public async Task<ChatBatchRun> RunChatBatchAsync(ChatBatchOptions options, IList<ChatBatchRequest> lines)
     {
-        return CreateBatchAsync(options, lines, structuredOutput: null);
+        string batchId = await CreateBatchIdAsync(options, lines, null);
+        return await GetChatBatchAsync(batchId);
     }
 
     /// <summary>
@@ -85,27 +85,16 @@ public class BatchRunner
     /// <param name="lines">The batch entries to submit.</param>
     /// <param name="serializerOptions">Optional serializer options used for schema generation and result deserialization.</param>
     /// <returns>The created structured batch run.</returns>
-    public Task<BatchRun<T>> CreateBatchAsync<T>(BatchRunOptions options, IList<BatchRunLine> lines, JsonSerializerOptions? serializerOptions = null)
+    public async Task<ChatBatchRun<T>> RunChatBatchAsync<T>(ChatBatchOptions options, IList<ChatBatchRequest> lines, JsonSerializerOptions? serializerOptions = null)
     {
         StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
-        return CreateBatchAsync<T>(options, lines, structuredOutput);
-    }
-
-    private async Task<BatchRun> CreateBatchAsync(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition? structuredOutput)
-    {
-        string batchId = await CreateBatchIdAsync(options, lines, structuredOutput);
-        return await GetBatchAsync(batchId);
-    }
-
-    private async Task<BatchRun<T>> CreateBatchAsync<T>(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition structuredOutput)
-    {
         ArgumentNullException.ThrowIfNull(structuredOutput);
 
         string batchId = await CreateBatchIdAsync(options, lines, structuredOutput);
-        return await GetBatchAsync<T>(batchId, structuredOutput);
+        return await GetChatBatchAsync<T>(batchId, structuredOutput);
     }
 
-    private async Task<string> CreateBatchIdAsync(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition? structuredOutput)
+    private async Task<string> CreateBatchIdAsync(ChatBatchOptions options, IList<ChatBatchRequest> lines, StructuredOutputSchemaDefinition? structuredOutput)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(lines);
@@ -142,7 +131,7 @@ public class BatchRunner
         {
             ["input_file_id"] = inputFile.Id,
             ["endpoint"] = GetEndpoint(options.ClientType),
-            ["completion_window"] = options.CompletionWindow
+            ["completion_window"] = "24h"
         };
 
         CreateBatchOperation batchOperation;
@@ -171,9 +160,9 @@ public class BatchRunner
     /// </summary>
     /// <param name="batchId">The batch identifier.</param>
     /// <returns>The batch run.</returns>
-    public Task<BatchRun> GetBatchAsync(string batchId)
+    public Task<ChatBatchRun> GetChatBatchAsync(string batchId)
     {
-        return GetBatchAsyncCore(batchId);
+        return GetBatchAsyncCoreAsync(batchId);
     }
 
     /// <summary>
@@ -183,24 +172,24 @@ public class BatchRunner
     /// <param name="batchId">The batch identifier.</param>
     /// <param name="serializerOptions">Optional serializer options used for schema generation and result deserialization.</param>
     /// <returns>The structured batch run.</returns>
-    public Task<BatchRun<T>> GetBatchAsync<T>(string batchId, JsonSerializerOptions? serializerOptions = null)
+    public Task<ChatBatchRun<T>> GetChatBatchAsync<T>(string batchId, JsonSerializerOptions? serializerOptions = null)
     {
         StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
-        return GetBatchAsync<T>(batchId, structuredOutput);
+        return GetChatBatchAsync<T>(batchId, structuredOutput);
     }
 
-    private async Task<BatchRun> GetBatchAsyncCore(string batchId)
+    private async Task<ChatBatchRun> GetBatchAsyncCoreAsync(string batchId)
     {
         JsonObject batchObject = await GetBatchObjectAsync(batchId);
-        return BatchRun.FromJson(batchObject, Connection);
+        return ChatBatchRun.FromJson(batchObject, Connection);
     }
 
-    private async Task<BatchRun<T>> GetBatchAsync<T>(string batchId, StructuredOutputSchemaDefinition structuredOutput)
+    private async Task<ChatBatchRun<T>> GetChatBatchAsync<T>(string batchId, StructuredOutputSchemaDefinition structuredOutput)
     {
         ArgumentNullException.ThrowIfNull(structuredOutput);
         JsonObject batchObject = await GetBatchObjectAsync(batchId);
 
-        return BatchRun.FromJson<T>(batchObject, Connection, structuredOutput);
+        return ChatBatchRun.FromJson<T>(batchObject, Connection, structuredOutput);
     }
 
     private async Task<JsonObject> GetBatchObjectAsync(string batchId)
@@ -210,15 +199,15 @@ public class BatchRunner
         Azure.AI.OpenAI.AzureOpenAIClient client = Connection.GetClient();
         BatchClient batchClient = client.GetBatchClient();
 
-        System.ClientModel.ClientResult result = await batchClient.GetBatchAsync(batchId, new RequestOptions());
+        ClientResult result = await batchClient.GetBatchAsync(batchId, new RequestOptions());
         return ParseJsonObject(result.GetRawResponse().Content.ToString());
     }
 
-    internal static BatchClientType ParseClientType(string? endpoint)
+    internal static ChatBatchClientType ParseClientType(string? endpoint)
     {
         return string.Equals(endpoint, "/responses", StringComparison.OrdinalIgnoreCase)
-            ? BatchClientType.ResponsesApi
-            : BatchClientType.ChatClient;
+            ? ChatBatchClientType.ResponsesApi
+            : ChatBatchClientType.ChatClient;
     }
 
     internal static JsonObject ParseJsonObject(string json)
@@ -232,24 +221,23 @@ public class BatchRunner
         return jsonObject;
     }
 
-    internal static string BuildJsonl(BatchRunOptions options, IList<BatchRunLine> lines)
+    internal static string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines)
     {
         return BuildJsonl(options, lines, structuredOutput: null);
     }
 
-    internal static string BuildJsonl<T>(BatchRunOptions options, IList<BatchRunLine> lines, JsonSerializerOptions? serializerOptions = null)
+    internal static string BuildJsonl<T>(ChatBatchOptions options, IList<ChatBatchRequest> lines, JsonSerializerOptions? serializerOptions = null)
     {
         StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
         return BuildJsonl(options, lines, structuredOutput);
     }
 
-    internal static string BuildJsonl(BatchRunOptions options, IList<BatchRunLine> lines, StructuredOutputSchemaDefinition? structuredOutput)
+    internal static string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines, StructuredOutputSchemaDefinition? structuredOutput)
     {
         List<string> jsonLines = [];
 
-        for (int i = 0; i < lines.Count; i++)
+        foreach (ChatBatchRequest line in lines)
         {
-            BatchRunLine line = lines[i];
             JsonObject payload = new()
             {
                 ["custom_id"] = string.IsNullOrWhiteSpace(line.CustomId) ? Guid.NewGuid().ToString() : line.CustomId,
@@ -264,12 +252,7 @@ public class BatchRunner
         return string.Join(Environment.NewLine, jsonLines);
     }
 
-    internal static JsonObject BuildRequestBody(BatchRunOptions options, BatchRunLine line)
-    {
-        return BuildRequestBody(options, line, structuredOutput: null);
-    }
-
-    internal static JsonObject BuildRequestBody(BatchRunOptions options, BatchRunLine line, StructuredOutputSchemaDefinition? structuredOutput)
+    internal static JsonObject BuildRequestBody(ChatBatchOptions options, ChatBatchRequest line, StructuredOutputSchemaDefinition? structuredOutput)
     {
         IList<ChatMessage> messages = GetMessages(options, line);
         JsonObject body = new()
@@ -279,12 +262,12 @@ public class BatchRunner
 
         switch (options.ClientType)
         {
-            case BatchClientType.ChatClient:
+            case ChatBatchClientType.ChatClient:
                 body["messages"] = BuildChatCompletionMessages(messages);
                 ApplySharedChatCompletionOptions(body, options);
                 ApplyStructuredOutput(body, options.ClientType, structuredOutput);
                 break;
-            case BatchClientType.ResponsesApi:
+            case ChatBatchClientType.ResponsesApi:
                 body["input"] = BuildResponsesInput(messages);
                 ApplySharedResponsesOptions(body, options);
                 ApplyStructuredOutput(body, options.ClientType, structuredOutput);
@@ -296,7 +279,7 @@ public class BatchRunner
         return body;
     }
 
-    private static IList<ChatMessage> GetMessages(BatchRunOptions options, BatchRunLine line)
+    private static IList<ChatMessage> GetMessages(ChatBatchOptions options, ChatBatchRequest line)
     {
         if (!string.IsNullOrWhiteSpace(options.Instructions))
         {
@@ -485,7 +468,7 @@ public class BatchRunner
         return items;
     }
 
-    private static void ApplySharedChatCompletionOptions(JsonObject body, BatchRunOptions options)
+    private static void ApplySharedChatCompletionOptions(JsonObject body, ChatBatchOptions options)
     {
         if (options.MaxOutputTokens.HasValue)
         {
@@ -508,7 +491,7 @@ public class BatchRunner
         }
     }
 
-    private static void ApplySharedResponsesOptions(JsonObject body, BatchRunOptions options)
+    private static void ApplySharedResponsesOptions(JsonObject body, ChatBatchOptions options)
     {
         if (options.MaxOutputTokens.HasValue)
         {
@@ -543,7 +526,7 @@ public class BatchRunner
         }
     }
 
-    private static void ApplyStructuredOutput(JsonObject body, BatchClientType clientType, StructuredOutputSchemaDefinition? structuredOutput)
+    private static void ApplyStructuredOutput(JsonObject body, ChatBatchClientType clientType, StructuredOutputSchemaDefinition? structuredOutput)
     {
         if (structuredOutput == null)
         {
@@ -564,14 +547,14 @@ public class BatchRunner
 
         switch (clientType)
         {
-            case BatchClientType.ChatClient:
+            case ChatBatchClientType.ChatClient:
                 body["response_format"] = new JsonObject
                 {
                     ["type"] = "json_schema",
                     ["json_schema"] = BuildChatJsonSchemaPayload(structuredOutput, schemaObject)
                 };
                 break;
-            case BatchClientType.ResponsesApi:
+            case ChatBatchClientType.ResponsesApi:
                 body["text"] = new JsonObject
                 {
                     ["format"] = BuildResponsesJsonSchemaPayload(structuredOutput, schemaObject)
@@ -606,12 +589,12 @@ public class BatchRunner
         return payload;
     }
 
-    private static string GetEndpoint(BatchClientType clientType)
+    private static string GetEndpoint(ChatBatchClientType clientType)
     {
         return clientType switch
         {
-            BatchClientType.ChatClient => "/chat/completions",
-            BatchClientType.ResponsesApi => "/responses",
+            ChatBatchClientType.ChatClient => "/chat/completions",
+            ChatBatchClientType.ResponsesApi => "/responses",
             _ => throw new ArgumentOutOfRangeException(nameof(clientType), clientType, null)
         };
     }
@@ -674,11 +657,11 @@ public class BatchRunner
         };
     }
 
-    private static void ValidateBatchLines(IList<BatchRunLine> lines)
+    private static void ValidateBatchLines(IList<ChatBatchRequest> lines)
     {
         HashSet<string> customIds = new(StringComparer.Ordinal);
 
-        foreach (BatchRunLine line in lines)
+        foreach (ChatBatchRequest line in lines)
         {
             ArgumentNullException.ThrowIfNull(line);
 
@@ -693,97 +676,4 @@ public class BatchRunner
             }
         }
     }
-}
-
-/// <summary>
-/// Options for a batch run.
-/// </summary>
-public class BatchRunOptions
-{
-    /// <summary>
-    /// Gets or sets the model or deployment name used for every line in the batch.
-    /// </summary>
-    public required string Model { get; set; }
-
-    /// <summary>
-    /// Gets or sets the endpoint style to use for the batch.
-    /// </summary>
-    public BatchClientType ClientType { get; set; } = BatchClientType.ChatClient;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the create call should wait for the service-side operation.
-    /// </summary>
-    public bool WaitUntilCompleted { get; set; }
-
-    /// <summary>
-    /// Gets or sets the batch completion window. Azure currently supports <c>24h</c>.
-    /// </summary>
-    public string CompletionWindow { get; set; } = "24h";
-
-    /// <summary>
-    /// Gets or sets instructions that are prepended to every batch line as a system message.
-    /// </summary>
-    public string? Instructions { get; set; }
-
-    /// <summary>
-    /// Gets or sets the maximum number of output tokens per request.
-    /// </summary>
-    public int? MaxOutputTokens { get; set; }
-
-    /// <summary>
-    /// Gets or sets the temperature used for generation.
-    /// </summary>
-    public float? Temperature { get; set; }
-
-    /// <summary>
-    /// Gets or sets the reasoning effort when using reasoning-capable models.
-    /// </summary>
-    public OpenAIReasoningEffort? ReasoningEffort { get; set; }
-
-    /// <summary>
-    /// Gets or sets the reasoning summary verbosity for the Responses API.
-    /// </summary>
-    public OpenAIReasoningSummaryVerbosity? ReasoningSummaryVerbosity { get; set; }
-
-    /// <summary>
-    /// Gets or sets the service tier to use when supported by the model.
-    /// </summary>
-    public OpenAIServiceTier? ServiceTier { get; set; }
-
-    /// <summary>
-    /// Gets or sets an action for inspecting the raw HTTP calls made during upload and batch creation.
-    /// </summary>
-    public Action<RawCallDetails>? RawHttpCallDetails { get; set; }
-}
-
-/// <summary>
-/// Represents one request line in the batch input file.
-/// </summary>
-public class BatchRunLine
-{
-    /// <summary>
-    /// Gets or sets the optional custom id for the line. If omitted, one is generated.
-    /// </summary>
-    public string? CustomId { get; set; }
-
-    /// <summary>
-    /// Gets or set the messages sent as the request payload.
-    /// </summary>
-    public required IList<ChatMessage> Messages { get; set; }
-}
-
-/// <summary>
-/// The batch endpoint style to use.
-/// </summary>
-public enum BatchClientType
-{
-    /// <summary>
-    /// Uses the Chat Completions batch endpoint.
-    /// </summary>
-    ChatClient,
-
-    /// <summary>
-    /// Uses the Responses API batch endpoint.
-    /// </summary>
-    ResponsesApi
 }

@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using AgentFrameworkToolkit.AzureOpenAI;
+using AgentFrameworkToolkit.AzureOpenAI.Batching;
 using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
@@ -121,12 +122,12 @@ public sealed class AzureOpenAITests : TestsBase
 
         try
         {
-            BatchRun batchRun = await batchRunner.CreateBatchAsync(
-                new BatchRunOptions
+            ChatBatchRun batchRun = await batchRunner.RunChatBatchAsync(
+                new ChatBatchOptions
                 {
                     Model = "gpt-4.1-nano-batch",
-                    ClientType = BatchClientType.ChatClient,
                     WaitUntilCompleted = true,
+                    ClientType = ChatBatchClientType.ChatClient,
                     MaxOutputTokens = 128,
                     RawHttpCallDetails = details =>
                     {
@@ -139,7 +140,7 @@ public sealed class AzureOpenAITests : TestsBase
                     }
                 },
                 [
-                    new BatchRunLine
+                    new ChatBatchRequest
                     {
                         CustomId = "live-test-1",
                         Messages =
@@ -150,13 +151,12 @@ public sealed class AzureOpenAITests : TestsBase
                     }
                 ]);
 
-            Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
+            Console.WriteLine($"Id={batchRun.Id}; Status={batchRun.StatusString}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-            IReadOnlyList<BatchRunItem> results = await batchRun.GetResult();
-            BatchRunItem result = Assert.Single(results);
-            Assert.Equal("live-test-1", result.Request.CustomId);
-            BatchRunResultLine response = Assert.IsType<BatchRunResultLine>(result.Response);
-            ChatMessage message = Assert.Single(response.Messages);
+            IReadOnlyList<BatchRunResult> results = await batchRun.GetResultAsync();
+            BatchRunResult result = Assert.Single(results);
+            Assert.Equal("live-test-1", result.CustomId);
+            ChatMessage message = Assert.Single(result.ResponseMessages);
 
             Assert.Equal(ChatRole.Assistant, message.Role);
             Assert.NotEmpty(message.Text);
@@ -175,12 +175,12 @@ public sealed class AzureOpenAITests : TestsBase
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
         BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
 
-        BatchRun batchRun = await batchRunner.CreateBatchAsync(
-            new BatchRunOptions
+        ChatBatchRun batchRun = await batchRunner.RunChatBatchAsync(
+            new ChatBatchOptions
             {
                 Model = "gpt-4.1-nano-batch",
-                ClientType = BatchClientType.ResponsesApi,
                 WaitUntilCompleted = true,
+                ClientType = ChatBatchClientType.ResponsesApi,
                 MaxOutputTokens = 128,
                 RawHttpCallDetails = details =>
                 {
@@ -193,7 +193,7 @@ public sealed class AzureOpenAITests : TestsBase
                 }
             },
             [
-                new BatchRunLine
+                new ChatBatchRequest
                 {
                     CustomId = "live-test-responses-1",
                     Messages =
@@ -204,13 +204,12 @@ public sealed class AzureOpenAITests : TestsBase
                 }
             ]);
 
-        Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
+        Console.WriteLine($"Id={batchRun.Id}; Status={batchRun.StatusString}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-        IReadOnlyList<BatchRunItem> results = await batchRun.GetResult();
-        BatchRunItem result = Assert.Single(results);
-        Assert.Equal("live-test-responses-1", result.Request.CustomId);
-        BatchRunResultLine response = Assert.IsType<BatchRunResultLine>(result.Response);
-        ChatMessage message = Assert.Single(response.Messages);
+        IReadOnlyList<BatchRunResult> results = await batchRun.GetResultAsync();
+        BatchRunResult result = Assert.Single(results);
+        Assert.Equal("live-test-responses-1", result.CustomId);
+        ChatMessage message = Assert.Single(result.ResponseMessages);
 
         Assert.Equal(ChatRole.Assistant, message.Role);
         Assert.NotEmpty(message.Text);
@@ -223,17 +222,17 @@ public sealed class AzureOpenAITests : TestsBase
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
         BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
 
-        BatchRun<BatchStructuredReply> batchRun = await batchRunner.CreateBatchAsync<BatchStructuredReply>(
-            new BatchRunOptions
+        ChatBatchRun<BatchStructuredReply> batchRun = await batchRunner.RunChatBatchAsync<BatchStructuredReply>(
+            new ChatBatchOptions
             {
                 Model = "gpt-4.1-nano-batch",
-                ClientType = BatchClientType.ResponsesApi,
                 WaitUntilCompleted = true,
+                ClientType = ChatBatchClientType.ResponsesApi,
                 MaxOutputTokens = 128,
                 Instructions = "Return only the requested structured answer."
             },
             [
-                new BatchRunLine
+                new ChatBatchRequest
                 {
                     CustomId = "live-test-responses-structured-1",
                     Messages =
@@ -243,24 +242,24 @@ public sealed class AzureOpenAITests : TestsBase
                 }
             ]);
 
-        Console.WriteLine($"BatchId={batchRun.BatchId}; Status={batchRun.Status}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
+        Console.WriteLine($"Id={batchRun.Id}; Status={batchRun.StatusString}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-        IReadOnlyList<BatchRunItem<BatchStructuredReply>> results = await batchRun.GetResult();
+        IList<ChatBatchRunResult<BatchStructuredReply>> results = await batchRun.GetResultAsync();
         if (results.Count == 0)
         {
             string errorSummary = string.Join(
                 Environment.NewLine,
-                results.Select(result => $"{result.Request.CustomId}: {result.Error?.ErrorCode} - {result.Error?.ErrorMessage} - RawError={result.Error?.RawError?.ToJsonString()}"));
+                results.Select(result => $"{result.CustomId}: {result.Error?.ErrorCode} - {result.Error?.ErrorMessage} - RawError={result.Error?.RawError?.ToJsonString()}"));
 
             throw new Xunit.Sdk.XunitException(
-                $"Expected one structured batch result, but none were returned. Status={batchRun.Status}; " +
+                $"Expected one structured batch result, but none were returned. Status={batchRun.StatusString}; " +
                 $"Completed={batchRun.Counts.Completed}; Failed={batchRun.Counts.Failed}.{Environment.NewLine}{errorSummary}");
         }
 
-        BatchRunItem<BatchStructuredReply> result = Assert.Single(results);
-        Assert.Equal("live-test-responses-structured-1", result.Request.CustomId);
+        ChatBatchRunResult<BatchStructuredReply> result = Assert.Single(results);
+        Assert.Equal("live-test-responses-structured-1", result.CustomId);
         Assert.Null(result.Error);
-        BatchRunStructuredResultLine<BatchStructuredReply> response = Assert.IsType<BatchRunStructuredResultLine<BatchStructuredReply>>(result.Response);
+        ChatBatchRunResponse<BatchStructuredReply> response = Assert.IsType<ChatBatchRunResponse<BatchStructuredReply>>(result.ResponseObject);
         BatchStructuredReply structuredReply = Assert.IsType<BatchStructuredReply>(response.Result);
 
         Assert.Equal("pong", structuredReply.Answer, ignoreCase: true, ignoreLineEndingDifferences: false, ignoreWhiteSpaceDifferences: false, ignoreAllWhiteSpace: false);

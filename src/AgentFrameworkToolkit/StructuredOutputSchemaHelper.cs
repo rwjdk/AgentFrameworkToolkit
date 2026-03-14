@@ -42,9 +42,9 @@ internal static class StructuredOutputSchemaHelper
             {
                 ["data"] = JsonElementToJsonNode(responseFormat.Schema.Value)
             },
-            ["additionalProperties"] = false
+            ["additionalProperties"] = false,
+            ["required"] = new JsonArray("data")
         };
-        wrappedSchema["required"] = new JsonArray("data");
 
         JsonElement schema = JsonSerializer.SerializeToElement(wrappedSchema, AIJsonUtilities.DefaultOptions.GetTypeInfo(typeof(JsonObject)));
         ChatResponseFormatJson wrappedResponseFormat = ChatResponseFormat.ForJsonSchema(schema, responseFormat.SchemaName, responseFormat.SchemaDescription);

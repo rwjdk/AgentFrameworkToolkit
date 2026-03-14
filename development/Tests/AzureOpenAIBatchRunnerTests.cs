@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using AgentFrameworkToolkit.AzureOpenAI;
+using AgentFrameworkToolkit.AzureOpenAI.Batching;
 using AgentFrameworkToolkit.OpenAI;
 using Microsoft.Extensions.AI;
 
@@ -15,16 +16,16 @@ public sealed class AzureOpenAIBatchRunnerTests
     [Fact]
     public void BuildJsonl_ChatClient_UsesAzureBatchEndpointAndSharedOptions()
     {
-        BatchRunOptions options = new()
+        ChatBatchOptions options = new()
         {
             Model = "gpt-5-nano-batch",
-            ClientType = BatchClientType.ChatClient,
+            ClientType = ChatBatchClientType.ChatClient,
             Instructions = "You are a batch system instruction",
             MaxOutputTokens = 256,
             ReasoningEffort = OpenAIReasoningEffort.Low
         };
 
-        BatchRunLine line = new()
+        ChatBatchRequest line = new()
         {
             CustomId = "line-1",
             Messages =
@@ -59,17 +60,17 @@ public sealed class AzureOpenAIBatchRunnerTests
     [Fact]
     public void BuildJsonl_ResponsesApi_UsesAzureBatchEndpointAndReasoningObject()
     {
-        BatchRunOptions options = new()
+        ChatBatchOptions options = new()
         {
             Model = "gpt-5-mini-batch",
-            ClientType = BatchClientType.ResponsesApi,
+            ClientType = ChatBatchClientType.ResponsesApi,
             Instructions = "You are a batch system instruction",
             MaxOutputTokens = 128,
             ReasoningEffort = OpenAIReasoningEffort.Low,
             ReasoningSummaryVerbosity = OpenAIReasoningSummaryVerbosity.Concise
         };
 
-        BatchRunLine line = new()
+        ChatBatchRequest line = new()
         {
             Messages =
             [
@@ -108,9 +109,9 @@ public sealed class AzureOpenAIBatchRunnerTests
             {"custom_id":"line-7","response":{"status_code":200,"request_id":"req_123","body":{"choices":[{"message":{"role":"assistant","content":"Hello back"}}]}}}
             """;
 
-        IReadOnlyList<BatchRunResultLine> resultLines = BatchRun.ParseResultLines(jsonl, "/chat/completions");
+        IReadOnlyList<ChatBatchRunResponse> resultLines = ChatBatchRun.ParseResultLines(jsonl, "/chat/completions");
 
-        BatchRunResultLine result = Assert.Single(resultLines);
+        ChatBatchRunResponse result = Assert.Single(resultLines);
         Assert.Equal("line-7", result.CustomId);
         Assert.Equal(200, result.StatusCode);
         Assert.Equal("req_123", result.RequestId);
@@ -123,13 +124,13 @@ public sealed class AzureOpenAIBatchRunnerTests
     [Fact]
     public void BuildJsonl_ChatClient_StructuredOutput_UsesJsonSchemaResponseFormat()
     {
-        BatchRunOptions options = new()
+        ChatBatchOptions options = new()
         {
             Model = "gpt-4.1-nano-batch",
-            ClientType = BatchClientType.ChatClient
+            ClientType = ChatBatchClientType.ChatClient
         };
 
-        BatchRunLine line = new()
+        ChatBatchRequest line = new()
         {
             Messages =
             [
@@ -157,13 +158,13 @@ public sealed class AzureOpenAIBatchRunnerTests
     [Fact]
     public void BuildJsonl_ResponsesApi_StructuredOutput_WrapsArraySchemaInDataObject()
     {
-        BatchRunOptions options = new()
+        ChatBatchOptions options = new()
         {
             Model = "gpt-4.1-nano-batch",
-            ClientType = BatchClientType.ResponsesApi
+            ClientType = ChatBatchClientType.ResponsesApi
         };
 
-        BatchRunLine line = new()
+        ChatBatchRequest line = new()
         {
             Messages =
             [
@@ -196,9 +197,9 @@ public sealed class AzureOpenAIBatchRunnerTests
             {"custom_id":"line-9","response":{"status_code":200,"request_id":"req_789","body":{"output":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"{\"data\":[\"alpha\",\"beta\"]}"}]}]}}}
             """;
 
-        IReadOnlyList<BatchRunStructuredResultLine<string[]>> resultLines = BatchRun.ParseStructuredResultLines<string[]>(jsonl, "/responses");
+        IReadOnlyList<ChatBatchRunResponse<string[]>> resultLines = ChatBatchRun.ParseStructuredResultLines<string[]>(jsonl, "/responses");
 
-        BatchRunStructuredResultLine<string[]> result = Assert.Single(resultLines);
+        ChatBatchRunResponse<string[]> result = Assert.Single(resultLines);
         Assert.Equal("line-9", result.CustomId);
         string[] values = Assert.IsType<string[]>(result.Result);
         Assert.Equal(["alpha", "beta"], values);
@@ -221,33 +222,31 @@ public sealed class AzureOpenAIBatchRunnerTests
             {"custom_id":"line-2","error":{"code":"bad_request","message":"Nope"}}
             """;
 
-        IReadOnlyList<BatchRunItem> results = BatchRun.BuildResultItems(inputJsonl, outputJsonl, errorJsonl, "/chat/completions");
+        IReadOnlyList<BatchRunResult> results = ChatBatchRun.BuildResultItems(inputJsonl, outputJsonl, errorJsonl, "/chat/completions");
 
         Assert.Equal(2, results.Count);
 
-        BatchRunItem success = Assert.Single(results, result => result.Request.CustomId == "line-1");
-        Assert.Equal("Hello", Assert.Single(success.Request.Messages).Text);
-        Assert.NotNull(success.Response);
+        BatchRunResult success = Assert.Single(results, result => result.CustomId == "line-1");
+        Assert.Equal("Hello", Assert.Single(success.RequestMessages).Text);
         Assert.Null(success.Error);
 
-        BatchRunItem failure = Assert.Single(results, result => result.Request.CustomId == "line-2");
-        Assert.Equal("Fail", Assert.Single(failure.Request.Messages).Text);
-        Assert.Null(failure.Response);
+        BatchRunResult failure = Assert.Single(results, result => result.CustomId == "line-2");
+        Assert.Equal("Fail", Assert.Single(failure.RequestMessages).Text);
         Assert.Equal("bad_request", failure.Error?.ErrorCode);
     }
 
     [Fact]
     public async Task GetResultAsync_WhenBatchIsNotCompleted_ReturnsEmptyCollection()
     {
-        BatchRun batchRun = new(new AzureOpenAIConnection
+        ChatBatchRun batchRun = new(new AzureOpenAIConnection
         {
             Endpoint = "https://example.invalid"
         })
         {
-            Status = "in_progress"
+            StatusString = "in_progress"
         };
 
-        IReadOnlyList<BatchRunItem> results = await batchRun.GetResultAsync();
+        IReadOnlyList<BatchRunResult> results = await batchRun.GetResultAsync();
 
         Assert.Empty(results);
     }
