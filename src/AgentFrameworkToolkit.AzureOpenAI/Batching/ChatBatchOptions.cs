@@ -28,16 +28,6 @@ public class ChatBatchOptions
     public string? Instructions { get; set; }
 
     /// <summary>
-    /// Gets or sets the maximum number of output tokens per request.
-    /// </summary>
-    public int? MaxOutputTokens { get; set; }
-
-    /// <summary>
-    /// Gets or sets the temperature used for generation.
-    /// </summary>
-    public float? Temperature { get; set; }
-
-    /// <summary>
     /// Gets or sets the reasoning effort when using reasoning-capable models.
     /// </summary>
     public OpenAIReasoningEffort? ReasoningEffort { get; set; }
@@ -46,11 +36,6 @@ public class ChatBatchOptions
     /// Gets or sets the reasoning summary verbosity for the Responses API.
     /// </summary>
     public OpenAIReasoningSummaryVerbosity? ReasoningSummaryVerbosity { get; set; }
-
-    /// <summary>
-    /// Gets or sets the service tier to use when supported by the model.
-    /// </summary>
-    public OpenAIServiceTier? ServiceTier { get; set; }
 
     /// <summary>
     /// Gets or sets an action for inspecting the raw HTTP calls made during upload and batch creation.

@@ -470,39 +470,14 @@ public class BatchRunner
 
     private static void ApplySharedChatCompletionOptions(JsonObject body, ChatBatchOptions options)
     {
-        if (options.MaxOutputTokens.HasValue)
-        {
-            body["max_completion_tokens"] = options.MaxOutputTokens.Value;
-        }
-
-        if (options.Temperature.HasValue)
-        {
-            body["temperature"] = options.Temperature.Value;
-        }
-
         if (options.ReasoningEffort.HasValue)
         {
             body["reasoning_effort"] = ToReasoningEffortString(options.ReasoningEffort.Value);
-        }
-
-        if (options.ServiceTier.HasValue)
-        {
-            body["service_tier"] = ToServiceTierString(options.ServiceTier.Value);
         }
     }
 
     private static void ApplySharedResponsesOptions(JsonObject body, ChatBatchOptions options)
     {
-        if (options.MaxOutputTokens.HasValue)
-        {
-            body["max_output_tokens"] = options.MaxOutputTokens.Value;
-        }
-
-        if (options.Temperature.HasValue)
-        {
-            body["temperature"] = options.Temperature.Value;
-        }
-
         if (options.ReasoningEffort.HasValue || options.ReasoningSummaryVerbosity.HasValue)
         {
             JsonObject reasoning = new();
@@ -518,11 +493,6 @@ public class BatchRunner
             }
 
             body["reasoning"] = reasoning;
-        }
-
-        if (options.ServiceTier.HasValue)
-        {
-            body["service_tier"] = ToServiceTierString(options.ServiceTier.Value);
         }
     }
 

@@ -2,12 +2,14 @@ using System.Text.Json.Nodes;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.AzureOpenAI.Batching;
 using AgentFrameworkToolkit.OpenAI;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.Tests;
 
 public sealed class AzureOpenAIBatchRunnerTests
 {
+    [PublicAPI]
     private sealed class StructuredReply
     {
         public required string Answer { get; set; }
@@ -21,7 +23,6 @@ public sealed class AzureOpenAIBatchRunnerTests
             Model = "gpt-5-nano-batch",
             ClientType = ChatBatchClientType.ChatClient,
             Instructions = "You are a batch system instruction",
-            MaxOutputTokens = 256,
             ReasoningEffort = OpenAIReasoningEffort.Low
         };
 
@@ -65,7 +66,6 @@ public sealed class AzureOpenAIBatchRunnerTests
             Model = "gpt-5-mini-batch",
             ClientType = ChatBatchClientType.ResponsesApi,
             Instructions = "You are a batch system instruction",
-            MaxOutputTokens = 128,
             ReasoningEffort = OpenAIReasoningEffort.Low,
             ReasoningSummaryVerbosity = OpenAIReasoningSummaryVerbosity.Concise
         };

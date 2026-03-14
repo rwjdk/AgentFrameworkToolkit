@@ -128,7 +128,6 @@ public sealed class AzureOpenAITests : TestsBase
                     Model = "gpt-4.1-nano-batch",
                     WaitUntilCompleted = true,
                     ClientType = ChatBatchClientType.ChatClient,
-                    MaxOutputTokens = 128,
                     RawHttpCallDetails = details =>
                     {
                         Console.WriteLine("REQUEST URL:");
@@ -181,7 +180,6 @@ public sealed class AzureOpenAITests : TestsBase
                 Model = "gpt-4.1-nano-batch",
                 WaitUntilCompleted = true,
                 ClientType = ChatBatchClientType.ResponsesApi,
-                MaxOutputTokens = 128,
                 RawHttpCallDetails = details =>
                 {
                     Console.WriteLine("REQUEST URL:");
@@ -228,7 +226,6 @@ public sealed class AzureOpenAITests : TestsBase
                 Model = "gpt-4.1-nano-batch",
                 WaitUntilCompleted = true,
                 ClientType = ChatBatchClientType.ResponsesApi,
-                MaxOutputTokens = 128,
                 Instructions = "Return only the requested structured answer."
             },
             [
