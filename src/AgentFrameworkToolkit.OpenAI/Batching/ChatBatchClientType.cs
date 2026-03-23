@@ -1,4 +1,4 @@
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// The batch endpoint style to use.

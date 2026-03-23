@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// Request counts for a batch run.

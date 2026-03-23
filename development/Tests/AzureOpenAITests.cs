@@ -2,14 +2,20 @@ using System.Text.Json.Nodes;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.AzureOpenAI.Batching;
 using AgentFrameworkToolkit.OpenAI;
+using AgentFrameworkToolkit.OpenAI.Batching;
+using Azure.AI.OpenAI;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Secrets;
+
+#pragma warning disable OPENAI001
 
 namespace AgentFrameworkToolkit.Tests;
 
 public sealed class AzureOpenAITests : TestsBase
 {
+    [PublicAPI]
     private sealed class BatchStructuredReply
     {
         public required string Answer { get; set; }
@@ -118,7 +124,8 @@ public sealed class AzureOpenAITests : TestsBase
     public async Task BatchRunner_SingleLine_WaitUntilCompleted()
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
-        BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+        AzureOpenAIConnection connection = new AzureOpenAIConnection(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+        AzureOpenAIBatchRunner batchRunner = new(connection);
 
         try
         {
@@ -127,16 +134,7 @@ public sealed class AzureOpenAITests : TestsBase
                 {
                     Model = "gpt-4.1-nano-batch",
                     WaitUntilCompleted = true,
-                    ClientType = ChatBatchClientType.ChatClient,
-                    RawHttpCallDetails = details =>
-                    {
-                        Console.WriteLine("REQUEST URL:");
-                        Console.WriteLine(details.RequestUrl);
-                        Console.WriteLine("REQUEST DATA:");
-                        Console.WriteLine(details.RequestData);
-                        Console.WriteLine("RESPONSE DATA:");
-                        Console.WriteLine(details.ResponseData);
-                    }
+                    ClientType = ChatBatchClientType.ChatClient
                 },
                 [
                     new ChatBatchRequest
@@ -172,23 +170,15 @@ public sealed class AzureOpenAITests : TestsBase
     public async Task BatchRunner_SingleLine_ResponsesApi_WaitUntilCompleted()
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
-        BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+        AzureOpenAIConnection connection = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+        AzureOpenAIBatchRunner batchRunner = new(connection);
 
         ChatBatchRun batchRun = await batchRunner.RunChatBatchAsync(
             new ChatBatchOptions
             {
                 Model = "gpt-4.1-nano-batch",
                 WaitUntilCompleted = true,
-                ClientType = ChatBatchClientType.ResponsesApi,
-                RawHttpCallDetails = details =>
-                {
-                    Console.WriteLine("REQUEST URL:");
-                    Console.WriteLine(details.RequestUrl);
-                    Console.WriteLine("REQUEST DATA:");
-                    Console.WriteLine(details.RequestData);
-                    Console.WriteLine("RESPONSE DATA:");
-                    Console.WriteLine(details.ResponseData);
-                }
+                ClientType = ChatBatchClientType.ResponsesApi
             },
             [
                 new ChatBatchRequest
@@ -218,7 +208,8 @@ public sealed class AzureOpenAITests : TestsBase
     public async Task BatchRunner_SingleLine_ResponsesApi_StructuredOutput_WaitUntilCompleted()
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
-        BatchRunner batchRunner = new(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+        AzureOpenAIConnection connection = new AzureOpenAIConnection(secrets.AzureOpenAiEndpoint, secrets.AzureOpenAiKey);
+        AzureOpenAIBatchRunner batchRunner = new(connection);
 
         ChatBatchRun<BatchStructuredReply> batchRun = await batchRunner.RunChatBatchAsync<BatchStructuredReply>(
             new ChatBatchOptions

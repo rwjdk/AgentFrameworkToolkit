@@ -1,6 +1,6 @@
 using Microsoft.Extensions.AI;
 
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// A joined structured batch result item containing the original request and any matched response or error.

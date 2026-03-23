@@ -1,6 +1,4 @@
-using AgentFrameworkToolkit.OpenAI;
-
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// Options for a batch run.
@@ -36,9 +34,4 @@ public class ChatBatchOptions
     /// Gets or sets the reasoning summary verbosity for the Responses API.
     /// </summary>
     public OpenAIReasoningSummaryVerbosity? ReasoningSummaryVerbosity { get; set; }
-
-    /// <summary>
-    /// Gets or sets an action for inspecting the raw HTTP calls made during upload and batch creation.
-    /// </summary>
-    public Action<RawCallDetails>? RawHttpCallDetails { get; set; }
 }

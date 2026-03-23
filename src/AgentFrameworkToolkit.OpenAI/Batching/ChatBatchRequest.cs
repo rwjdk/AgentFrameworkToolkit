@@ -1,6 +1,6 @@
 using Microsoft.Extensions.AI;
 
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// Represents one request line in the batch input file.

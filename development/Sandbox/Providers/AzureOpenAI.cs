@@ -2,9 +2,12 @@ using AgentFrameworkToolkit;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.AzureOpenAI.Batching;
 using AgentFrameworkToolkit.OpenAI;
+using AgentFrameworkToolkit.OpenAI.Batching;
+using Azure.AI.OpenAI;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Secrets;
+#pragma warning disable OPENAI001
 
 namespace Sandbox.Providers;
 
@@ -27,9 +30,7 @@ public static class AzureOpenAI
             ApiKey = secrets.AzureOpenAiKey,
         };
 
-        BatchRunner batchRunner = new BatchRunner(connection);
-
-
+        AzureOpenAIBatchRunner batchRunner = new(connection);
         ChatBatchRun<MyObject> run = await batchRunner.RunChatBatchAsync<MyObject>(new ChatBatchOptions
             {
                 Model = "gpt-4.1-nano-batch",

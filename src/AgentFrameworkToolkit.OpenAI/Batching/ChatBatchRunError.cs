@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// A failed parsed line from the batch error file.

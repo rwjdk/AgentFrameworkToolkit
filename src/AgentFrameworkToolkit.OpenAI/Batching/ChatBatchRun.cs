@@ -4,19 +4,19 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.AI;
 using OpenAI.Files;
 
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// Represents a batch run and exposes helpers for retrieving matched requests, responses, and errors.
 /// </summary>
 public class ChatBatchRun
 {
-    private readonly AzureOpenAIConnection _connection;
+    private readonly OpenAIFileClient? _fileClient;
     private readonly StructuredOutputSchemaDefinition? _structuredOutput;
 
-    internal ChatBatchRun(AzureOpenAIConnection connection, StructuredOutputSchemaDefinition? structuredOutput = null)
+    internal ChatBatchRun(OpenAIFileClient? fileClient, StructuredOutputSchemaDefinition? structuredOutput = null)
     {
-        _connection = connection;
+        _fileClient = fileClient;
         _structuredOutput = structuredOutput;
     }
 
@@ -172,7 +172,7 @@ public class ChatBatchRun
 
         foreach (string line in EnumerateJsonLines(fileContent))
         {
-            JsonObject lineObject = BatchRunner.ParseJsonObject(line);
+            JsonObject lineObject = InternalBatchRunner.ParseJsonObject(line);
             JsonObject bodyObject = lineObject["body"]?.AsObject()
                                     ?? throw new AgentFrameworkToolkitException("Batch input line was missing a request body.");
             string? endpoint = lineObject["url"]?.GetValue<string>();
@@ -193,7 +193,7 @@ public class ChatBatchRun
 
         foreach (string line in EnumerateJsonLines(fileContent))
         {
-            JsonObject lineObject = BatchRunner.ParseJsonObject(line);
+            JsonObject lineObject = InternalBatchRunner.ParseJsonObject(line);
             JsonObject responseObject = lineObject["response"]?.AsObject()
                                         ?? throw new AgentFrameworkToolkitException("Batch result line was missing a response object.");
             JsonObject bodyObject = responseObject["body"]?.AsObject()
@@ -218,7 +218,7 @@ public class ChatBatchRun
 
         foreach (string line in EnumerateJsonLines(fileContent))
         {
-            JsonObject lineObject = BatchRunner.ParseJsonObject(line);
+            JsonObject lineObject = InternalBatchRunner.ParseJsonObject(line);
             JsonObject? errorObject = lineObject["error"] as JsonObject;
             JsonObject? responseObject = lineObject["response"] as JsonObject;
             JsonObject? bodyObject = responseObject?["body"] as JsonObject;
@@ -238,14 +238,14 @@ public class ChatBatchRun
         return results;
     }
 
-    internal static ChatBatchRun FromJson(JsonObject batchObject, AzureOpenAIConnection connection)
+    internal static ChatBatchRun FromJson(JsonObject batchObject, OpenAIFileClient fileClient)
     {
-        return PopulateFromJson(new ChatBatchRun(connection), batchObject);
+        return PopulateFromJson(new ChatBatchRun(fileClient), batchObject);
     }
 
-    internal static ChatBatchRun<T> FromJson<T>(JsonObject batchObject, AzureOpenAIConnection connection, StructuredOutputSchemaDefinition structuredOutput)
+    internal static ChatBatchRun<T> FromJson<T>(JsonObject batchObject, OpenAIFileClient fileClient, StructuredOutputSchemaDefinition structuredOutput)
     {
-        return PopulateFromJson(new ChatBatchRun<T>(connection, structuredOutput), batchObject);
+        return PopulateFromJson(new ChatBatchRun<T>(fileClient, structuredOutput), batchObject);
     }
 
     internal static IReadOnlyList<ChatBatchRunResponse<T>> ParseStructuredResultLines<T>(
@@ -302,7 +302,7 @@ public class ChatBatchRun
 
         if (structuredOutput.IsWrappedInObject)
         {
-            JsonObject wrappedObject = BatchRunner.ParseJsonObject(json);
+            JsonObject wrappedObject = InternalBatchRunner.ParseJsonObject(json);
             JsonNode? dataNode = wrappedObject["data"];
             return dataNode == null
                 ? default
@@ -370,15 +370,19 @@ public class ChatBatchRun
 
     private async Task<string> DownloadFileAsStringAsync(string fileId)
     {
-        Azure.AI.OpenAI.AzureOpenAIClient client = _connection.GetClient();
-        OpenAIFileClient fileClient = client.GetOpenAIFileClient();
-        System.ClientModel.ClientResult<BinaryData> download = await fileClient.DownloadFileAsync(fileId);
+        System.ClientModel.ClientResult<BinaryData> download = await GetRequiredFileClient().DownloadFileAsync(fileId);
         return download.Value.ToString();
     }
 
     private async Task<string?> DownloadOptionalFileAsStringAsync(string? fileId)
     {
         return string.IsNullOrWhiteSpace(fileId) ? null : await DownloadFileAsStringAsync(fileId);
+    }
+
+    private OpenAIFileClient GetRequiredFileClient()
+    {
+        return _fileClient ?? throw new InvalidOperationException(
+            "This batch run was not created with an OpenAIFileClient. Retrieve it through BatchRunner to enable file downloads.");
     }
 
     private static IReadOnlyList<ChatMessage> ParseRequestMessages(JsonObject bodyObject, string? endpoint)
@@ -393,7 +397,7 @@ public class ChatBatchRun
             return ParseResponsesInputMessages(responsesInput);
         }
 
-        ChatBatchClientType clientType = BatchRunner.ParseClientType(endpoint);
+        ChatBatchClientType clientType = InternalBatchRunner.ParseClientType(endpoint);
         return clientType switch
         {
             ChatBatchClientType.ChatClient => [],
@@ -414,7 +418,7 @@ public class ChatBatchRun
             return ParseChatCompletionMessages(bodyObject);
         }
 
-        ChatBatchClientType clientType = BatchRunner.ParseClientType(endpoint);
+        ChatBatchClientType clientType = InternalBatchRunner.ParseClientType(endpoint);
         return clientType switch
         {
             ChatBatchClientType.ChatClient => ParseChatCompletionMessages(bodyObject),
@@ -679,7 +683,7 @@ public class ChatBatchRun
 
         if (argumentsNode is JsonValue jsonValue && jsonValue.TryGetValue(out string? argumentsText) && !string.IsNullOrWhiteSpace(argumentsText))
         {
-            JsonObject argumentsObject = BatchRunner.ParseJsonObject(argumentsText);
+            JsonObject argumentsObject = InternalBatchRunner.ParseJsonObject(argumentsText);
             return argumentsObject.Deserialize<Dictionary<string, object?>>() ??
                    new Dictionary<string, object?>(StringComparer.Ordinal);
         }
@@ -820,8 +824,8 @@ public class ChatBatchRun
 /// <typeparam name="T">The structured output type returned for each line.</typeparam>
 public class ChatBatchRun<T> : ChatBatchRun
 {
-    internal ChatBatchRun(AzureOpenAIConnection connection, StructuredOutputSchemaDefinition structuredOutput)
-        : base(connection, structuredOutput)
+    internal ChatBatchRun(OpenAIFileClient? fileClient, StructuredOutputSchemaDefinition structuredOutput)
+        : base(fileClient, structuredOutput)
     {
     }
 

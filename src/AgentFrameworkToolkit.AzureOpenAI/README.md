@@ -43,20 +43,23 @@ Console.WriteLine(response);
 
 ## Batch Jobs
 
-You can create Azure OpenAI batch jobs with `BatchRunner`. Each `BatchRunLine` becomes one JSONL entry, while `BatchRunOptions` applies shared settings such as model, endpoint type, reasoning, and token limits to every request in the batch. Once the run status is `completed`, `GetResult()` returns the original request together with the matched response and error for each line.
+You can create Azure OpenAI batch jobs with `BatchRunner`. Create a raw Azure OpenAI client first, then pass its `BatchClient` and `OpenAIFileClient` into the runner. Each request becomes one JSONL entry, while the batch options apply shared settings such as model, endpoint type, reasoning, and embedding options to every request in the batch. Once the run status is `completed`, `GetResultAsync()` returns the original request together with the matched response and error for each line.
+
+### Chat Batch Example
 
 ```cs
-BatchRunner batchRunner = new BatchRunner("<Endpoint>", "<API Key>");
+AzureOpenAIClient client = new AzureOpenAIConnection("<Endpoint>", "<API Key>").GetClient();
+BatchRunner batchRunner = new BatchRunner(client.GetBatchClient(), client.GetOpenAIFileClient());
 
-BatchRun batchRun = await batchRunner.CreateBatchAsync(
-    new BatchRunOptions
+ChatBatchRun batchRun = await batchRunner.RunChatBatchAsync(
+    new ChatBatchOptions
     {
         Model = "gpt-4.1-nano-batch",
-        ClientType = BatchClientType.ChatClient,
+        ClientType = ChatBatchClientType.ChatClient,
         Instructions = "You are a nice AI"
     },
     [
-        new BatchRunLine
+        new ChatBatchRequest
         {
             CustomId = "question-1",
             Messages =
@@ -64,7 +67,7 @@ BatchRun batchRun = await batchRunner.CreateBatchAsync(
                 new ChatMessage(ChatRole.User, "Why is the sky blue?")
             ]
         },
-        new BatchRunLine
+        new ChatBatchRequest
         {
             CustomId = "question-2",
             Messages =
@@ -74,23 +77,22 @@ BatchRun batchRun = await batchRunner.CreateBatchAsync(
         }
     ]);
 
-IReadOnlyList<BatchRunItem> results = await batchRun.GetResult();
-BatchRunItem firstResult = results[0];
-ChatMessage responseMessage = firstResult.Response!.Messages[0];
+IReadOnlyList<BatchRunResult> results = await batchRun.GetResultAsync();
+ChatMessage responseMessage = results[0].ResponseMessages[0];
 ```
 
 If every line in the batch should return the same structured output type, use the generic overload:
 
 ```cs
-BatchRun<MovieAnswer> batchRun = await batchRunner.CreateBatchAsync<MovieAnswer>(
-    new BatchRunOptions
+ChatBatchRun<MovieAnswer> batchRun = await batchRunner.RunChatBatchAsync<MovieAnswer>(
+    new ChatBatchOptions
     {
         Model = "gpt-4.1-nano-batch",
-        ClientType = BatchClientType.ResponsesApi,
+        ClientType = ChatBatchClientType.ResponsesApi,
         Instructions = "Return only the requested structured answer."
     },
     [
-        new BatchRunLine
+        new ChatBatchRequest
         {
             CustomId = "movie-1",
             Messages =
@@ -100,8 +102,41 @@ BatchRun<MovieAnswer> batchRun = await batchRunner.CreateBatchAsync<MovieAnswer>
         }
     ]);
 
-IReadOnlyList<BatchRunItem<MovieAnswer>> structuredResults = await batchRun.GetResult();
-MovieAnswer answer = structuredResults[0].Response!.Result!;
+IList<ChatBatchRunResult<MovieAnswer>> structuredResults = await batchRun.GetResultAsync();
+MovieAnswer answer = structuredResults[0].ResponseObject!;
+```
+
+### Embedding Batch Example
+
+```cs
+AzureOpenAIClient client = new AzureOpenAIConnection("<Endpoint>", "<API Key>").GetClient();
+BatchRunner batchRunner = new BatchRunner(client.GetBatchClient(), client.GetOpenAIFileClient());
+
+EmbeddingBatchRun batchRun = await batchRunner.RunEmbeddingBatchAsync(
+    new EmbeddingBatchOptions
+    {
+        Model = "text-embedding-3-large-batch",
+        GenerationOptions = new EmbeddingGenerationOptions
+        {
+            Dimensions = 1024
+        }
+    },
+    [
+        new EmbeddingBatchRequest
+        {
+            CustomId = "doc-1",
+            Values =
+            [
+                "The sky appears blue because shorter wavelengths scatter more strongly.",
+                "JSONL stores one JSON document per line."
+            ]
+        }
+    ]);
+
+IReadOnlyList<EmbeddingBatchRunResult> results = await batchRun.GetResultAsync();
+GeneratedEmbeddings<Embedding<float>> embeddings = results[0].Response!;
+Embedding<float> firstEmbedding = embeddings[0];
+int? inputTokens = embeddings.Usage?.InputTokenCount;
 ```
 
 ### Normal Code Example (API KEY)

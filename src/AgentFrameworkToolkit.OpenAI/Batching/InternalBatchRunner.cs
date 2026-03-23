@@ -3,67 +3,51 @@ using System.ClientModel.Primitives;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using AgentFrameworkToolkit.OpenAI;
-using Azure.Core;
 using Microsoft.Extensions.AI;
 using OpenAI.Batch;
 using OpenAI.Files;
 
 #pragma warning disable OPENAI001
 
-namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
+namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
-/// Azure OpenAI runner for batch jobs.
+/// Runner for batch jobs backed by raw OpenAI batch and file clients.
 /// </summary>
-public class BatchRunner
+internal class InternalBatchRunner
 {
+    private readonly bool _azureOpenAi;
+
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         WriteIndented = false
     };
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BatchRunner"/> class.
+    /// Initializes a new instance of the <see cref="OpenAIBatchRunner"/> class.
     /// </summary>
-    /// <param name="endpoint">Your Azure OpenAI endpoint.</param>
-    /// <param name="apiKey">Your Azure OpenAI API key.</param>
-    public BatchRunner(string endpoint, string apiKey)
+    /// <param name="batchClient">The batch client used for creating and retrieving batch jobs.</param>
+    /// <param name="fileClient">The file client used for uploading input files and downloading results.</param>
+    /// <param name="azureOpenAi"></param>
+    public InternalBatchRunner(BatchClient batchClient, OpenAIFileClient fileClient, bool azureOpenAi) //todo - make a prettier solution for source
     {
-        Connection = new AzureOpenAIConnection
-        {
-            Endpoint = endpoint,
-            ApiKey = apiKey
-        };
+        _azureOpenAi = azureOpenAi;
+        ArgumentNullException.ThrowIfNull(batchClient);
+        ArgumentNullException.ThrowIfNull(fileClient);
+
+        BatchClient = batchClient;
+        FileClient = fileClient;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BatchRunner"/> class.
+    /// Gets the batch client.
     /// </summary>
-    /// <param name="endpoint">Your Azure OpenAI endpoint.</param>
-    /// <param name="credentials">Your RBAC credentials.</param>
-    public BatchRunner(string endpoint, TokenCredential credentials)
-    {
-        Connection = new AzureOpenAIConnection
-        {
-            Endpoint = endpoint,
-            Credentials = credentials
-        };
-    }
+    public BatchClient BatchClient { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BatchRunner"/> class.
+    /// Gets the file client.
     /// </summary>
-    /// <param name="connection">Connection details.</param>
-    public BatchRunner(AzureOpenAIConnection connection)
-    {
-        Connection = connection;
-    }
-
-    /// <summary>
-    /// Gets the Azure OpenAI connection.
-    /// </summary>
-    public AzureOpenAIConnection Connection { get; }
+    public OpenAIFileClient FileClient { get; }
 
     /// <summary>
     /// Creates a new batch run.
@@ -94,6 +78,18 @@ public class BatchRunner
         return await GetChatBatchAsync<T>(batchId, structuredOutput);
     }
 
+    /// <summary>
+    /// Creates a new embedding batch run.
+    /// </summary>
+    /// <param name="options">Options applied to every entry in the batch.</param>
+    /// <param name="lines">The batch entries to submit.</param>
+    /// <returns>The created embedding batch run.</returns>
+    public async Task<EmbeddingBatchRun> RunEmbeddingBatchAsync(EmbeddingBatchOptions options, IList<EmbeddingBatchRequest> lines)
+    {
+        string batchId = await CreateBatchIdAsync(options, lines);
+        return await GetEmbeddingBatchAsync(batchId);
+    }
+
     private async Task<string> CreateBatchIdAsync(ChatBatchOptions options, IList<ChatBatchRequest> lines, StructuredOutputSchemaDefinition? structuredOutput)
     {
         ArgumentNullException.ThrowIfNull(options);
@@ -106,51 +102,67 @@ public class BatchRunner
 
         ValidateBatchLines(lines);
 
-        RawCallDetails? latestRawCall = null;
-        Action<RawCallDetails>? rawCallDetails = null;
-        if (options.RawHttpCallDetails != null)
+        string jsonl = BuildJsonl(options, lines, structuredOutput);
+        try
         {
-            rawCallDetails = details =>
-            {
-                latestRawCall = details;
-                options.RawHttpCallDetails(details);
-            };
+            return await CreateBatchIdAsync(jsonl, GetEndpoint(options.ClientType), options.WaitUntilCompleted);
+        }
+        catch (ClientResultException ex) when (ex.Status == 400)
+        {
+            throw new AgentFrameworkToolkitException(
+                "The batch service rejected the batch request with HTTP 400. " +
+                "Common causes are using a non-batch deployment name, using the wrong batch endpoint, or uploading JSONL with invalid encoding/content.",
+                ex);
+        }
+    }
+
+    private async Task<string> CreateBatchIdAsync(EmbeddingBatchOptions options, IList<EmbeddingBatchRequest> lines)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(lines);
+
+        if (lines.Count == 0)
+        {
+            throw new ArgumentException("At least one batch line must be provided.", nameof(lines));
         }
 
-        Azure.AI.OpenAI.AzureOpenAIClient client = Connection.GetClient(rawCallDetails);
-        OpenAIFileClient fileClient = client.GetOpenAIFileClient();
-        BatchClient batchClient = client.GetBatchClient();
+        ValidateBatchLines(lines);
 
-        string jsonl = BuildJsonl(options, lines, structuredOutput);
+        string jsonl = BuildJsonl(options, lines);
+        try
+        {
+            return await CreateBatchIdAsync(jsonl, EmbeddingsEndpoint, options.WaitUntilCompleted);
+        }
+        catch (ClientResultException ex) when (ex.Status == 400)
+        {
+            throw new AgentFrameworkToolkitException(
+                "The batch service rejected the embeddings batch request with HTTP 400. " +
+                "Common causes are using a non-batch deployment name, using the wrong batch endpoint, or uploading JSONL with invalid encoding/content.",
+                ex);
+        }
+    }
+
+    private async Task<string> CreateBatchIdAsync(
+        string jsonl,
+        string endpoint,
+        bool waitUntilCompleted)
+    {
         byte[] jsonlBytes = new UTF8Encoding(false).GetBytes(jsonl);
         using MemoryStream jsonlStream = new(jsonlBytes);
 
-        OpenAIFile inputFile = await fileClient.UploadFileAsync(jsonlStream, "batch.jsonl", new FileUploadPurpose("batch"));
+        OpenAIFile inputFile = await FileClient.UploadFileAsync(jsonlStream, "batch.jsonl", new FileUploadPurpose("batch"));
 
         JsonObject batchPayload = new()
         {
             ["input_file_id"] = inputFile.Id,
-            ["endpoint"] = GetEndpoint(options.ClientType),
+            ["endpoint"] = endpoint,
             ["completion_window"] = "24h"
         };
 
-        CreateBatchOperation batchOperation;
-        try
-        {
-            batchOperation =
-                await batchClient.CreateBatchAsync(
-                    BinaryContent.CreateJson(batchPayload),
-                    waitUntilCompleted: options.WaitUntilCompleted);
-        }
-        catch (ClientResultException ex) when (ex.Status == 400)
-        {
-            string responseData = latestRawCall?.ResponseData ?? string.Empty;
-            throw new AgentFrameworkToolkitException(
-                "Azure OpenAI rejected the batch request with HTTP 400. " +
-                "Common causes are using a non-batch deployment name, using the wrong batch endpoint, or uploading JSONL with invalid encoding/content. " +
-                $"Service response: {responseData}",
-                ex);
-        }
+        CreateBatchOperation batchOperation =
+            await BatchClient.CreateBatchAsync(
+                BinaryContent.CreateJson(batchPayload),
+                waitUntilCompleted: waitUntilCompleted);
 
         return batchOperation.BatchId;
     }
@@ -160,9 +172,10 @@ public class BatchRunner
     /// </summary>
     /// <param name="batchId">The batch identifier.</param>
     /// <returns>The batch run.</returns>
-    public Task<ChatBatchRun> GetChatBatchAsync(string batchId)
+    public async Task<ChatBatchRun> GetChatBatchAsync(string batchId)
     {
-        return GetBatchAsyncCoreAsync(batchId);
+        JsonObject batchObject = await GetBatchObjectAsync(batchId);
+        return ChatBatchRun.FromJson(batchObject, FileClient);
     }
 
     /// <summary>
@@ -178,10 +191,15 @@ public class BatchRunner
         return GetChatBatchAsync<T>(batchId, structuredOutput);
     }
 
-    private async Task<ChatBatchRun> GetBatchAsyncCoreAsync(string batchId)
+    /// <summary>
+    /// Gets an existing embedding batch run.
+    /// </summary>
+    /// <param name="batchId">The batch identifier.</param>
+    /// <returns>The embedding batch run.</returns>
+    public async Task<EmbeddingBatchRun> GetEmbeddingBatchAsync(string batchId)
     {
         JsonObject batchObject = await GetBatchObjectAsync(batchId);
-        return ChatBatchRun.FromJson(batchObject, Connection);
+        return EmbeddingBatchRun.FromJson(batchObject, FileClient);
     }
 
     private async Task<ChatBatchRun<T>> GetChatBatchAsync<T>(string batchId, StructuredOutputSchemaDefinition structuredOutput)
@@ -189,17 +207,14 @@ public class BatchRunner
         ArgumentNullException.ThrowIfNull(structuredOutput);
         JsonObject batchObject = await GetBatchObjectAsync(batchId);
 
-        return ChatBatchRun.FromJson<T>(batchObject, Connection, structuredOutput);
+        return ChatBatchRun.FromJson<T>(batchObject, FileClient, structuredOutput);
     }
 
     private async Task<JsonObject> GetBatchObjectAsync(string batchId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(batchId);
 
-        Azure.AI.OpenAI.AzureOpenAIClient client = Connection.GetClient();
-        BatchClient batchClient = client.GetBatchClient();
-
-        ClientResult result = await batchClient.GetBatchAsync(batchId, new RequestOptions());
+        ClientResult result = await BatchClient.GetBatchAsync(batchId, new RequestOptions());
         return ParseJsonObject(result.GetRawResponse().Content.ToString());
     }
 
@@ -221,18 +236,18 @@ public class BatchRunner
         return jsonObject;
     }
 
-    internal static string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines)
+    internal string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines)
     {
         return BuildJsonl(options, lines, structuredOutput: null);
     }
 
-    internal static string BuildJsonl<T>(ChatBatchOptions options, IList<ChatBatchRequest> lines, JsonSerializerOptions? serializerOptions = null)
+    internal string BuildJsonl<T>(ChatBatchOptions options, IList<ChatBatchRequest> lines, JsonSerializerOptions? serializerOptions = null)
     {
         StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
         return BuildJsonl(options, lines, structuredOutput);
     }
 
-    internal static string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines, StructuredOutputSchemaDefinition? structuredOutput)
+    internal string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines, StructuredOutputSchemaDefinition? structuredOutput)
     {
         List<string> jsonLines = [];
 
@@ -244,6 +259,29 @@ public class BatchRunner
                 ["method"] = "POST",
                 ["url"] = GetEndpoint(options.ClientType),
                 ["body"] = BuildRequestBody(options, line, structuredOutput)
+            };
+
+            jsonLines.Add(payload.ToJsonString(JsonSerializerOptions));
+        }
+
+        return string.Join(Environment.NewLine, jsonLines);
+    }
+
+    internal static string BuildJsonl(EmbeddingBatchOptions options, IList<EmbeddingBatchRequest> lines)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(lines);
+
+        List<string> jsonLines = [];
+
+        foreach (EmbeddingBatchRequest line in lines)
+        {
+            JsonObject payload = new()
+            {
+                ["custom_id"] = string.IsNullOrWhiteSpace(line.CustomId) ? Guid.NewGuid().ToString() : line.CustomId,
+                ["method"] = "POST",
+                ["url"] = EmbeddingsEndpoint,
+                ["body"] = BuildRequestBody(options, line)
             };
 
             jsonLines.Add(payload.ToJsonString(JsonSerializerOptions));
@@ -276,6 +314,21 @@ public class BatchRunner
                 throw new ArgumentOutOfRangeException(nameof(options.ClientType), options.ClientType, null);
         }
 
+        return body;
+    }
+
+    internal static JsonObject BuildRequestBody(EmbeddingBatchOptions options, EmbeddingBatchRequest line)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(line);
+
+        JsonObject body = new()
+        {
+            ["model"] = options.Model,
+            ["input"] = BuildEmbeddingInput(line.Values)
+        };
+
+        ApplyEmbeddingGenerationOptions(body, options);
         return body;
     }
 
@@ -535,6 +588,37 @@ public class BatchRunner
         }
     }
 
+    private static void ApplyEmbeddingGenerationOptions(JsonObject body, EmbeddingBatchOptions options)
+    {
+        EmbeddingGenerationOptions? generationOptions = options.GenerationOptions;
+
+        if (!string.IsNullOrWhiteSpace(generationOptions?.ModelId) &&
+            !string.Equals(generationOptions.ModelId, options.Model, StringComparison.Ordinal))
+        {
+            throw new ArgumentException("GenerationOptions.ModelId must match the batch Model when both are provided.", nameof(options));
+        }
+
+        if (generationOptions?.Dimensions is int dimensions)
+        {
+            body["dimensions"] = dimensions;
+        }
+
+        if (generationOptions?.AdditionalProperties == null)
+        {
+            return;
+        }
+
+        foreach (KeyValuePair<string, object?> property in generationOptions.AdditionalProperties)
+        {
+            if (body.ContainsKey(property.Key))
+            {
+                continue;
+            }
+
+            body[property.Key] = SerializeToJsonNode(property.Value);
+        }
+    }
+
     private static JsonObject BuildChatJsonSchemaPayload(StructuredOutputSchemaDefinition structuredOutput, JsonObject schemaObject)
     {
         JsonObject payload = new()
@@ -559,14 +643,49 @@ public class BatchRunner
         return payload;
     }
 
-    private static string GetEndpoint(ChatBatchClientType clientType)
+    private static JsonNode? BuildEmbeddingInput(IList<string> values)
     {
+        return values.Count switch
+        {
+            0 => new JsonArray(),
+            1 => values[0],
+            _ => new JsonArray(values.Select(value => JsonValue.Create(value)).ToArray())
+        };
+    }
+
+    private string GetEndpoint(ChatBatchClientType clientType)
+    {
+        if (_azureOpenAi)
+        {
+            return clientType switch
+            {
+                ChatBatchClientType.ChatClient => "/chat/completions",
+                ChatBatchClientType.ResponsesApi => "/responses",
+                _ => throw new ArgumentOutOfRangeException(nameof(clientType), clientType, null)
+            };
+        }
         return clientType switch
         {
-            ChatBatchClientType.ChatClient => "/chat/completions",
-            ChatBatchClientType.ResponsesApi => "/responses",
+            ChatBatchClientType.ChatClient => "/v1/chat/completions",
+            ChatBatchClientType.ResponsesApi => "/v1/responses",
             _ => throw new ArgumentOutOfRangeException(nameof(clientType), clientType, null)
         };
+
+    }
+
+    private static JsonNode? SerializeToJsonNode(object? value)
+    {
+        if (value is JsonNode node)
+        {
+            return node.DeepClone();
+        }
+
+        if (value == null)
+        {
+            return null;
+        }
+
+        return JsonSerializer.SerializeToNode(value, value.GetType());
     }
 
     private static string SerializeResult(object? result)
@@ -615,18 +734,6 @@ public class BatchRunner
         };
     }
 
-    private static string ToServiceTierString(OpenAIServiceTier serviceTier)
-    {
-        return serviceTier switch
-        {
-            OpenAIServiceTier.Auto => "auto",
-            OpenAIServiceTier.Flex => "flex",
-            OpenAIServiceTier.Default => "default",
-            OpenAIServiceTier.Priority => "priority",
-            _ => throw new ArgumentOutOfRangeException(nameof(serviceTier), serviceTier, null)
-        };
-    }
-
     private static void ValidateBatchLines(IList<ChatBatchRequest> lines)
     {
         HashSet<string> customIds = new(StringComparer.Ordinal);
@@ -646,4 +753,31 @@ public class BatchRunner
             }
         }
     }
+
+    private static void ValidateBatchLines(IList<EmbeddingBatchRequest> lines)
+    {
+        HashSet<string> customIds = new(StringComparer.Ordinal);
+
+        foreach (EmbeddingBatchRequest line in lines)
+        {
+            ArgumentNullException.ThrowIfNull(line);
+
+            if (line.Values.Count == 0)
+            {
+                throw new ArgumentException("Every embedding batch line must contain at least one input value.", nameof(lines));
+            }
+
+            if (line.Values.Any(string.IsNullOrEmpty))
+            {
+                throw new ArgumentException("Embedding batch input values cannot be null or empty.", nameof(lines));
+            }
+
+            if (!string.IsNullOrWhiteSpace(line.CustomId) && !customIds.Add(line.CustomId))
+            {
+                throw new ArgumentException($"Duplicate batch custom id '{line.CustomId}' detected.", nameof(lines));
+            }
+        }
+    }
+
+    private const string EmbeddingsEndpoint = "/v1/embeddings";
 }
