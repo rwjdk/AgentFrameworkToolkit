@@ -9,6 +9,16 @@ namespace AgentFrameworkToolkit.OpenAI;
 public static class OpenAIChatModels
 {
     /// <summary>
+    /// GPT-5.4 Mini (Reasoning)
+    /// </summary>
+    public const string Gpt54Mini = "gpt-5.4-mini";
+
+    /// <summary>
+    /// GPT-5.4 Nano (Reasoning)
+    /// </summary>
+    public const string Gpt54Nano = "gpt-5.4-nano";
+
+    /// <summary>
     /// GPT-5.4 Pro (Reasoning)
     /// </summary>
     public const string Gpt54Pro = "gpt-5.4-pro";

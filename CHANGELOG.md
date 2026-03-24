@@ -1,5 +1,12 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Updated AWSSDK.BedrockRuntime NuGet to Latest
+- Updated AWSSDK.Extensions.Bedrock.MEAI NuGet to Latest
+- Added GPT 5.4 mini/nano as known models
+
+---
+
 ## Version 1.0.0-rc4 (12th of March 2026)
 - Updated Agent Framework from rc3 to rc4
 - Updated ModelContextProtocol from 1.0.0 to 1.1.0.
