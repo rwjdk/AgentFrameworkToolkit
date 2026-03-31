@@ -274,7 +274,7 @@ public abstract class TestsBase
             case AgentProvider.Mistral:
             {
                 MistralAgentFactory factory = new(secrets.MistralApiKey);
-                string model = MistalChatModels.MistralSmall;
+                string model = "mistral-small-2506";
                 return scenario switch
                 {
                     AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
