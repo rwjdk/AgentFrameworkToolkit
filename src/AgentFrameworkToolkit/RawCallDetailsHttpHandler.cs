@@ -13,9 +13,13 @@ public class RawCallDetailsHttpHandler(Action<RawCallDetails> rawCallDetails) : 
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        string requestString = await request.Content?.ReadAsStringAsync(cancellationToken)!;
+        string requestString = request.Content == null
+            ? string.Empty
+            : await request.Content.ReadAsStringAsync(cancellationToken);
         HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
-        string responseString = await response.Content.ReadAsStringAsync(cancellationToken);
+        string responseString = response.Content == null
+            ? string.Empty
+            : await response.Content.ReadAsStringAsync(cancellationToken);
 
         rawCallDetails.Invoke(new RawCallDetails
         {

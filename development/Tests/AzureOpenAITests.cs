@@ -1,13 +1,26 @@
+using System.Text.Json.Nodes;
 using AgentFrameworkToolkit.AzureOpenAI;
+using AgentFrameworkToolkit.AzureOpenAI.Batching;
 using AgentFrameworkToolkit.OpenAI;
+using AgentFrameworkToolkit.OpenAI.Batching;
+using Azure.AI.OpenAI;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Secrets;
+
+#pragma warning disable OPENAI001
 
 namespace AgentFrameworkToolkit.Tests;
 
 public sealed class AzureOpenAITests : TestsBase
 {
+    [PublicAPI]
+    private sealed class BatchStructuredReply
+    {
+        public required string Answer { get; set; }
+    }
+
     [Fact]
     public Task AgentFactory_Simple_ChatClient() => SimpleAgentTestsAsync(AgentProvider.AzureOpenAIChatClient);
 

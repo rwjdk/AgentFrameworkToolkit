@@ -1,4 +1,5 @@
 using AgentFrameworkToolkit.OpenAI;
+using AgentFrameworkToolkit.OpenAI.Batching;
 using AgentFrameworkToolkit.Tools;
 using AgentSkillsDotNet;
 using Microsoft.Agents.AI;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.AI;
 using Secrets;
 
 #pragma warning disable OPENAI001
+#pragma warning disable AFT999
 
 namespace Sandbox.Providers;
 
@@ -15,11 +17,34 @@ public static class OpenAI
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
 
-        OpenAIAgentFactory factory = new(new OpenAIConnection
+
+        OpenAIConnection openAIConnection = new OpenAIConnection
         {
             ApiKey = secrets.OpenAiApiKey,
             DefaultClientType = ClientType.ResponsesApi
-        });
+        };
+
+        OpenAIBatchRunner batchRunner = new OpenAIBatchRunner(openAIConnection);
+
+        EmbeddingBatchRun embeddingBatchRun = await batchRunner.RunEmbeddingBatchAsync(new EmbeddingBatchOptions
+        {
+            Model = "text-embedding-3-small",
+            WaitUntilCompleted = true
+
+        }, [
+            EmbeddingBatchRequest.Create("Hello"),
+            EmbeddingBatchRequest.Create("World"),
+        ]);
+
+        IList<EmbeddingBatchRunResult> embeddingBatchRunResults = await embeddingBatchRun.GetResultAsync();
+        
+
+        foreach (EmbeddingBatchRunResult result in embeddingBatchRunResults)
+        {
+            ReadOnlyMemory<float> vector = result.Response!.Vector;
+        }
+
+        OpenAIAgentFactory factory = new(openAIConnection);
 
         AgentSkillsFactory agentSkillsFactory = new();
         AgentSkills agentSkills = agentSkillsFactory.GetAgentSkills("TestData\\AgentSkills");

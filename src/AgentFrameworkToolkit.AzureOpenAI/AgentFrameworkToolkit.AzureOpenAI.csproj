@@ -11,8 +11,12 @@
 		<PackageReference Include="Microsoft.Agents.AI.OpenAI" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference
-			Include="..\AgentFrameworkToolkit.OpenAI\AgentFrameworkToolkit.OpenAI.csproj" />
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\AgentFrameworkToolkit.OpenAI\AgentFrameworkToolkit.OpenAI.csproj" />
 	</ItemGroup>
   <ItemGroup>
     <None Include="README.md">
