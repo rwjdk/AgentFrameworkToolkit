@@ -8,7 +8,7 @@ namespace AgentFrameworkToolkit.OpenAI.Batching;
 /// </summary>
 /// <typeparam name="T">The structured output type returned for the line.</typeparam>
 [PublicAPI]
-public class ChatBatchRunResult<T> : BatchRunResult
+public class ChatBatchRunResult<T> : ChatBatchRunResult
 {
     /// <summary>
     /// Response Object
@@ -20,7 +20,7 @@ public class ChatBatchRunResult<T> : BatchRunResult
 /// A joined batch result item containing the original request and any matched response or error.
 /// </summary>
 [PublicAPI]
-public class BatchRunResult
+public class ChatBatchRunResult
 {
     /// <summary>
     /// Gets or sets the optional custom id for the line. If omitted, one is generated.

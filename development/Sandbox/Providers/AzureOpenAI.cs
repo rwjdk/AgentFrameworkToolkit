@@ -45,7 +45,7 @@ public static class AzureOpenAI
             ]
         );
 
-        IList<BatchRunResult> results = await batchRun.GetResultAsync(true);
+        IList<ChatBatchRunResult> results = await batchRun.GetResultAsync(true);
 
 
         ChatBatchRun<MyObject> run = await batchRunner.RunChatBatchAsync<MyObject>(new ChatBatchOptions

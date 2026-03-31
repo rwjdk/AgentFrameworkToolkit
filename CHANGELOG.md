@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-rc4.2 (31st of March 2026)
+- Fixed that `ChatBatchRunResult` (intended name) was incorrectly called `BatchRunResult`
+
+---
+
 ## Version 1.0.0-rc4.1 (31st of March 2026)
 - Added `AzureOpenAIBatchRunner` for Chat Batch Capabilities
 - Added `OpenAIBatchRunner` for Chat and Embedding Batch Capabilities

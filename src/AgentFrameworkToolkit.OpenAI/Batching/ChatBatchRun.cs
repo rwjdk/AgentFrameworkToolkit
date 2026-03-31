@@ -96,7 +96,7 @@ public class ChatBatchRun
     /// A collection containing the original request together with the matched response and error for each line.
     /// Returns an empty collection when the batch is not yet completed.
     /// </returns>
-    public async Task<IList<BatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
+    public async Task<IList<ChatBatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
     {
         if (!IsCompletedStatus(StatusString) || string.IsNullOrWhiteSpace(InputFileId))
         {
@@ -104,7 +104,7 @@ public class ChatBatchRun
         }
 
         (string inputFileContent, string? outputFileContent, string? errorFileContent) = await DownloadBatchFilesAsync();
-        IList<BatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent, Endpoint);
+        IList<ChatBatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent, Endpoint);
         if (cleanUpRemoteFilesOnSuccessfulRetrieval)
         {
             OpenAIFileClient fileClient = GetRequiredFileClient();
@@ -125,7 +125,7 @@ public class ChatBatchRun
         return results;
     }
 
-    internal static IList<BatchRunResult> BuildResultItems(
+    internal static IList<ChatBatchRunResult> BuildResultItems(
         string inputFileContent,
         string? outputFileContent,
         string? errorFileContent,
@@ -134,7 +134,7 @@ public class ChatBatchRun
         IReadOnlyList<ChatBatchRequest> requests = ParseRequestLines(inputFileContent);
         IReadOnlyDictionary<string, ChatBatchRunResponse> responses = ParseResultDictionary(outputFileContent, endpoint);
         IReadOnlyDictionary<string, ChatBatchRunError> errors = ParseErrorDictionary(errorFileContent);
-        List<BatchRunResult> results = [];
+        List<ChatBatchRunResult> results = [];
 
         foreach (ChatBatchRequest request in requests)
         {
@@ -142,7 +142,7 @@ public class ChatBatchRun
             responses.TryGetValue(customId, out ChatBatchRunResponse? response);
             errors.TryGetValue(customId, out ChatBatchRunError? error);
 
-            results.Add(new BatchRunResult
+            results.Add(new ChatBatchRunResult
             {
                 CustomId = customId,
                 RequestMessages = request.Messages,
