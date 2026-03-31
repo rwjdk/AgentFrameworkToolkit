@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0-rc5 (31st of March 2026)
+- Updated Agent Framework from rc4 to rc5
+
+---
+
 ## Version 1.0.0-rc4.2 (31st of March 2026)
 - Fixed that `ChatBatchRunResult` (intended name) was incorrectly called `BatchRunResult`
 
