@@ -33,9 +33,9 @@ public class BatchRunResult
     public required IList<ChatMessage> RequestMessages { get; set; }
 
     /// <summary>
-    /// Gets or set the messages returned.
+    /// Gets or set the message returned.
     /// </summary>
-    public required IList<ChatMessage> ResponseMessages { get; set; }
+    public required ChatMessage? ResponseMessage { get; set; }
 
     /// <summary>
     /// Gets or sets the matched error for the request when present.

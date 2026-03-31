@@ -7,6 +7,7 @@ using Microsoft.Extensions.AI;
 using Secrets;
 
 #pragma warning disable OPENAI001
+#pragma warning disable AFT999
 
 namespace Sandbox.Providers;
 
@@ -36,9 +37,7 @@ public static class OpenAI
         ]);
 
         IList<EmbeddingBatchRunResult> embeddingBatchRunResults = await embeddingBatchRun.GetResultAsync();
-
-
-
+        
 
         foreach (EmbeddingBatchRunResult result in embeddingBatchRunResults)
         {

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AgentFrameworkToolkit.OpenAI.Batching;
 using Azure.Core;
 using System.Text.Json;
@@ -12,6 +13,7 @@ namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
 /// Batch Runner for Azure OpenAI
 /// </summary>
 [PublicAPI]
+[Experimental("AFT999")]
 public class AzureOpenAIBatchRunner
 {
     private readonly InternalBatchRunner _internalBatchRunner;

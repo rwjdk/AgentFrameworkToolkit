@@ -146,7 +146,7 @@ public class ChatBatchRun
             {
                 CustomId = customId,
                 RequestMessages = request.Messages,
-                ResponseMessages = response?.Messages.ToList() ?? [],
+                ResponseMessage = response?.Message,
                 Error = error
             });
         }
@@ -176,7 +176,7 @@ public class ChatBatchRun
             {
                 CustomId = customId,
                 RequestMessages = request.Messages,
-                ResponseMessages = response?.Messages.ToList() ?? [],
+                ResponseMessage = response?.Message,
                 ResponseObject = response == null ? default(T) : response.Result,
                 Error = error
             });
@@ -223,7 +223,7 @@ public class ChatBatchRun
                 CustomId = lineObject["custom_id"]?.GetValue<string>() ?? string.Empty,
                 StatusCode = responseObject["status_code"]?.GetValue<int>() ?? 0,
                 RequestId = responseObject["request_id"]?.GetValue<string>(),
-                Messages = ParseMessages(bodyObject, endpoint),
+                Message = ParseMessage(bodyObject, endpoint),
                 RawBody = bodyObject.DeepClone() as JsonObject
             });
         }
@@ -290,7 +290,7 @@ public class ChatBatchRun
                 CustomId = resultLine.CustomId,
                 StatusCode = resultLine.StatusCode,
                 RequestId = resultLine.RequestId,
-                Messages = resultLine.Messages,
+                Message = resultLine.Message,
                 RawBody = resultLine.RawBody?.DeepClone() as JsonObject,
                 Result = DeserializeStructuredResult<T>(resultLine, structuredOutput)
             });
@@ -425,7 +425,7 @@ public class ChatBatchRun
         };
     }
 
-    private static IReadOnlyList<ChatMessage> ParseMessages(JsonObject bodyObject, string? endpoint)
+    private static ChatMessage? ParseMessage(JsonObject bodyObject, string? endpoint)
     {
         if (bodyObject["output"] is JsonArray)
         {
@@ -463,14 +463,14 @@ public class ChatBatchRun
         return messages;
     }
 
-    private static IReadOnlyList<ChatMessage> ParseChatCompletionMessages(JsonObject bodyObject)
+    private static ChatMessage? ParseChatCompletionMessages(JsonObject bodyObject)
     {
         JsonArray? choices = bodyObject["choices"] as JsonArray;
         List<ChatMessage> messages = [];
 
         if (choices == null)
         {
-            return messages;
+            return null;
         }
 
         foreach (JsonNode? choiceNode in choices)
@@ -481,10 +481,10 @@ public class ChatBatchRun
                 continue;
             }
 
-            messages.Add(ParseChatCompletionMessage(messageObject));
+            return ParseChatCompletionMessage(messageObject);
         }
 
-        return messages;
+        return null;
     }
 
     private static IReadOnlyList<ChatMessage> ParseResponsesInputMessages(JsonArray inputArray)
@@ -533,14 +533,12 @@ public class ChatBatchRun
         return messages;
     }
 
-    private static IReadOnlyList<ChatMessage> ParseResponsesMessages(JsonObject bodyObject)
+    private static ChatMessage? ParseResponsesMessages(JsonObject bodyObject)
     {
         JsonArray? output = bodyObject["output"] as JsonArray;
-        List<ChatMessage> messages = [];
-
         if (output == null)
         {
-            return messages;
+            return null;
         }
 
         foreach (JsonNode? itemNode in output)
@@ -554,25 +552,11 @@ public class ChatBatchRun
             switch (type)
             {
                 case "message":
-                    messages.Add(ParseResponsesMessage(itemObject));
-                    break;
-                case "function_call":
-                    messages.Add(new ChatMessage
-                    {
-                        Role = ChatRole.Assistant,
-                        Contents =
-                        [
-                            new FunctionCallContent(
-                                itemObject["call_id"]?.GetValue<string>() ?? string.Empty,
-                                itemObject["name"]?.GetValue<string>() ?? string.Empty,
-                                ParseArguments(itemObject["arguments"]))
-                        ]
-                    });
-                    break;
+                    return ParseResponsesMessage(itemObject);
             }
         }
 
-        return messages;
+        return null;
     }
 
     private static ChatMessage ParseChatCompletionMessage(JsonObject messageObject)

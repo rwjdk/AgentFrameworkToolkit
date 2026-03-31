@@ -36,9 +36,9 @@ internal class ChatBatchRunResponse
     public string? RequestId { get; init; }
 
     /// <summary>
-    /// Gets or sets the parsed chat messages.
+    /// Gets or sets the parsed chat message.
     /// </summary>
-    public required IReadOnlyList<ChatMessage> Messages { get; init; }
+    public required ChatMessage? Message { get; init; }
 
     /// <summary>
     /// Gets or sets the raw JSON response body.

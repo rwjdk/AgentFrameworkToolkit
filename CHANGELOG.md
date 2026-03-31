@@ -1,8 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
-- Updated AWSSDK.BedrockRuntime NuGet to Latest
-- Updated AWSSDK.Extensions.Bedrock.MEAI NuGet to Latest
+## Version 1.0.0-rc4.1 (31st of March 2026)
+- Added `AzureOpenAIBatchRunner` for Chat Batch Capabilities
+- Added `OpenAIBatchRunner` for Chat and Embedding Batch Capabilities
+- Updated AWSSDK NuGets to latest
+- Updated Azure.Identity NuGet to latest
+- Updated OpenTelemetry NuGet to latest
 - Added GPT 5.4 mini/nano as known models
 
 ---
