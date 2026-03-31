@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.OpenAI.Batching;
@@ -6,6 +7,7 @@ namespace AgentFrameworkToolkit.OpenAI.Batching;
 /// A joined structured batch result item containing the original request and any matched response or error.
 /// </summary>
 /// <typeparam name="T">The structured output type returned for the line.</typeparam>
+[PublicAPI]
 public class ChatBatchRunResult<T> : BatchRunResult
 {
     /// <summary>
@@ -17,6 +19,7 @@ public class ChatBatchRunResult<T> : BatchRunResult
 /// <summary>
 /// A joined batch result item containing the original request and any matched response or error.
 /// </summary>
+[PublicAPI]
 public class BatchRunResult
 {
     /// <summary>

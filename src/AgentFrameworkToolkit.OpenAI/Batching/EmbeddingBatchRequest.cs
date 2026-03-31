@@ -16,7 +16,7 @@ public class EmbeddingBatchRequest
     /// <summary>
     /// Gets or sets the values sent as the embedding input payload.
     /// </summary>
-    public required IList<string> Values { get; set; }
+    public required string Value { get; set; }
 
     /// <summary>
     /// Creates a single-value <see cref="EmbeddingBatchRequest"/>.
@@ -27,22 +27,7 @@ public class EmbeddingBatchRequest
     {
         return new EmbeddingBatchRequest
         {
-            Values = [value]
-        };
-    }
-
-    /// <summary>
-    /// Creates an <see cref="EmbeddingBatchRequest"/>.
-    /// </summary>
-    /// <param name="values">The values to embed.</param>
-    /// <returns>The created request.</returns>
-    public static EmbeddingBatchRequest Create(IEnumerable<string> values)
-    {
-        ArgumentNullException.ThrowIfNull(values);
-
-        return new EmbeddingBatchRequest
-        {
-            Values = [.. values]
+            Value = value
         };
     }
 }

@@ -143,7 +143,7 @@ public class EmbeddingBatchRun
             results.Add(new EmbeddingBatchRunResult
             {
                 CustomId = customId,
-                RequestValues = request.Values,
+                Request = request.Value,
                 Response = response?.Result,
                 Error = error
             });
@@ -160,12 +160,12 @@ public class EmbeddingBatchRun
         {
             JsonObject lineObject = InternalBatchRunner.ParseJsonObject(line);
             JsonObject bodyObject = lineObject["body"]?.AsObject()
-                                    ?? throw new AgentFrameworkToolkitException("Batch input line was missing a request body.");
+                                   ?? throw new AgentFrameworkToolkitException("Batch input line was missing a request body.");
 
             results.Add(new EmbeddingBatchRequest
             {
                 CustomId = lineObject["custom_id"]?.GetValue<string>() ?? Guid.NewGuid().ToString(),
-                Values = [.. ParseInputValues(bodyObject["input"])]
+                Value = bodyObject["input"]!.GetValue<string>()
             });
         }
 
@@ -189,7 +189,7 @@ public class EmbeddingBatchRun
                 CustomId = lineObject["custom_id"]?.GetValue<string>() ?? string.Empty,
                 StatusCode = responseObject["status_code"]?.GetValue<int>() ?? 0,
                 RequestId = responseObject["request_id"]?.GetValue<string>(),
-                Result = ParseGeneratedEmbeddings(bodyObject),
+                Result = ParseGeneratedEmbedding(bodyObject),
                 RawBody = bodyObject.DeepClone() as JsonObject
             });
         }
@@ -262,7 +262,7 @@ public class EmbeddingBatchRun
         List<string> values = [];
         foreach (JsonNode? itemNode in inputArray)
         {
-            if (itemNode is JsonValue itemValue && itemValue.TryGetValue(out string? itemText) && itemText != null)
+            if (itemNode is JsonValue itemValue && itemValue.TryGetValue(out string? itemText))
             {
                 values.Add(itemText);
             }
@@ -271,7 +271,7 @@ public class EmbeddingBatchRun
         return values;
     }
 
-    private static GeneratedEmbeddings<Embedding<float>> ParseGeneratedEmbeddings(JsonObject bodyObject)
+    private static Embedding<float> ParseGeneratedEmbedding(JsonObject bodyObject)
     {
         JsonArray dataArray = bodyObject["data"] as JsonArray
                               ?? throw new AgentFrameworkToolkitException("Batch result line did not contain embedding data.");
@@ -320,7 +320,7 @@ public class EmbeddingBatchRun
             embeddings.AdditionalProperties = additionalProperties;
         }
 
-        return embeddings;
+        return embeddings.First();
     }
 
     private static UsageDetails ParseUsage(JsonObject usageObject)
@@ -437,6 +437,7 @@ public class EmbeddingBatchRun
     }
 }
 
+[PublicAPI]
 internal class EmbeddingBatchRunResponse
 {
     /// <summary>
@@ -457,7 +458,7 @@ internal class EmbeddingBatchRunResponse
     /// <summary>
     /// Gets or sets the parsed embeddings response.
     /// </summary>
-    public required GeneratedEmbeddings<Embedding<float>> Result { get; init; }
+    public required Embedding<float> Result { get; init; }
 
     /// <summary>
     /// Gets or sets the raw JSON response body.

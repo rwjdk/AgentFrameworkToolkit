@@ -42,7 +42,7 @@ public static class OpenAI
 
         foreach (EmbeddingBatchRunResult result in embeddingBatchRunResults)
         {
-            ReadOnlyMemory<float> vector = result.Response![0].Vector;
+            ReadOnlyMemory<float> vector = result.Response!.Vector;
         }
 
         OpenAIAgentFactory factory = new(openAIConnection);

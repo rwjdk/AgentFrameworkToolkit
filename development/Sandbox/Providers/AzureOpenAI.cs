@@ -34,7 +34,6 @@ public static class AzureOpenAI
         ChatBatchRun<MyObject> run = await batchRunner.RunChatBatchAsync<MyObject>(new ChatBatchOptions
             {
                 Model = "gpt-4.1-nano-batch",
-
             },
             [
                 ChatBatchRequest.Create("What is the capital of France?"),

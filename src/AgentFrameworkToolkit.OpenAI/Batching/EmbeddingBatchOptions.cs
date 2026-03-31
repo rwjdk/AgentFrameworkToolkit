@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.OpenAI.Batching;
@@ -5,6 +6,7 @@ namespace AgentFrameworkToolkit.OpenAI.Batching;
 /// <summary>
 /// Options for an embedding batch run.
 /// </summary>
+[PublicAPI]
 public class EmbeddingBatchOptions
 {
     /// <summary>

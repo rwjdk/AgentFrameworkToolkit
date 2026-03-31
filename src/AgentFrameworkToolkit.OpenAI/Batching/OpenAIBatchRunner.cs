@@ -110,5 +110,4 @@ public class OpenAIBatchRunner
     {
         return _internalBatchRunner.GetEmbeddingBatchAsync(batchId);
     }
-
 }

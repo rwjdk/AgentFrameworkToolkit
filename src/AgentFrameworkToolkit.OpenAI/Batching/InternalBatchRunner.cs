@@ -29,7 +29,7 @@ internal class InternalBatchRunner
     /// <param name="batchClient">The batch client used for creating and retrieving batch jobs.</param>
     /// <param name="fileClient">The file client used for uploading input files and downloading results.</param>
     /// <param name="azureOpenAi"></param>
-    public InternalBatchRunner(BatchClient batchClient, OpenAIFileClient fileClient, bool azureOpenAi) //todo - make a prettier solution for source
+    public InternalBatchRunner(BatchClient batchClient, OpenAIFileClient fileClient, bool azureOpenAi)
     {
         _azureOpenAi = azureOpenAi;
         ArgumentNullException.ThrowIfNull(batchClient);
@@ -42,12 +42,12 @@ internal class InternalBatchRunner
     /// <summary>
     /// Gets the batch client.
     /// </summary>
-    public BatchClient BatchClient { get; }
+    private BatchClient BatchClient { get; }
 
     /// <summary>
     /// Gets the file client.
     /// </summary>
-    public OpenAIFileClient FileClient { get; }
+    private OpenAIFileClient FileClient { get; }
 
     /// <summary>
     /// Creates a new batch run.
@@ -236,18 +236,7 @@ internal class InternalBatchRunner
         return jsonObject;
     }
 
-    internal string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines)
-    {
-        return BuildJsonl(options, lines, structuredOutput: null);
-    }
-
-    internal string BuildJsonl<T>(ChatBatchOptions options, IList<ChatBatchRequest> lines, JsonSerializerOptions? serializerOptions = null)
-    {
-        StructuredOutputSchemaDefinition structuredOutput = StructuredOutputSchemaHelper.Create<T>(serializerOptions);
-        return BuildJsonl(options, lines, structuredOutput);
-    }
-
-    internal string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines, StructuredOutputSchemaDefinition? structuredOutput)
+    private string BuildJsonl(ChatBatchOptions options, IList<ChatBatchRequest> lines, StructuredOutputSchemaDefinition? structuredOutput)
     {
         List<string> jsonLines = [];
 
@@ -267,7 +256,7 @@ internal class InternalBatchRunner
         return string.Join(Environment.NewLine, jsonLines);
     }
 
-    internal static string BuildJsonl(EmbeddingBatchOptions options, IList<EmbeddingBatchRequest> lines)
+    private static string BuildJsonl(EmbeddingBatchOptions options, IList<EmbeddingBatchRequest> lines)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(lines);
@@ -290,7 +279,7 @@ internal class InternalBatchRunner
         return string.Join(Environment.NewLine, jsonLines);
     }
 
-    internal static JsonObject BuildRequestBody(ChatBatchOptions options, ChatBatchRequest line, StructuredOutputSchemaDefinition? structuredOutput)
+    private static JsonObject BuildRequestBody(ChatBatchOptions options, ChatBatchRequest line, StructuredOutputSchemaDefinition? structuredOutput)
     {
         IList<ChatMessage> messages = GetMessages(options, line);
         JsonObject body = new()
@@ -317,7 +306,7 @@ internal class InternalBatchRunner
         return body;
     }
 
-    internal static JsonObject BuildRequestBody(EmbeddingBatchOptions options, EmbeddingBatchRequest line)
+    private static JsonObject BuildRequestBody(EmbeddingBatchOptions options, EmbeddingBatchRequest line)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(line);
@@ -325,7 +314,7 @@ internal class InternalBatchRunner
         JsonObject body = new()
         {
             ["model"] = options.Model,
-            ["input"] = BuildEmbeddingInput(line.Values)
+            ["input"] = line.Value
         };
 
         ApplyEmbeddingGenerationOptions(body, options);
@@ -598,7 +587,7 @@ internal class InternalBatchRunner
             throw new ArgumentException("GenerationOptions.ModelId must match the batch Model when both are provided.", nameof(options));
         }
 
-        if (generationOptions?.Dimensions is int dimensions)
+        if (generationOptions?.Dimensions is { } dimensions)
         {
             body["dimensions"] = dimensions;
         }
@@ -641,16 +630,6 @@ internal class InternalBatchRunner
         JsonObject payload = BuildChatJsonSchemaPayload(structuredOutput, schemaObject);
         payload["type"] = "json_schema";
         return payload;
-    }
-
-    private static JsonNode? BuildEmbeddingInput(IList<string> values)
-    {
-        return values.Count switch
-        {
-            0 => new JsonArray(),
-            1 => values[0],
-            _ => new JsonArray(values.Select(value => JsonValue.Create(value)).ToArray())
-        };
     }
 
     private string GetEndpoint(ChatBatchClientType clientType)
@@ -762,12 +741,7 @@ internal class InternalBatchRunner
         {
             ArgumentNullException.ThrowIfNull(line);
 
-            if (line.Values.Count == 0)
-            {
-                throw new ArgumentException("Every embedding batch line must contain at least one input value.", nameof(lines));
-            }
-
-            if (line.Values.Any(string.IsNullOrEmpty))
+            if (string.IsNullOrWhiteSpace(line.Value))
             {
                 throw new ArgumentException("Embedding batch input values cannot be null or empty.", nameof(lines));
             }

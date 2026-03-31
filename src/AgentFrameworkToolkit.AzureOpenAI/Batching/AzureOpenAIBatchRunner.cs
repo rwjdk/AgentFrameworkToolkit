@@ -1,8 +1,9 @@
 using AgentFrameworkToolkit.OpenAI.Batching;
 using Azure.Core;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using Azure.AI.OpenAI;
+using JetBrains.Annotations;
+
 #pragma warning disable OPENAI001
 
 namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
@@ -10,6 +11,7 @@ namespace AgentFrameworkToolkit.AzureOpenAI.Batching;
 /// <summary>
 /// Batch Runner for Azure OpenAI
 /// </summary>
+[PublicAPI]
 public class AzureOpenAIBatchRunner
 {
     private readonly InternalBatchRunner _internalBatchRunner;

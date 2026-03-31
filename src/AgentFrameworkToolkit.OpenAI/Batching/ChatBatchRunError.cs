@@ -1,10 +1,12 @@
 using System.Text.Json.Nodes;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// A failed parsed line from the batch error file.
 /// </summary>
+[PublicAPI]
 public class ChatBatchRunError
 {
     /// <summary>
