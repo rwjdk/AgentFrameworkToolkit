@@ -1,12 +1,15 @@
+using JetBrains.Annotations;
+
 namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
-/// Options for a batch run.
+/// Options for a Chat batch run.
 /// </summary>
+[PublicAPI]
 public class ChatBatchOptions
 {
     /// <summary>
-    /// Gets or sets the model or deployment name used for every line in the batch.
+    /// Model/Deployment name used for the requests.
     /// </summary>
     public required string Model { get; set; }
 
@@ -16,22 +19,22 @@ public class ChatBatchOptions
     public bool WaitUntilCompleted { get; set; }
 
     /// <summary>
-    /// Gets or sets the endpoint style to use for the batch.
+    /// Type ofg batch.
     /// </summary>
     public ChatBatchClientType ClientType { get; set; } = ChatBatchClientType.ChatClient;
 
     /// <summary>
-    /// Gets or sets instructions that are prepended to every batch line as a system message.
+    /// Optional instructions that are prepended to every batch line as a system message.
     /// </summary>
     public string? Instructions { get; set; }
 
     /// <summary>
-    /// Gets or sets the reasoning effort when using reasoning-capable models.
+    /// Reasoning effort when using reasoning-capable models.
     /// </summary>
     public OpenAIReasoningEffort? ReasoningEffort { get; set; }
 
     /// <summary>
-    /// Gets or sets the reasoning summary verbosity for the Responses API.
+    /// Reasoning summary verbosity (Only used when ClientType is ResponsesAPI)
     /// </summary>
     public OpenAIReasoningSummaryVerbosity? ReasoningSummaryVerbosity { get; set; }
 }

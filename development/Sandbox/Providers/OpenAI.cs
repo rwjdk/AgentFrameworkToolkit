@@ -24,6 +24,7 @@ public static class OpenAI
         };
 
         OpenAIBatchRunner batchRunner = new OpenAIBatchRunner(openAIConnection);
+
         EmbeddingBatchRun embeddingBatchRun = await batchRunner.RunEmbeddingBatchAsync(new EmbeddingBatchOptions
         {
             Model = "text-embedding-3-small",
@@ -34,9 +35,10 @@ public static class OpenAI
             EmbeddingBatchRequest.Create("World"),
         ]);
 
-
-
         IReadOnlyList<EmbeddingBatchRunResult> embeddingBatchRunResults = await embeddingBatchRun.GetResultAsync();
+
+
+
 
         foreach (EmbeddingBatchRunResult result in embeddingBatchRunResults)
         {

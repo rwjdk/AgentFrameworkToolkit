@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using OpenAI.Files;
 
@@ -9,6 +10,7 @@ namespace AgentFrameworkToolkit.OpenAI.Batching;
 /// <summary>
 /// Represents a batch run and exposes helpers for retrieving matched requests, responses, and errors.
 /// </summary>
+[PublicAPI]
 public class ChatBatchRun
 {
     private readonly OpenAIFileClient? _fileClient;
@@ -23,7 +25,7 @@ public class ChatBatchRun
     /// <summary>
     /// Gets the batch identifier.
     /// </summary>
-    public string Id { get; internal set; } = string.Empty;
+    public string Id { get; private set; } = string.Empty;
 
     /// <summary>
     /// Status of batch run
@@ -46,7 +48,7 @@ public class ChatBatchRun
     }
 
     /// <summary>
-    /// Gets the batch status.
+    /// Status of the batch.
     /// </summary>
     [JsonPropertyName("status")]
     internal string StatusString { get; set; } = string.Empty;
@@ -88,12 +90,13 @@ public class ChatBatchRun
 
     /// <summary>
     /// Gets the completed batch result joined by custom id.
+    /// <param name="cleanUpRemoteFilesOnSuccessfulRetrieval">If the files involved in the batch should be removed on successful retrieval</param>
     /// </summary>
     /// <returns>
     /// A collection containing the original request together with the matched response and error for each line.
     /// Returns an empty collection when the batch is not yet completed.
     /// </returns>
-    public async Task<IReadOnlyList<BatchRunResult>> GetResultAsync()
+    public async Task<IReadOnlyList<BatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
     {
         if (!IsCompletedStatus(StatusString) || string.IsNullOrWhiteSpace(InputFileId))
         {
@@ -101,9 +104,25 @@ public class ChatBatchRun
         }
 
         (string inputFileContent, string? outputFileContent, string? errorFileContent) = await DownloadBatchFilesAsync();
-        return BuildResultItems(inputFileContent, outputFileContent, errorFileContent, Endpoint);
+        IReadOnlyList<BatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent, Endpoint);
+        if (cleanUpRemoteFilesOnSuccessfulRetrieval)
+        {
+            OpenAIFileClient fileClient = GetRequiredFileClient();
+            if (!string.IsNullOrWhiteSpace(InputFileId))
+            {
+                await fileClient.DeleteFileAsync(InputFileId);
+            }
+            if (!string.IsNullOrWhiteSpace(OutputFileId))
+            {
+                await fileClient.DeleteFileAsync(OutputFileId);
+            }
+            if (!string.IsNullOrWhiteSpace(ErrorFileId))
+            {
+                await fileClient.DeleteFileAsync(ErrorFileId);
+            }
+        }
 
-        //todo - File cleanup?
+        return results;
     }
 
     internal static IReadOnlyList<BatchRunResult> BuildResultItems(

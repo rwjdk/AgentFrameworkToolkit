@@ -1,6 +1,6 @@
 using OpenAI;
 using System.Text.Json;
-using System.Text.Json.Nodes;
+using JetBrains.Annotations;
 
 #pragma warning disable OPENAI001
 
@@ -9,6 +9,7 @@ namespace AgentFrameworkToolkit.OpenAI.Batching;
 /// <summary>
 /// Batch Runner for Azure OpenAI
 /// </summary>
+[PublicAPI]
 public class OpenAIBatchRunner
 {
     private readonly InternalBatchRunner _internalBatchRunner;
@@ -47,11 +48,11 @@ public class OpenAIBatchRunner
     /// Creates a new batch run.
     /// </summary>
     /// <param name="options">Options applied to every entry in the batch.</param>
-    /// <param name="lines">The batch entries to submit.</param>
+    /// <param name="requests">The batch entries to submit.</param>
     /// <returns>The created batch run.</returns>
-    public Task<ChatBatchRun> RunChatBatchAsync(ChatBatchOptions options, IList<ChatBatchRequest> lines)
+    public Task<ChatBatchRun> RunChatBatchAsync(ChatBatchOptions options, IList<ChatBatchRequest> requests)
     {
-        return _internalBatchRunner.RunChatBatchAsync(options, lines);
+        return _internalBatchRunner.RunChatBatchAsync(options, requests);
     }
 
     /// <summary>
@@ -59,12 +60,12 @@ public class OpenAIBatchRunner
     /// </summary>
     /// <typeparam name="T">The structured output type returned for each line.</typeparam>
     /// <param name="options">Options applied to every entry in the batch.</param>
-    /// <param name="lines">The batch entries to submit.</param>
+    /// <param name="requests">The batch entries to submit.</param>
     /// <param name="serializerOptions">Optional serializer options used for schema generation and result deserialization.</param>
     /// <returns>The created structured batch run.</returns>
-    public Task<ChatBatchRun<T>> RunChatBatchAsync<T>(ChatBatchOptions options, IList<ChatBatchRequest> lines, JsonSerializerOptions? serializerOptions = null)
+    public Task<ChatBatchRun<T>> RunChatBatchAsync<T>(ChatBatchOptions options, IList<ChatBatchRequest> requests, JsonSerializerOptions? serializerOptions = null)
     {
-        return _internalBatchRunner.RunChatBatchAsync<T>(options, lines, serializerOptions);
+        return _internalBatchRunner.RunChatBatchAsync<T>(options, requests, serializerOptions);
     }
 
     /// <summary>
@@ -93,11 +94,11 @@ public class OpenAIBatchRunner
     /// Creates a new embedding batch run.
     /// </summary>
     /// <param name="options">Options applied to every entry in the batch.</param>
-    /// <param name="lines">The batch entries to submit.</param>
+    /// <param name="requests">The batch entries to submit.</param>
     /// <returns>The created embedding batch run.</returns>
-    public Task<EmbeddingBatchRun> RunEmbeddingBatchAsync(EmbeddingBatchOptions options, IList<EmbeddingBatchRequest> lines)
+    public Task<EmbeddingBatchRun> RunEmbeddingBatchAsync(EmbeddingBatchOptions options, IList<EmbeddingBatchRequest> requests)
     {
-        return _internalBatchRunner.RunEmbeddingBatchAsync(options, lines);
+        return _internalBatchRunner.RunEmbeddingBatchAsync(options, requests);
     }
 
     /// <summary>

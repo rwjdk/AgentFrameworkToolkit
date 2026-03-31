@@ -14,7 +14,7 @@ public class BatchCounts
     public required int Total { get; init; }
 
     /// <summary>
-    /// Gets the number of completed requests in the batch.
+    /// Gets the number of completed requests in the batch. [NB: This is only populated by OpenAI, not Azure OpenAI]
     /// </summary>
     [JsonPropertyName("completed")]
     public required int Completed { get; init; }

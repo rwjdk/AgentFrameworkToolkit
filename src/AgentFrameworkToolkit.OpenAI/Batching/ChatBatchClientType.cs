@@ -1,7 +1,7 @@
 namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
-/// The batch endpoint style to use.
+/// Type of Request.
 /// </summary>
 public enum ChatBatchClientType
 {

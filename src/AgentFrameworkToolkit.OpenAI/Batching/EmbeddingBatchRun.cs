@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using OpenAI.Files;
 
@@ -9,6 +10,7 @@ namespace AgentFrameworkToolkit.OpenAI.Batching;
 /// <summary>
 /// Represents an embedding batch run and exposes helpers for retrieving matched requests, responses, and errors.
 /// </summary>
+[PublicAPI]
 public class EmbeddingBatchRun
 {
     private readonly OpenAIFileClient? _fileClient;
@@ -87,11 +89,12 @@ public class EmbeddingBatchRun
     /// <summary>
     /// Gets the completed embedding batch result joined by custom id.
     /// </summary>
+    /// <param name="cleanUpRemoteFilesOnSuccessfulRetrieval">If the files involved in the batch should be removed on successful retrieval</param> 
     /// <returns>
     /// A collection containing the original request together with the matched embedding response and error for each line.
     /// Returns an empty collection when the batch is not yet completed.
     /// </returns>
-    public async Task<IReadOnlyList<EmbeddingBatchRunResult>> GetResultAsync()
+    public async Task<IReadOnlyList<EmbeddingBatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
     {
         if (!IsCompletedStatus(StatusString) || string.IsNullOrWhiteSpace(InputFileId))
         {
@@ -99,7 +102,26 @@ public class EmbeddingBatchRun
         }
 
         (string inputFileContent, string? outputFileContent, string? errorFileContent) = await DownloadBatchFilesAsync();
-        return BuildResultItems(inputFileContent, outputFileContent, errorFileContent);
+        IReadOnlyList<EmbeddingBatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent);
+        if (cleanUpRemoteFilesOnSuccessfulRetrieval)
+        {
+            OpenAIFileClient fileClient = GetRequiredFileClient();
+            if (!string.IsNullOrWhiteSpace(InputFileId))
+            {
+                await fileClient.DeleteFileAsync(InputFileId);
+            }
+            if (!string.IsNullOrWhiteSpace(OutputFileId))
+            {
+                await fileClient.DeleteFileAsync(OutputFileId);
+            }
+            if (!string.IsNullOrWhiteSpace(ErrorFileId))
+            {
+                await fileClient.DeleteFileAsync(ErrorFileId);
+            }
+        }
+
+        return results;
+
     }
 
     internal static IReadOnlyList<EmbeddingBatchRunResult> BuildResultItems(

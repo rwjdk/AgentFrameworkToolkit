@@ -1,19 +1,21 @@
+using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 
 namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
-/// Represents one request line in the batch input file.
+/// Represents one request line.
 /// </summary>
+[PublicAPI]
 public class ChatBatchRequest
 {
     /// <summary>
-    /// Gets or sets the optional custom id for the line. If omitted, one is generated.
+    /// Optional custom id for the line. If omitted, one is generated.
     /// </summary>
     public string CustomId { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// Gets or set the messages sent as the request payload.
+    /// Messages of the request.
     /// </summary>
     public required IList<ChatMessage> Messages { get; set; }
 
