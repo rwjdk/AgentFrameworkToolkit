@@ -96,7 +96,7 @@ public class ChatBatchRun
     /// A collection containing the original request together with the matched response and error for each line.
     /// Returns an empty collection when the batch is not yet completed.
     /// </returns>
-    public async Task<IReadOnlyList<BatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
+    public async Task<IList<BatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
     {
         if (!IsCompletedStatus(StatusString) || string.IsNullOrWhiteSpace(InputFileId))
         {
@@ -104,7 +104,7 @@ public class ChatBatchRun
         }
 
         (string inputFileContent, string? outputFileContent, string? errorFileContent) = await DownloadBatchFilesAsync();
-        IReadOnlyList<BatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent, Endpoint);
+        IList<BatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent, Endpoint);
         if (cleanUpRemoteFilesOnSuccessfulRetrieval)
         {
             OpenAIFileClient fileClient = GetRequiredFileClient();
@@ -125,7 +125,7 @@ public class ChatBatchRun
         return results;
     }
 
-    internal static IReadOnlyList<BatchRunResult> BuildResultItems(
+    internal static IList<BatchRunResult> BuildResultItems(
         string inputFileContent,
         string? outputFileContent,
         string? errorFileContent,
@@ -855,7 +855,7 @@ public class ChatBatchRun<T> : ChatBatchRun
     /// A collection containing the original request together with the matched structured response and error for each line.
     /// Returns an empty collection when the batch is not yet completed.
     /// </returns>
-    public new Task<IList<ChatBatchRunResult<T>>> GetResultAsync()
+    public Task<IList<ChatBatchRunResult<T>>> GetResultAsync()
     {
         return GetStructuredResultAsync<T>();
     }

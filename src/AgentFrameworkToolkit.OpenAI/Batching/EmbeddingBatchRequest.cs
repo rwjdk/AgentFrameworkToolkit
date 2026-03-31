@@ -1,8 +1,11 @@
+using JetBrains.Annotations;
+
 namespace AgentFrameworkToolkit.OpenAI.Batching;
 
 /// <summary>
 /// Represents one embedding request line in the batch input file.
 /// </summary>
+[PublicAPI]
 public class EmbeddingBatchRequest
 {
     /// <summary>

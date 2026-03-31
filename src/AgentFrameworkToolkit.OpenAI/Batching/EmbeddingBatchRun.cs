@@ -94,7 +94,7 @@ public class EmbeddingBatchRun
     /// A collection containing the original request together with the matched embedding response and error for each line.
     /// Returns an empty collection when the batch is not yet completed.
     /// </returns>
-    public async Task<IReadOnlyList<EmbeddingBatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
+    public async Task<IList<EmbeddingBatchRunResult>> GetResultAsync(bool cleanUpRemoteFilesOnSuccessfulRetrieval = false)
     {
         if (!IsCompletedStatus(StatusString) || string.IsNullOrWhiteSpace(InputFileId))
         {
@@ -102,7 +102,7 @@ public class EmbeddingBatchRun
         }
 
         (string inputFileContent, string? outputFileContent, string? errorFileContent) = await DownloadBatchFilesAsync();
-        IReadOnlyList<EmbeddingBatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent);
+        IList<EmbeddingBatchRunResult> results = BuildResultItems(inputFileContent, outputFileContent, errorFileContent);
         if (cleanUpRemoteFilesOnSuccessfulRetrieval)
         {
             OpenAIFileClient fileClient = GetRequiredFileClient();
@@ -124,7 +124,7 @@ public class EmbeddingBatchRun
 
     }
 
-    internal static IReadOnlyList<EmbeddingBatchRunResult> BuildResultItems(
+    internal static IList<EmbeddingBatchRunResult> BuildResultItems(
         string inputFileContent,
         string? outputFileContent,
         string? errorFileContent)

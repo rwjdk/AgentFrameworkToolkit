@@ -1,11 +1,8 @@
-using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.OpenAI.Batching;
-using Azure.AI.OpenAI;
 using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
-using OpenAI;
 using Secrets;
 #pragma warning disable OPENAI001
 
@@ -146,7 +143,7 @@ public sealed class OpenAITests : TestsBase
 
             Console.WriteLine($"Id={batchRun.Id}; Status={batchRun.StatusString}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-            IReadOnlyList<BatchRunResult> results = await batchRun.GetResultAsync();
+            IList<BatchRunResult> results = await batchRun.GetResultAsync();
             BatchRunResult result = Assert.Single(results);
             Assert.Equal("live-test-1", result.CustomId);
             ChatMessage message = Assert.Single(result.ResponseMessages);
@@ -189,7 +186,7 @@ public sealed class OpenAITests : TestsBase
 
         Console.WriteLine($"Id={batchRun.Id}; Status={batchRun.StatusString}; OutputFileId={batchRun.OutputFileId}; ErrorFileId={batchRun.ErrorFileId}");
 
-        IReadOnlyList<BatchRunResult> results = await batchRun.GetResultAsync();
+        IList<BatchRunResult> results = await batchRun.GetResultAsync();
         BatchRunResult result = Assert.Single(results);
         Assert.Equal("live-test-responses-1", result.CustomId);
         ChatMessage message = Assert.Single(result.ResponseMessages);

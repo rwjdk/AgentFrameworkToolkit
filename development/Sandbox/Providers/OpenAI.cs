@@ -35,7 +35,7 @@ public static class OpenAI
             EmbeddingBatchRequest.Create("World"),
         ]);
 
-        IReadOnlyList<EmbeddingBatchRunResult> embeddingBatchRunResults = await embeddingBatchRun.GetResultAsync();
+        IList<EmbeddingBatchRunResult> embeddingBatchRunResults = await embeddingBatchRun.GetResultAsync();
 
 
 
