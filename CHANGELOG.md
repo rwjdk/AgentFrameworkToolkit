@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.0.0 (2nd of April 2026)
+- Updated Agent Framework from rc5 to 1.0.0 (General Availability)
+
+---
+
 ## Version 1.0.0-rc5 (31st of March 2026)
 - Updated Agent Framework from rc4 to rc5
 
