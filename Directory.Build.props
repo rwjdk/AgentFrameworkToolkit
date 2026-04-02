@@ -19,6 +19,10 @@
         <IsPackable>true</IsPackable>
     </PropertyGroup>
 
+    <PropertyGroup>
+	    <NoWarn>$(NoWarn);NU5104</NoWarn>
+    </PropertyGroup>
+
     <!-- Test project specific settings -->
     <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Tests'">
         <IsPackable>false</IsPackable>
