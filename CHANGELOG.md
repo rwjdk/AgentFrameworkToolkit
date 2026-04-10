@@ -5,6 +5,7 @@
 - Updated AWSSDK NuGets to latest
 - Updated OpenTelemetry NuGet to latest
 - Anthropic: Added `UseAdaptiveThinking` to use with 4.6 Models instead of the `BudgetTokens` property
+
 ---
 
 ## Version 1.0.0 (2nd of April 2026)
