@@ -1,7 +1,7 @@
 # Changelog - Agent Framework Toolkit
 
 ## Version 1.1.0 (10th of April 2026)
-- Updated Agent Framework from 1.0.0 to 1.1.0 (General Availability)
+- Updated Agent Framework from 1.0.0 to 1.1.0
 - Updated AWSSDK NuGets to latest
 - Updated OpenTelemetry NuGet to latest
 - Anthropic: Added `UseAdaptiveThinking` to use with 4.6 Models instead of the `BudgetTokens` property
