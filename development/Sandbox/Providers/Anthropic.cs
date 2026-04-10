@@ -16,9 +16,18 @@ public static class Anthropic
 //Create your AgentFactory
         AnthropicAgentFactory agentFactory = new AnthropicAgentFactory(secrets.AnthropicApiKey);
 
-        AnthropicAgent agent = agentFactory.CreateAgent(AnthropicChatModels.ClaudeOpus46, 10000);
+        AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
+        {
+            Model = AnthropicChatModels.ClaudeOpus46,
+            MaxOutputTokens = 10000,
+            BudgetTokens = 2000,
+            UseAdaptiveThinking = true
+        });
 
-        AgentResponse<List<Result>> response = await agent.RunAsync<List<Result>>(new ChatMessage(ChatRole.User, "What is 2+2, 4+4 and 8+8"));
+        AgentResponse response = await agent.RunAsync("How may people live in france. Answer in exactly 5 words");
+
+        TextReasoningContent? content = response.GetTextReasoningContent();
+
         //AgentResponse<Result> response = await agent.RunAsync<Result>([new ChatMessage(ChatRole.User, "What is 2+2")]);
     }
 

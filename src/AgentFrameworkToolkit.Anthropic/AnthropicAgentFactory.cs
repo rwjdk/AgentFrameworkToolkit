@@ -103,16 +103,28 @@ public class AnthropicAgentFactory
         {
             chatOptions.Temperature = options.Temperature;
         }
-
-        if (options.BudgetTokens != null)
+        
+        ThinkingConfigParam? thinkingOptions = null;
+        if (options.UseAdaptiveThinking)
         {
-            chatOptions.RawRepresentationFactory = _ => new MessageCreateParams
+            thinkingOptions = new ThinkingConfigParam(new ThinkingConfigAdaptive());
+
+        }
+        else if (options.BudgetTokens != null)
+        {
+            thinkingOptions = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens.Value });
+        }
+
+        if (thinkingOptions != null)
+        {
+            MessageCreateParams rawOptions = new()
             {
                 MaxTokens = options.MaxOutputTokens,
                 Messages = [],
                 Model = options.Model,
-                Thinking = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens.Value }),
+                Thinking = thinkingOptions
             };
+            chatOptions.RawRepresentationFactory = _ => rawOptions;
         }
 
         ChatClientAgentOptions chatClientAgentOptions = new()

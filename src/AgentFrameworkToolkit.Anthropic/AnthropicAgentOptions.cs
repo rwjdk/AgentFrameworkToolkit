@@ -106,4 +106,8 @@ public class AnthropicAgentOptions
     /// </summary>
     public IEnumerable<AIContextProvider>? AIContextProviders { get; set; }
 
+    /// <summary>
+    /// If Adaptive Thinking should be used
+    /// </summary>
+    public bool UseAdaptiveThinking { get; set; }
 }
