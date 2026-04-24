@@ -5,9 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Microsoft Agents AI Framework -->
-    <PackageVersion Include="Microsoft.Agents.AI" Version="1.2.0" />
-    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.2.0" />
-    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.2.0-preview.260421.1" />
+    <PackageVersion Include="Microsoft.Agents.AI" Version="1.3.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.3.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.3.0-preview.260423.1" />
     <!-- Azure -->
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />
     <PackageVersion Include="Azure.AI.OpenAI" Version="2.9.0-beta.1" />
@@ -19,8 +19,8 @@
     <PackageVersion Include="Google.GenAI" Version="1.6.1" />
     <PackageVersion Include="Mistral.SDK" Version="2.3.1" />
     <PackageVersion Include="ModelContextProtocol" Version="1.2.0" />
-    <PackageVersion Include="AWSSDK.BedrockRuntime" Version="4.0.17.3" />
-    <PackageVersion Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.6.9" />
+    <PackageVersion Include="AWSSDK.BedrockRuntime" Version="4.0.17.4" />
+    <PackageVersion Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.6.10" />
     <!-- Code analysis -->
     <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
     <!-- Testing -->
