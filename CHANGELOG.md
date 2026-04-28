@@ -1,21 +1,26 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Fix that AgentSkills License/Compatibility/AllowedTools information was not correctly included ([PR#64](https://github.com/rwjdk/AgentFrameworkToolkit/pull/64) - Thank you to [UrienZhang](https://github.com/UrienZhang))
+
+---
+
 ## Version 1.3.0 (24th of April 2026)
 - Updated Agent Framework from 1.2.0 to 1.3.0 
-- Updated all NuGet packages to latest
+- Updated all NuGet packages to the latest
 
 ---
 
 ## Version 1.2.0 (22nd of April 2026)
 - Updated Agent Framework from 1.1.0 to 1.2.0 
-- Updated all NuGet packages to latest
+- Updated all NuGet packages to the latest
 
 ---
 
 ## Version 1.1.0 (10th of April 2026)
 - Updated Agent Framework from 1.0.0 to 1.1.0
-- Updated AWSSDK NuGets to latest
-- Updated OpenTelemetry NuGet to latest
+- Updated AWSSDK NuGets to the latest
+- Updated OpenTelemetry NuGet to the latest
 - Anthropic: Added `UseAdaptiveThinking` to use with 4.6 Models instead of the `BudgetTokens` property
 
 ---
@@ -38,9 +43,9 @@
 ## Version 1.0.0-rc4.1 (31st of March 2026)
 - Added `AzureOpenAIBatchRunner` for Chat Batch Capabilities
 - Added `OpenAIBatchRunner` for Chat and Embedding Batch Capabilities
-- Updated AWSSDK NuGets to latest
-- Updated Azure.Identity NuGet to latest
-- Updated OpenTelemetry NuGet to latest
+- Updated AWSSDK NuGets to the latest
+- Updated Azure.Identity NuGet to the latest
+- Updated OpenTelemetry NuGet to the latest
 - Added GPT 5.4 mini/nano as known models
 
 ---
