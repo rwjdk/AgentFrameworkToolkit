@@ -164,12 +164,12 @@ public class AgentSkill
         builder.AppendLine(Body);
         builder.AppendLine("</instructions>");
 
-        if (optionsToUse.IncludeLicenseInformation && string.IsNullOrWhiteSpace(License))
+        if (optionsToUse.IncludeLicenseInformation && !string.IsNullOrWhiteSpace(License))
         {
             builder.AppendLine($"<license>{License}</license>");
         }
 
-        if (optionsToUse.IncludeCompatibilityInformation && string.IsNullOrWhiteSpace(Compatibility))
+        if (optionsToUse.IncludeCompatibilityInformation && !string.IsNullOrWhiteSpace(Compatibility))
         {
             builder.AppendLine($"<compatibility>{Compatibility}</compatibility>");
         }
@@ -185,7 +185,7 @@ public class AgentSkill
             builder.AppendLine("</metadata>");
         }
 
-        if (optionsToUse.IncludeAllowedTools && string.IsNullOrWhiteSpace(AllowedTools))
+        if (optionsToUse.IncludeAllowedTools && !string.IsNullOrWhiteSpace(AllowedTools))
         {
             builder.AppendLine($"<allowedTools>{AllowedTools}</allowedTools>");
         }
