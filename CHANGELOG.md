@@ -1,7 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.4.0 (5th of May 2026)
+- Updated Agent Framework from 1.3.0 to 1.4.0 
 - Fix that AgentSkills License/Compatibility/AllowedTools information was not correctly included ([PR#64](https://github.com/rwjdk/AgentFrameworkToolkit/pull/64) - Thank you to [UrienZhang](https://github.com/UrienZhang))
+- Made Tools, Tools.ModelContextProtocol and AgentSkills dependent on Microsoft.Agents.AI instead of Microsoft.Extensions.AI.Abstractions as latter package tend to be ahead of AF and cause incompatible states.
+- Updated all NuGet packages to the latest
 
 ---
 

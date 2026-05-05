@@ -7,8 +7,8 @@
 	<Import Project="..\..\nuget-package.props" />
 
 	<ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
 		<PackageReference Include="JetBrains.Annotations" />
+		<PackageReference Include="Microsoft.Agents.AI" />
 		<PackageReference Include="ModelContextProtocol" />
 	</ItemGroup>
   <ItemGroup>

@@ -1,3 +1,4 @@
+using System.ClientModel;
 using AgentFrameworkToolkit;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.AzureOpenAI.Batching;
@@ -6,6 +7,7 @@ using AgentFrameworkToolkit.OpenAI.Batching;
 using Azure.AI.OpenAI;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using OpenAI.Responses;
 using Secrets;
 #pragma warning disable OPENAI001
 #pragma warning disable AFT999
@@ -25,58 +27,25 @@ public static class AzureOpenAI
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
 
+        AzureOpenAIClient client = new AzureOpenAIClient(new Uri(secrets.AzureOpenAiEndpoint), new ApiKeyCredential(secrets.AzureOpenAiKey));
+        ChatClientAgent agent2 = client.GetResponsesClient().AsAIAgent(model: "gpt-4.1");
+        AgentResponse agentResponse = await agent2.RunAsync("Hello");
+
 
         AzureOpenAIConnection connection = new AzureOpenAIConnection
         {
             Endpoint = secrets.AzureOpenAiEndpoint,
             ApiKey = secrets.AzureOpenAiKey,
         };
-
-
-        AzureOpenAIBatchRunner batchRunner = new(connection);
-
-        ChatBatchRun batchRun = await batchRunner.RunChatBatchAsync(new ChatBatchOptions
-            {
-                Model = "gpt-4.1-nano-batch",
-                WaitUntilCompleted = true,
-            },
-            [
-                ChatBatchRequest.Create("What is the capital of France?")
-            ]
-        );
-
-        IList<ChatBatchRunResult> results = await batchRun.GetResultAsync(true);
-
-
-        ChatBatchRun<MyObject> run = await batchRunner.RunChatBatchAsync<MyObject>(new ChatBatchOptions
-        {
-            Model = "gpt-4.1-nano-batch",
-        },
-            [
-                ChatBatchRequest.Create("What is the capital of France?"),
-            ]
-        );
-
-        while (run.Status != BatchRunStatus.Completed)
-        {
-            run = await batchRunner.GetChatBatchAsync<MyObject>(run.Id);
-            Console.WriteLine(run.Status + $" [Total: {run.Counts.Total} - Completed: {run.Counts.Completed} - Failed: {run.Counts.Failed}]");
-            await Task.Delay(5000);
-        }
-
-        IList<ChatBatchRunResult<MyObject>> items = await run.GetResultAsync();
-
-        foreach (ChatBatchRunResult<MyObject> item in items)
-        {
-            Console.WriteLine(item.ResponseObject?.City);
-        }
-
+        
         AzureOpenAIAgentFactory factory = new AzureOpenAIAgentFactory(connection);
 
         AzureOpenAIAgent agent = factory.CreateAgent(new AgentOptions
         {
             Model = "gpt-5-mini",
             ReasoningEffort = OpenAIReasoningEffort.Low,
+            ClientType = ClientType.ResponsesApi,
+            
             RawToolCallDetails = Console.WriteLine
         });
 
