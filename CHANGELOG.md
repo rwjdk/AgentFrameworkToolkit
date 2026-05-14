@@ -1,5 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.5.0 (14th of May 2026)
+- Updated Agent Framework from 1.4.0 to 1.5.0 [NOTE: Due to dependency incompatibility there is no package in this release that target Google; it will return once Google update their dependencies]
+- Updated all NuGet packages to the latest
+
+--
+
 ## Version 1.4.0 (5th of May 2026)
 - Updated Agent Framework from 1.3.0 to 1.4.0 
 - Fix that AgentSkills License/Compatibility/AllowedTools information was not correctly included ([PR#64](https://github.com/rwjdk/AgentFrameworkToolkit/pull/64) - Thank you to [UrienZhang](https://github.com/UrienZhang))

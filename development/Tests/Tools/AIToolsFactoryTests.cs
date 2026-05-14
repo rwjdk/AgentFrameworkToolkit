@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AgentFrameworkToolkit.Tests;
+namespace AgentFrameworkToolkit.Tests.Tools;
 
 public class AIToolsFactoryTests
 {

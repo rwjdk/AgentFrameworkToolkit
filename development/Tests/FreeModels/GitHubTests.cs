@@ -2,7 +2,7 @@ using AgentFrameworkToolkit.GitHub;
 using Microsoft.Extensions.DependencyInjection;
 using Secrets;
 
-namespace AgentFrameworkToolkit.Tests;
+namespace AgentFrameworkToolkit.Tests.FreeModels;
 
 public sealed class GitHubTests : TestsBase
 {

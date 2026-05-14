@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using AgentFrameworkToolkit.Tools.Common;
 
-namespace AgentFrameworkToolkit.Tests;
+namespace AgentFrameworkToolkit.Tests.Tools;
 
 public class ToolConfinementTests
 {

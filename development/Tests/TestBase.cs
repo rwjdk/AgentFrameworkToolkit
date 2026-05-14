@@ -254,7 +254,7 @@ public abstract class TestsBase
             case AgentProvider.GitHub:
             {
                 GitHubAgentFactory factory = new(secrets.GitHubPatToken);
-                string model = "xai/grok-3-mini";
+                string model = "microsoft/Phi-4-mini-instruct";
                 return scenario switch
                 {
                     AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
@@ -330,7 +330,7 @@ public abstract class TestsBase
                     ApiKey = secrets.CerebrasApiKey,
                     DefaultClientType = ClientType.ChatClient
                 });
-                string model = CerebrasChatModels.GptOss120B;
+                string model = "qwen-3-235b-a22b-instruct-2507";
                 return scenario switch
                 {
                     AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),

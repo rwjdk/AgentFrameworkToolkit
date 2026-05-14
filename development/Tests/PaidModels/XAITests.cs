@@ -2,7 +2,7 @@ using AgentFrameworkToolkit.XAI;
 using Microsoft.Extensions.DependencyInjection;
 using Secrets;
 
-namespace AgentFrameworkToolkit.Tests;
+namespace AgentFrameworkToolkit.Tests.PaidModels;
 
 public sealed class XAITests : TestsBase
 {

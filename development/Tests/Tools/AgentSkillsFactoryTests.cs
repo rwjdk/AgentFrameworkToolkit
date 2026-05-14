@@ -1,7 +1,7 @@
 using AgentFrameworkToolkit.Tools;
 using AgentSkillsDotNet;
 
-namespace AgentFrameworkToolkit.Tests;
+namespace AgentFrameworkToolkit.Tests.Tools;
 
 public class AgentSkillsFactoryTests
 {

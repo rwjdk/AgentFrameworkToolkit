@@ -1,12 +1,12 @@
 using AgentFrameworkToolkit.OpenAI;
-using AgentFrameworkToolkit.OpenAI.Batching;
 using JetBrains.Annotations;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Secrets;
+
 #pragma warning disable OPENAI001
 
-namespace AgentFrameworkToolkit.Tests;
+namespace AgentFrameworkToolkit.Tests.PaidModels;
 
 public sealed class OpenAITests : TestsBase
 {
