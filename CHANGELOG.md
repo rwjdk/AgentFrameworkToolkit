@@ -1,5 +1,10 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Google: Added support for inspecting HttpRawCall Details
+
+---
+
 ## Version 1.6.1 (14th of May 2026)
 - Updated Agent Framework from 1.5.0 to 1.6.1 [NOTE: Due to dependency incompatibility, there is no package in this release that targets Google; it will return once Google updates their dependencies]
 - Updated all NuGet packages to the latest

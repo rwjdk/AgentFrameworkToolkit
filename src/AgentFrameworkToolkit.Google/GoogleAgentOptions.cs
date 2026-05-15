@@ -113,4 +113,9 @@ public class GoogleAgentOptions
     /// Gets or sets the list of <see cref="AIContextProvider"/> instances to use for providing additional context for each agent run.
     /// </summary>
     public IEnumerable<AIContextProvider>? AIContextProviders { get; set; }
+
+    /// <summary>
+    /// An Action, if set, will attach an HTTP Message Handler so you can see the raw HTTP Calls that are sent to the LLM
+    /// </summary>
+    public Action<RawCallDetails>? RawHttpCallDetails { get; set; }
 }

@@ -75,9 +75,10 @@ public class GoogleConnection
 
     /// <summary>
     /// Get a Raw Client
+    /// <param name="rawHttpCallDetails">An Action, if set, will attach an HTTP Message Handler so you can see the raw HTTP Calls that are sent to the LLM</param>
     /// </summary>
     /// <returns>The Raw Client</returns>
-    public Client GetClient()
+    public Client GetClient(Action<RawCallDetails>? rawHttpCallDetails = null)
     {
         HttpOptions? httpOptions = HttpOptions;
         if (NetworkTimeout.HasValue)
@@ -95,10 +96,24 @@ public class GoogleConnection
             }
         }
 
+
+        ClientOptions? clientOptions = null;
+        // ReSharper disable once InvertIf
+        if (rawHttpCallDetails != null)
+        {
+            HttpClient inspectingHttpClient = new(new RawCallDetailsHttpHandler(rawHttpCallDetails));
+
+            clientOptions = new ClientOptions
+            {
+                HttpClientFactory = () => inspectingHttpClient
+            };
+        }
+
         Client client = new(
             vertexAI: VertexAI,
             apiKey: ApiKey,
             credential: Credential,
+            clientOptions: clientOptions,
             project: Project,
             location: Location,
             httpOptions: httpOptions);

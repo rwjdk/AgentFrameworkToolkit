@@ -580,6 +580,12 @@ public abstract class TestsBase
 
                     return await next(context, token);
                 },
+                RawHttpCallDetails = details =>
+                {
+                    Assert.True(details.RequestUrl.Contains("googleapis.com", StringComparison.InvariantCultureIgnoreCase));
+                    Assert.True(details.RequestData.Contains("parts", StringComparison.InvariantCultureIgnoreCase));
+                    Assert.True(details.ResponseData.Contains("parts", StringComparison.InvariantCultureIgnoreCase));
+                },
                 OpenTelemetryMiddleware = new OpenTelemetryMiddleware(sourceName, agent => agent.EnableSensitiveData = true),
                 LoggingMiddleware = new LoggingMiddleware(testLogger)
             });

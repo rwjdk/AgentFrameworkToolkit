@@ -20,13 +20,20 @@ public static class Google
         GoogleAgentFactory agentFactory = new GoogleAgentFactory(new GoogleConnection
         {
             ApiKey = secrets.GoogleGeminiApiKey,
+            
         });
 
         AIAgent agent = agentFactory.CreateAgent(new GoogleAgentOptions
         {
-            Model = "gemini-3-pro-preview"
+            Model = "gemini-3.1-pro-preview",
+            RawHttpCallDetails = details =>
+            {
+                Console.WriteLine(details.RequestUrl);
+                Console.WriteLine(details.RequestData);
+                Console.WriteLine(details.ResponseData);
+            }
         });
-        await agent.RunAsync<string>("");
+        await agent.RunAsync<string>("Hello");
 
 
         AgentResponse response = await agent.RunAsync("Why is the Sky Blue");

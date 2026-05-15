@@ -63,7 +63,7 @@ public class GoogleAgentFactory
     /// <returns>The Agent</returns>
     public GoogleAgent CreateAgent(GoogleAgentOptions options)
     {
-        IChatClient client = Connection.GetClient().AsIChatClient(options.Model);
+        IChatClient client = Connection.GetClient(rawHttpCallDetails: options.RawHttpCallDetails).AsIChatClient(options.Model);
 
         AIAgent innerAgent = new ChatClientAgent(client, CreateChatClientAgentOptions(options), options.LoggerFactory, options.Services);
 
