@@ -91,6 +91,7 @@ AzureOpenAIAgentFactory agentFactory = new AzureOpenAIAgentFactory(new AzureOpen
     NetworkTimeout = TimeSpan.FromMinutes(5), //Set call timeout
     Credentials = null, //Set RBAC Credentials
     DefaultClientType = ClientType.ResponsesApi, //Set default Client Type for each agent (ChatClient or ResponsesAPI)
+    AutoCorrectFoundryEndpoint = true, //Autocorrect Foundry project URLs to the Azure OpenAI endpoint
     AdditionalAzureOpenAIClientOptions = options =>
     {
         //Set additional properties if needed
@@ -125,8 +126,8 @@ AzureOpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
     LoggingMiddleware = new LoggingMiddleware( /* Configure custom logging */),
     Services = null, //Setup Tool Calling Service Injection (See https://youtu.be/EGs-Myf5MB4 for more details)
     LoggerFactory = null, //Setup logger Factory (Alternative to Middleware)
-    ChatHistoryProviderFactory = context => new MyChatMessageStore(), //Set a custom message store
-    AIContextProviderFactory = context => new MyAIContextProvider(), //Set a custom AI context provider
+    ChatHistoryProvider = new MyChatMessageStore(), //Set a custom message store
+    AIContextProviders = [new MyAIContextProvider()], //Set custom AI context providers
     AdditionalChatClientAgentOptions = options =>
     {
         //Option to set even more options if not covered by AgentFrameworkToolkit
@@ -148,3 +149,19 @@ AzureOpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
 AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
+
+### Batch Runner
+```cs
+AzureOpenAIBatchRunner batchRunner = new("<endpoint>", "<apiKey>");
+
+ChatBatchRun run = await batchRunner.RunChatBatchAsync(
+    new ChatBatchOptions
+    {
+        Model = "<deployment-name>"
+    },
+    [
+        ChatBatchRequest.Create("Summarize this text.")
+    ]);
+```
+
+> Note: Batch runner APIs are marked experimental with `AFT999`. In Azure OpenAI, `Model` is your deployment name.

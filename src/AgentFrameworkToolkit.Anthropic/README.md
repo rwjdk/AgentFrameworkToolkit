@@ -57,6 +57,8 @@ AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions //Use 
     Instructions = "You are a nice AI", //The System Prompt
     Tools = [], //Add your tools here
     BudgetTokens = 1024, //Set Thinking Budget
+    UseAdaptiveThinking = false, //Use adaptive thinking instead of BudgetTokens
+    CacheControlTimeToLive = null, //Set an Anthropic cache-control TTL when prompt caching should be used
 });
 
 AgentResponse response = await agent.RunAsync("Hello World");
@@ -83,6 +85,8 @@ AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
     Name = "MyAgent", //Agent Name
     Temperature = 0, //The Temperature of the LLM Call (1 = Normal; 0 = Less creativity)
     BudgetTokens = 1024, //Set Thinking Budget
+    UseAdaptiveThinking = false, //Use adaptive thinking instead of BudgetTokens
+    CacheControlTimeToLive = null, //Set an Anthropic cache-control TTL when prompt caching should be used
     Instructions = "You are a nice AI", //The System Prompt for the Agent to Follow
     Tools = [], //Add your tools for Tool Calling here
     ToolCallingMiddleware = async (callingAgent, context, next, token) => //Tool Calling Middleware to Inspect, change, and cancel tool-calling
@@ -98,8 +102,8 @@ AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
     LoggingMiddleware = new LoggingMiddleware( /* Configure custom logging */),
     Services = null, //Setup Tool Calling Service Injection (See https://youtu.be/EGs-Myf5MB4 for more details)
     LoggerFactory = null, //Setup logger Factory (Alternative to Middleware)
-    ChatHistoryProviderFactory = context => new MyChatMessageStore(), //Set a custom message store
-    AIContextProviderFactory = context => new MyAIContextProvider(), //Set a custom AI context provider
+    ChatHistoryProvider = new MyChatMessageStore(), //Set a custom message store
+    AIContextProviders = [new MyAIContextProvider()], //Set custom AI context providers
     AdditionalChatClientAgentOptions = options =>
     {
         //Option to set even more options if not covered by AgentFrameworkToolkit

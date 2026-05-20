@@ -92,8 +92,8 @@ MistralAgent agent = agentFactory.CreateAgent(new MistralAgentOptions
     LoggingMiddleware = new LoggingMiddleware( /* Configure custom logging */),
     Services = null, //Setup Tool Calling Service Injection (See https://youtu.be/EGs-Myf5MB4 for more details)
     LoggerFactory = null, //Setup logger Factory (Alternative to Middleware)
-    ChatHistoryProviderFactory = context => new MyChatMessageStore(), //Set a custom message store
-    AIContextProviderFactory = context => new MyAIContextProvider(), //Set a custom AI context provider
+    ChatHistoryProvider = new MyChatMessageStore(), //Set a custom message store
+    AIContextProviders = [new MyAIContextProvider()], //Set custom AI context providers
     AdditionalChatClientAgentOptions = options =>
     {
         //Option to set even more options if not covered by AgentFrameworkToolkit

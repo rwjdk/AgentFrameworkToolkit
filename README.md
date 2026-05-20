@@ -12,6 +12,8 @@ But the second you need to do something slightly more advanced, you end up with 
 - How do you set the reasoning effort in OpenAI or Google? 
 - How do you add Tool Calling Middleware?
 - How do you create Tools from a class or MCP Server?
+- How do you expose AgentSkills as tools?
+- How do you run OpenAI or Azure OpenAI batch jobs?
 
 Things like the above, while doable, are very cumbersome and are not discoverable in Microsoft Agent Framework, as it has decided to be very generic.
 
@@ -31,13 +33,21 @@ The following providers are currently supported (check out the individual README
 | **Cerebras** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Cerebras) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Cerebras/README.md) |
 | **Cohere** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Cohere) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Cohere/README.md) |
 | **GitHub Models** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.GitHub) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.GitHub/README.md) |
-| **Google (Gemini)** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Google) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Google/README.md) |
+| **Google (Gemini)** | `AgentFactory`, `AIToolsFactory`, `EmbeddingFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Google) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Google/README.md) |
 | **Mistral** | `AgentFactory`, `AIToolsFactory`, `EmbeddingFactory`| [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Mistral) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Mistral/README.md) |
-| **OpenAI** | `AgentFactory`, `AIToolsFactory`, `EmbeddingFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.OpenAI) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.OpenAI/README.md) |
+| **OpenAI** | `AgentFactory`, `AIToolsFactory`, `EmbeddingFactory`, `BatchRunner` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.OpenAI) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.OpenAI/README.md) |
 | **OpenRouter** | `AgentFactory`, `AIToolsFactory`, `EmbeddingFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.OpenRouter) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.OpenRouter/README.md) |
 | **XAI (Grok)** | `AgentFactory`, `AIToolsFactory` | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.XAI) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.XAI/README.md) |
 
 > Tip: For other OpenAI-based providers, you can use the OpenAI Package and provide a custom endpoint
+
+## Additional Packages
+
+| Package | Purpose |   |  |
+|---|---|---|--|
+| **AgentFrameworkToolkit.Tools** | Build `AITool` instances from classes and use common tools | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Tools) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Tools/README.md) |
+| **AgentFrameworkToolkit.Tools.ModelContextProtocol** | Consume local or remote MCP servers as `AITool` instances | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentFrameworkToolkit.Tools.ModelContextProtocol) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentFrameworkToolkit.Tools.ModelContextProtocol/README.md) |
+| **AgentSkillsDotNet** | Load AgentSkills and expose them as tools or instructions | [![NuGet](https://img.shields.io/badge/NuGet-blue?style=for-the-badge)](https://www.nuget.org/packages/AgentSkillsDotNet) | [![README](https://img.shields.io/badge/-README-gray?style=for-the-badge)](https://github.com/rwjdk/AgentFrameworkToolkit/tree/main/src/AgentSkillsDotNet/README.md) |
 
 ## Code sample (AgentFactory)
 > using Azure OpenAI, easily setting Reasoning Effort and Tool Calling Middleware (see individual Provider README for detailed examples)
@@ -82,6 +92,39 @@ public class MyTools
 IList<AITool> tools = aiToolsFactory.GetTools(typeof(MyTools));
 //or
 IList<AITool> tools = aiToolsFactory.GetTools(new MyTools());
+```
+
+## Code sample (MCP Tools)
+```cs
+AIToolsFactory aiToolsFactory = new();
+
+await using McpClientTools mcpClient =
+    await aiToolsFactory.GetToolsFromRemoteMcpAsync("https://mcp.example.com");
+
+IList<AITool> tools = mcpClient.Tools;
+```
+
+## Code sample (AgentSkills)
+```cs
+AgentSkillsFactory agentSkillsFactory = new();
+AgentSkills agentSkills = agentSkillsFactory.GetAgentSkills("<FolderWithSkillsAsSubFolders>");
+
+IList<AITool> tools = agentSkills.GetAsTools();
+string instructions = agentSkills.GetInstructions();
+```
+
+## Code sample (BatchRunner)
+```cs
+OpenAIBatchRunner batchRunner = new("<apiKey>");
+
+ChatBatchRun run = await batchRunner.RunChatBatchAsync(
+    new ChatBatchOptions
+    {
+        Model = OpenAIChatModels.Gpt5Mini
+    },
+    [
+        ChatBatchRequest.Create("Summarize this text.")
+    ]);
 ```
 
 **More Info**

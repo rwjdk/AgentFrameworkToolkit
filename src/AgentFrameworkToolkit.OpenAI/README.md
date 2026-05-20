@@ -86,6 +86,8 @@ OpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
     Temperature = 0, //The Temperature of the LLM Call (1 = Normal; 0 = Less creativity) [ONLY NON-REASONING MODELS]
     ReasoningEffort = OpenAIReasoningEffort.Low, //Set Reasoning Effort [ONLY REASONING MODELS]
     ReasoningSummaryVerbosity = OpenAIReasoningSummaryVerbosity.Detailed, //Only used in Responses API [ONLY REASONING MODELS]
+    StoredOutputEnabled = false, //Set OpenAI's "store" setting
+    ServiceTier = OpenAIServiceTier.Default, //Set OpenAI service tier
     Instructions = "You are a nice AI", //The System Prompt for the Agent to Follow
     Tools = [], //Add your tools for Tool Calling here
     ToolCallingMiddleware = async (callingAgent, context, next, token) => //Tool Calling Middleware to Inspect, change, and cancel tool-calling
@@ -102,8 +104,8 @@ OpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
     LoggingMiddleware = new LoggingMiddleware( /* Configure custom logging */),
     Services = null, //Setup Tool Calling Service Injection (See https://youtu.be/EGs-Myf5MB4 for more details)
     LoggerFactory = null, //Setup logger Factory (Alternative to Middleware)
-    ChatHistoryProviderFactory = context => new MyChatMessageStore(), //Set a custom message store
-    AIContextProviderFactory = context => new MyAIContextProvider(), //Set a custom AI context provider
+    ChatHistoryProvider = new MyChatMessageStore(), //Set a custom message store
+    AIContextProviders = [new MyAIContextProvider()], //Set custom AI context providers
     AdditionalChatClientAgentOptions = options =>
     {
         //Option to set even more options if not covered by AgentFrameworkToolkit
@@ -125,3 +127,28 @@ OpenAIAgent agent = agentFactory.CreateAgent(new AgentOptions
 AgentResponse response = await agent.RunAsync("Hello World");
 Console.WriteLine(response);
 ```
+
+### Batch Runner
+```cs
+OpenAIBatchRunner batchRunner = new("<apiKey>");
+
+ChatBatchRun run = await batchRunner.RunChatBatchAsync(
+    new ChatBatchOptions
+    {
+        Model = "gpt-5-mini"
+    },
+    [
+        ChatBatchRequest.Create("Summarize this text.")
+    ]);
+
+EmbeddingBatchRun embeddingRun = await batchRunner.RunEmbeddingBatchAsync(
+    new EmbeddingBatchOptions
+    {
+        Model = "text-embedding-3-small"
+    },
+    [
+        EmbeddingBatchRequest.Create("Embed this text.")
+    ]);
+```
+
+> Note: Batch runner APIs are marked experimental with `AFT999`.

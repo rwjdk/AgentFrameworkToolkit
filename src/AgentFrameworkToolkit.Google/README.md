@@ -52,7 +52,7 @@ GoogleAgent agent = agentFactory.CreateAgent(new GoogleAgentOptions //Use Google
     Model = "gemini-2.5-flash",
     Instructions = "You are a nice AI", //The System Prompt
     Tools = [], //Add your tools here
-    BudgetTokens = 1024, //Set Thinking Budget
+    ThinkingBudget = 1024, //Set Thinking Budget for Gemini versions before Gemini 3
 });
 
 AgentResponse response = await agent.RunAsync("Hello World");
@@ -77,7 +77,9 @@ GoogleAgent agent = agentFactory.CreateAgent(new GoogleAgentOptions
     Name = "MyAgent", //Agent Name
     MaxOutputTokens = 2000, //Max allow token
     Temperature = 0, //The Temperature of the LLM Call (1 = Normal; 0 = Less creativity)
-    ThinkingBudget = 5000, //Set Thinking Budget
+    ThinkingBudget = 5000, //Set Thinking Budget for Gemini versions before Gemini 3
+    ThinkingLevel = ThinkingLevel.Low, //Set thinking level for Gemini 3+
+    IncludeThoughts = false, //Return thoughts when the model supports it
     Instructions = "You are a nice AI", //The System Prompt for the Agent to Follow
     Tools = [], //Add your tools for Tool Calling here
     ToolCallingMiddleware = async (callingAgent, context, next, token) => //Tool Calling Middleware to Inspect, change, and cancel tool-calling
@@ -93,13 +95,19 @@ GoogleAgent agent = agentFactory.CreateAgent(new GoogleAgentOptions
     LoggingMiddleware = new LoggingMiddleware( /* Configure custom logging */),
     Services = null, //Setup Tool Calling Service Injection (See https://youtu.be/EGs-Myf5MB4 for more details)
     LoggerFactory = null, //Setup logger Factory (Alternative to Middleware)
-    ChatHistoryProviderFactory = context => new MyChatMessageStore(), //Set a custom message store
-    AIContextProviderFactory = context => new MyAIContextProvider(), //Set a custom AI context provider
+    ChatHistoryProvider = new MyChatMessageStore(), //Set a custom message store
+    AIContextProviders = [new MyAIContextProvider()], //Set custom AI context providers
     AdditionalChatClientAgentOptions = options =>
     {
         //Option to set even more options if not covered by AgentFrameworkToolkit
     },
     RawToolCallDetails = Console.WriteLine, //Raw Tool calling Middleware (if you just wish to log what tools are being called. ToolCallingMiddleware is a more advanced version of this)
+    RawHttpCallDetails = details => //Intercept the raw HTTP Call to the LLM (great for advanced debugging sessions)
+    {
+        Console.WriteLine(details.RequestUrl);
+        Console.WriteLine(details.RequestData);
+        Console.WriteLine(details.ResponseData);
+    }
 });
 
 AgentResponse response = await agent.RunAsync("Hello World");
