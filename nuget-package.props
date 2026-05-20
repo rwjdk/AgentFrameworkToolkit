@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<!-- Central version prefix - applies to all nuget packages. -->
-		<PackageVersion>1.6.1</PackageVersion>
+		<PackageVersion>1.6.2</PackageVersion>
 		<Configurations>Debug;Release;Publish</Configurations>
 		<Title>Microsoft Agent Framework</Title>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -10,7 +10,7 @@
 		<IsPackable>true</IsPackable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Rasmus Wulff Jensen</Authors>
-		<Copyright>2026</Copyright>
+		<Copyright>© RWJDK. All rights reserved.</Copyright>
 		<PackageProjectUrl>https://github.com/rwjdk/AgentFrameworkToolkit/wiki</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageTags>microsoft-agent-framework agent-framework-toolkit toolkit microsoft agent framework microsoft.agents.ai</PackageTags>

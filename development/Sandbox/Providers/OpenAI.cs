@@ -23,7 +23,7 @@ public static class OpenAI
             ApiKey = secrets.OpenAiApiKey,
             DefaultClientType = ClientType.ResponsesApi
         };
-
+        /*
         OpenAIBatchRunner batchRunner = new OpenAIBatchRunner(openAIConnection);
 
         EmbeddingBatchRun embeddingBatchRun = await batchRunner.RunEmbeddingBatchAsync(new EmbeddingBatchOptions
@@ -43,6 +43,7 @@ public static class OpenAI
         {
             ReadOnlyMemory<float> vector = result.Response!.Vector;
         }
+        */
 
         OpenAIAgentFactory factory = new(openAIConnection);
 
@@ -54,7 +55,7 @@ public static class OpenAI
         });
 
         tools.Add(AIFunctionFactory.Create(PythonRunner.RunPhytonScript, name: "execute_python"));
-
+    
         OpenAIAgent agent = factory.CreateAgent(new AgentOptions
         {
             ClientType = ClientType.ResponsesApi,
@@ -66,10 +67,15 @@ public static class OpenAI
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine(details.ToString());
                 Console.ResetColor();
-            }
+            },
+            RawHttpCallDetails = details =>
+            {
+                Console.WriteLine(details.RequestData);
+            },
+            StoredOutputEnabled = false
         });
 
-        AgentResponse response = await agent.RunAsync("What is the answer to the extra secret formula (Only return the result)");
+        AgentResponse response = await agent.RunAsync("World3");
         Console.WriteLine(response);
     }
 }

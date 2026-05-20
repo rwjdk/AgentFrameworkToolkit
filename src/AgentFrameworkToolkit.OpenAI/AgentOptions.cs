@@ -125,4 +125,9 @@ public class AgentOptions
     /// What service Tier to use (Only works for OpenAI directly)
     /// </summary>
     public OpenAIServiceTier? ServiceTier { get; set; }
+
+    /// <summary>
+    /// sets whether the response should be stored for later retrieval. This corresponds to the "store" property in the JSON representation.
+    /// </summary>
+    public bool? StoredOutputEnabled { get; set; }
 }

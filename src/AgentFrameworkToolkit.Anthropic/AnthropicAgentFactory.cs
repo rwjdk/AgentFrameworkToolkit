@@ -114,15 +114,25 @@ public class AnthropicAgentFactory
         {
             thinkingOptions = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens.Value });
         }
+        
+        CacheControlEphemeral? cacheControl = null;
+        if (options.CacheControlTimeToLive.HasValue)
+        {
+            cacheControl = new CacheControlEphemeral
+            {
+                Ttl = options.CacheControlTimeToLive,
+            };
+        }
 
-        if (thinkingOptions != null)
+        if (thinkingOptions != null || cacheControl != null)
         {
             MessageCreateParams rawOptions = new()
             {
                 MaxTokens = options.MaxOutputTokens,
                 Messages = [],
                 Model = options.Model,
-                Thinking = thinkingOptions
+                Thinking = thinkingOptions,
+                CacheControl = cacheControl
             };
             chatOptions.RawRepresentationFactory = _ => rawOptions;
         }

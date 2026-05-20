@@ -1,12 +1,14 @@
 using AgentFrameworkToolkit;
 using AgentFrameworkToolkit.Anthropic;
+using Anthropic.Models.Messages;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Secrets;
+using Ttl = Anthropic.Models.Beta.Messages.Ttl;
 
 namespace Sandbox.Providers;
 
-public static class Anthropic
+public static class AnthropicDemo
 {
     public static async Task RunAsync()
     {
@@ -21,12 +23,20 @@ public static class Anthropic
             Model = AnthropicChatModels.ClaudeOpus46,
             MaxOutputTokens = 10000,
             BudgetTokens = 2000,
-            UseAdaptiveThinking = true
+            UseAdaptiveThinking = true,
+            RawHttpCallDetails = details =>
+            {
+                Console.WriteLine(details.RequestData);
+                Console.WriteLine(details.ResponseData);
+            }
         });
 
-        AgentResponse response = await agent.RunAsync("How may people live in france. Answer in exactly 5 words");
+        string prompt = "How may people live in france. Answer in exactly 5 words.";
+        AgentResponse response = await agent.RunAsync(prompt);
 
         TextReasoningContent? content = response.GetTextReasoningContent();
+
+        AgentResponse response2 = await agent.RunAsync(prompt);
 
         //AgentResponse<Result> response = await agent.RunAsync<Result>([new ChatMessage(ChatRole.User, "What is 2+2")]);
     }

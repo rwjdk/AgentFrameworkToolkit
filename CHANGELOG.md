@@ -1,7 +1,9 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.6.2 (20th of May 2026)
 - Google: Added support for inspecting HttpRawCall Details
+- OpenAI: Added support for the `store` = true/false setting via `StoredOutputEnabled` [#10](https://github.com/rwjdk/AgentFrameworkToolkit/issues/10)
+- Anthropic: Added support for `CacheControlTimeToLive` to control caching strategy. [#62](https://github.com/rwjdk/AgentFrameworkToolkit/issues/62)
 
 ---
 

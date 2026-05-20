@@ -160,6 +160,13 @@ public class OpenAIAgentFactory
                 {
                     bool anyRawOptionsSet = false;
                     ChatCompletionOptions rawOptions = new();
+                    
+                    if (options.StoredOutputEnabled.HasValue)
+                    {
+                        anyRawOptionsSet = true;
+                        rawOptions.StoredOutputEnabled = options.StoredOutputEnabled.Value;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(reasoningEffortAsString) && !OpenAIChatModels.NonReasoningModels.Contains(options.Model))
                     {
                         anyRawOptionsSet = true;
@@ -183,6 +190,13 @@ public class OpenAIAgentFactory
                 {
                     bool anyRawOptionsSet = false;
                     CreateResponseOptions rawOptions = new();
+
+                    if (options.StoredOutputEnabled.HasValue)
+                    {
+                        anyRawOptionsSet = true;
+                        rawOptions.StoredOutputEnabled = options.StoredOutputEnabled.Value;
+                    }
+
                     if (!string.IsNullOrWhiteSpace(reasoningEffortAsString) && !OpenAIChatModels.NonReasoningModels.Contains(options.Model))
                     {
                         anyRawOptionsSet = true;

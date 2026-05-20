@@ -1,3 +1,4 @@
+using Anthropic.Models.Messages;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
@@ -110,4 +111,9 @@ public class AnthropicAgentOptions
     /// If Adaptive Thinking should be used
     /// </summary>
     public bool UseAdaptiveThinking { get; set; }
+
+    /// <summary>
+    /// Set if CacheControl should be active (and if so, how long the cache should live). [Default off | Additional Cost | Will only Cache if input is more than 4096 tokens]
+    /// </summary>
+    public Ttl? CacheControlTimeToLive { get; set; }
 }
