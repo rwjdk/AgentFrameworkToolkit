@@ -1,5 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.7.0 (27th of May 2026)
+- Updated Agent Framework from 1.6.1 to 1.7.0 [NOTE: Due to dependency incompatibility, there is no package in this release that targets Google; it will return once Google updates their dependencies]
+- Updated all NuGet packages to the latest
+
+--
+
 ## Version 1.6.2 (20th of May 2026)
 - Google: Added support for inspecting HttpRawCall Details
 - OpenAI: Added support for the `store` = true/false setting via `StoredOutputEnabled` [#10](https://github.com/rwjdk/AgentFrameworkToolkit/issues/10)
