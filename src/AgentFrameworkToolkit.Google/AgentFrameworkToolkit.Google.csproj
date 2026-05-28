@@ -6,10 +6,6 @@
 
 	<Import Project="..\..\nuget-package.props" />
 
-	<PropertyGroup>
-		<PackageVersion>1.4.0</PackageVersion>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Google.GenAI" />
 		<PackageReference Include="Microsoft.Agents.AI" />
