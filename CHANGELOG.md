@@ -1,5 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
+## Version 1.9.0 (4th of June 2026)
+- Updated Agent Framework from 1.8.0 to 1.9.0
+- Updated all NuGet packages to the latest
+
+--
+
 ## Version 1.8.0 (29th of May 2026)
 - Updated Agent Framework from 1.7.0 to 1.8.0 [NOTE: Google is working again]
 - Updated all NuGet packages to the latest
