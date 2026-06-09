@@ -52,6 +52,21 @@ public static class AnthropicChatModels
     /// Claude Opus 4.6
     /// </summary>
     public const string ClaudeOpus46 = "claude-opus-4-6";
+
+    /// <summary>
+    /// Claude Opus 4.7
+    /// </summary>
+    public const string ClaudeOpus47 = "claude-opus-4-7";
+
+    /// <summary>
+    /// Claude Opus 4.8
+    /// </summary>
+    public const string ClaudeOpus48 = "claude-opus-4-8";
+    
+    /// <summary>
+    /// Claude Fable 5
+    /// </summary>
+    public const string ClaudeFable5 = "claude-fable-5";
     
     /// <summary>
     /// Claude Haiku 3

@@ -13,17 +13,15 @@ public static class AnthropicDemo
     public static async Task RunAsync()
     {
         Secrets.Secrets secrets = SecretsManager.GetSecrets();
-        string apiKey = secrets.AnthropicApiKey;
 
-//Create your AgentFactory
         AnthropicAgentFactory agentFactory = new AnthropicAgentFactory(secrets.AnthropicApiKey);
 
         AnthropicAgent agent = agentFactory.CreateAgent(new AnthropicAgentOptions
         {
-            Model = AnthropicChatModels.ClaudeOpus46,
+            Model = AnthropicChatModels.ClaudeFable5, //Pricing	$10 / $50 per MTok (input / output) [5.5 in comparison is 5$ / $30]
+            //Model = AnthropicChatModels.ClaudeOpus48, 
             MaxOutputTokens = 10000,
-            BudgetTokens = 2000,
-            UseAdaptiveThinking = true,
+            UseAdaptiveThinking = false, //In fable this is always on regardless of setting
             RawHttpCallDetails = details =>
             {
                 Console.WriteLine(details.RequestData);
@@ -31,18 +29,16 @@ public static class AnthropicDemo
             }
         });
 
-        string prompt = "How may people live in france. Answer in exactly 5 words.";
-        AgentResponse response = await agent.RunAsync(prompt);
+        AgentSession session = await agent.CreateSessionAsync();
 
-        TextReasoningContent? content = response.GetTextReasoningContent();
+        while (true)
+        {
+            Console.Write("> ");
+            string input = Console.ReadLine() ?? "";
+            AgentResponse response = await agent.RunAsync(input, session);
+            Console.WriteLine(response);
 
-        AgentResponse response2 = await agent.RunAsync(prompt);
-
-        //AgentResponse<Result> response = await agent.RunAsync<Result>([new ChatMessage(ChatRole.User, "What is 2+2")]);
-    }
-
-    class Result
-    {
-        public required int Answer { get; set; }
+            Console.WriteLine("------------------");
+        }
     }
 }
