@@ -1,8 +1,11 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.10.0 (10th of June 2026)
+- Updated Agent Framework from 1.9.0 to 1.10.0
+- Updated all NuGet packages to the latest
 - Anthropic: Added support for `Effort` and `ServiceTier` parameters
 - Anthropic: Added Opus 4.7, 4.8 and Fable 5 as known models
+- Google: Added support for `ServiceTier` parameters
 
 ---
 

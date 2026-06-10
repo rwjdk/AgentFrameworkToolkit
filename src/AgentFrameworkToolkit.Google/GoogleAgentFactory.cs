@@ -98,31 +98,49 @@ public class GoogleAgentFactory
             chatOptions.MaxOutputTokens = options.MaxOutputTokens.Value;
         }
 
-        if (options.ThinkingBudget.HasValue || options.ThinkingLevel.HasValue)
+        GenerateContentConfig? rawConfig = null;
+        if (options.ThinkingLevel.HasValue)
         {
             anyOptionsSet = true;
-            if (options.ThinkingLevel.HasValue)
+            if (rawConfig == null)
             {
-                chatOptions.RawRepresentationFactory = _ => new GenerateContentConfig
-                {
-                    ThinkingConfig = new ThinkingConfig
-                    {
-                        ThinkingLevel = options.ThinkingLevel,
-                        IncludeThoughts = options.IncludeThoughts
-                    }
-                };
+                rawConfig = new GenerateContentConfig();
             }
-            else if (options.ThinkingBudget.HasValue)
+
+            rawConfig.ThinkingConfig = new ThinkingConfig
             {
-                chatOptions.RawRepresentationFactory = _ => new GenerateContentConfig
-                {
-                    ThinkingConfig = new ThinkingConfig
-                    {
-                        ThinkingBudget = options.ThinkingBudget.Value,
-                        IncludeThoughts = options.IncludeThoughts
-                    }
-                };
+                ThinkingLevel = options.ThinkingLevel,
+                IncludeThoughts = options.IncludeThoughts
+            };
+        }
+        else if (options.ThinkingBudget.HasValue)
+        {
+            anyOptionsSet = true;
+            if (rawConfig == null)
+            {
+                rawConfig = new GenerateContentConfig();
             }
+
+            rawConfig.ThinkingConfig = new ThinkingConfig
+            {
+                ThinkingBudget = options.ThinkingBudget.Value,
+                IncludeThoughts = options.IncludeThoughts
+            };
+        }
+
+        if (options.ServiceTier.HasValue)
+        {
+            anyOptionsSet = true;
+            if (rawConfig == null)
+            {
+                rawConfig = new GenerateContentConfig();
+            }
+            rawConfig.ServiceTier = options.ServiceTier;
+        }
+
+        if (rawConfig != null)
+        {
+            chatOptions.RawRepresentationFactory = _ => rawConfig;
         }
 
         if (options.Temperature != null)

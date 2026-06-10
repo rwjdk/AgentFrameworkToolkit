@@ -118,4 +118,9 @@ public class GoogleAgentOptions
     /// An Action, if set, will attach an HTTP Message Handler so you can see the raw HTTP Calls that are sent to the LLM
     /// </summary>
     public Action<RawCallDetails>? RawHttpCallDetails { get; set; }
+
+    /// <summary>
+    /// Service Tier of the call
+    /// </summary>
+    public ServiceTier? ServiceTier { get; set; }
 }
