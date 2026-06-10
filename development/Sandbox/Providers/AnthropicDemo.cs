@@ -1,10 +1,7 @@
-using AgentFrameworkToolkit;
 using AgentFrameworkToolkit.Anthropic;
 using Anthropic.Models.Messages;
 using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
 using Secrets;
-using Ttl = Anthropic.Models.Beta.Messages.Ttl;
 
 namespace Sandbox.Providers;
 
@@ -21,6 +18,8 @@ public static class AnthropicDemo
             Model = AnthropicChatModels.ClaudeFable5, //Pricing	$10 / $50 per MTok (input / output) [5.5 in comparison is 5$ / $30]
             //Model = AnthropicChatModels.ClaudeOpus48, 
             MaxOutputTokens = 10000,
+            Effort = Effort.Medium,
+            ServiceTier = ServiceTier.StandardOnly,
             UseAdaptiveThinking = false, //In fable this is always on regardless of setting
             RawHttpCallDetails = details =>
             {

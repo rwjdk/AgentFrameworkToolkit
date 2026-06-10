@@ -1,22 +1,28 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Anthropic: Added support for `Effort` and `ServiceTier` parameters
+- Anthropic: Added Opus 4.7, 4.8 and Fable 5 as known models
+
+---
+
 ## Version 1.9.0 (4th of June 2026)
 - Updated Agent Framework from 1.8.0 to 1.9.0
 - Updated all NuGet packages to the latest
 
---
+---
 
 ## Version 1.8.0 (29th of May 2026)
 - Updated Agent Framework from 1.7.0 to 1.8.0 [NOTE: Google is working again]
 - Updated all NuGet packages to the latest
 
---
+---
 
 ## Version 1.7.0 (27th of May 2026)
 - Updated Agent Framework from 1.6.1 to 1.7.0 [NOTE: Due to dependency incompatibility, there is no package in this release that targets Google; it will return once Google updates their dependencies]
 - Updated all NuGet packages to the latest
 
---
+---
 
 ## Version 1.6.2 (20th of May 2026)
 - Google: Added support for inspecting HttpRawCall Details
@@ -29,13 +35,13 @@
 - Updated Agent Framework from 1.5.0 to 1.6.1 [NOTE: Due to dependency incompatibility, there is no package in this release that targets Google; it will return once Google updates their dependencies]
 - Updated all NuGet packages to the latest
 
---
+---
 
 ## Version 1.5.0 (14th of May 2026)
 - Updated Agent Framework from 1.4.0 to 1.5.0 [NOTE: Due to dependency incompatibility, there is no package in this release that targets Google; it will return once Google updates their dependencies]
 - Updated all NuGet packages to the latest
 
---
+---
 
 ## Version 1.4.0 (5th of May 2026)
 - Updated Agent Framework from 1.3.0 to 1.4.0 

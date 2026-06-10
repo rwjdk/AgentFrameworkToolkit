@@ -114,6 +114,15 @@ public class AnthropicAgentFactory
         {
             thinkingOptions = new ThinkingConfigParam(new ThinkingConfigEnabled() { BudgetTokens = options.BudgetTokens.Value });
         }
+
+        OutputConfig? outputConfig = null;
+        if (options.Effort.HasValue)
+        {
+            outputConfig = new OutputConfig
+            {
+                Effort = options.Effort.Value
+            };
+        }
         
         CacheControlEphemeral? cacheControl = null;
         if (options.CacheControlTimeToLive.HasValue)
@@ -124,7 +133,7 @@ public class AnthropicAgentFactory
             };
         }
 
-        if (thinkingOptions != null || cacheControl != null)
+        if (thinkingOptions != null || cacheControl != null || outputConfig != null || options.ServiceTier.HasValue)
         {
             MessageCreateParams rawOptions = new()
             {
@@ -132,7 +141,10 @@ public class AnthropicAgentFactory
                 Messages = [],
                 Model = options.Model,
                 Thinking = thinkingOptions,
-                CacheControl = cacheControl
+                CacheControl = cacheControl,
+                OutputConfig = outputConfig,
+                ServiceTier = options.ServiceTier
+                
             };
             chatOptions.RawRepresentationFactory = _ => rawOptions;
         }
