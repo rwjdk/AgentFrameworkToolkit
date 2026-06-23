@@ -6,9 +6,9 @@
   <ItemGroup>
     <!-- Microsoft Agents AI Framework -->
     <PackageVersion Include="Anthropic" Version="12.20.0" />
-    <PackageVersion Include="Microsoft.Agents.AI" Version="1.10.0" />
-    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.10.0" />
-    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.10.0-preview.260610.1" />
+    <PackageVersion Include="Microsoft.Agents.AI" Version="1.11.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.11.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.11.0-preview.260623.1" />
     <!-- Azure -->
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />
     <PackageVersion Include="Azure.AI.OpenAI" Version="2.9.0-beta.1" />
@@ -17,15 +17,15 @@
     <PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
     <!-- Third-party AI SDKs -->
-    <PackageVersion Include="Google.GenAI" Version="1.9.0" />
+    <PackageVersion Include="Google.GenAI" Version="1.11.0" />
     <PackageVersion Include="Mistral.SDK" Version="2.3.1" />
     <PackageVersion Include="ModelContextProtocol" Version="1.4.0" />
-    <PackageVersion Include="AWSSDK.BedrockRuntime" Version="4.0.20.5" />
-    <PackageVersion Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.8.9" />
+    <PackageVersion Include="AWSSDK.BedrockRuntime" Version="4.0.21.3" />
+    <PackageVersion Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.8.14" />
     <!-- Code analysis -->
-    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
     <!-- Testing -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="OpenTelemetry" Version="1.16.0" />
