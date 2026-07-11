@@ -1,5 +1,13 @@
 # Changelog - Agent Framework Toolkit
 
+## Unreleased
+- Added known model-names for OpenAI (5.6 Sol, 5.6 Terra, 5.6 Luna)
+- Added known model-names for Google (Gemini 3.5 Flash)
+- Added known model-names for xAI (Grok 4.5), 
+- Added known model-names for Anthropic (Sonnet 5) and OpenRouter (Various)
+
+---
+
 ## Version 1.13.0 (3rd of July 2026)
 - Updated Agent Framework from 1.12.0 to 1.13.0
 - Updated all NuGet packages to the latest

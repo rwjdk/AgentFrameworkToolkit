@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.XAI;
 
@@ -8,6 +8,11 @@ namespace AgentFrameworkToolkit.XAI;
 [PublicAPI]
 public static class XAIChatModels
 {
+    /// <summary>
+    /// Grok 4.5 
+    /// </summary>
+    public const string Grok45 = "grok-4.5";
+
     /// <summary>
     /// Grok 4.1 Fast (Reasoning)
     /// </summary>

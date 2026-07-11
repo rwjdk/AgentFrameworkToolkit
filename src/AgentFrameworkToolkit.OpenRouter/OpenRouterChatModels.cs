@@ -15,6 +15,11 @@ public static class OpenRouterChatModels
     public static class XAI
     {
         /// <summary>
+        /// Grok 4.5 
+        /// </summary>
+        public const string Grok45 = "x-ai/grok-4.5";
+        
+        /// <summary>
         /// Grok 4.1 Fast (Reasoning)
         /// </summary>
         public const string Grok41FastReasoning = "x-ai/grok-4-1-fast-reasoning";
@@ -92,6 +97,12 @@ public static class OpenRouterChatModels
         public const string ClaudeSonnet46 = "anthropic/claude-sonnet-4-6";
 
         /// <summary>
+        /// Claude Sonnet 5
+        /// </summary>
+        public const string ClaudeSonnet5 = "anthropic/claude-sonnet-5";
+
+
+        /// <summary>
         /// Claude Opus 4
         /// </summary>
         public const string ClaudeOpus4 = "anthropic/claude-opus-4";
@@ -111,6 +122,21 @@ public static class OpenRouterChatModels
         /// </summary>
         public const string ClaudeOpus46 = "anthropic/claude-opus-4-6";
 
+        /// <summary>
+        /// Claude Opus 4.7
+        /// </summary>
+        public const string ClaudeOpus47 = "anthropic/claude-opus-4-7";
+
+        /// <summary>
+        /// Claude Opus 4.8
+        /// </summary>
+        public const string ClaudeOpus48 = "anthropic/claude-opus-4-8";
+
+        /// <summary>
+        /// Claude Fable 5
+        /// </summary>
+        public const string ClaudeFable5 = "anthropic/claude-fable-5";
+        
         /// <summary>
         /// Claude Haiku 3.5
         /// </summary>
@@ -133,6 +159,26 @@ public static class OpenRouterChatModels
     [PublicAPI]
     public static class OpenAI
     {
+        /// <summary>
+        /// GPT-5.4 (Reasoning)
+        /// </summary>
+        public const string Gpt56Sol = "openai/gpt-5.6-sol";
+
+        /// <summary>
+        /// GPT-5.4 (Reasoning)
+        /// </summary>
+        public const string Gpt56Terra = "openai/gpt-5.6-terra";
+
+        /// <summary>
+        /// GPT-5.4 (Reasoning)
+        /// </summary>
+        public const string Gpt56Luna = "openai/gpt-5.6-luna";
+
+        /// <summary>
+        /// GPT-5.5 (Reasoning)
+        /// </summary>
+        public const string Gpt55 = "openai/gpt-5.5";
+
         /// <summary>
         /// GPT-5.4 Mini (Reasoning)
         /// </summary>

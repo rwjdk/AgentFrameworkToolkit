@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.Google;
 
@@ -8,6 +8,16 @@ namespace AgentFrameworkToolkit.Google;
 [PublicAPI]
 public static class GoogleChatModels
 {
+    /// <summary>
+    /// Gemini 3.5 Flash
+    /// </summary>
+    public const string Gemini35Flash = "gemini-3.5-flash";
+
+    /// <summary>
+    /// Gemini 3.1 Flash-Lite
+    /// </summary>
+    public const string Gemini31FlashLite = "gemini-3.1-flash-lite";
+
     /// <summary>
     /// Gemini 2.5 Pro
     /// </summary>

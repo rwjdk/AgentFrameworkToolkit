@@ -34,6 +34,11 @@ public static class AnthropicChatModels
     public const string ClaudeSonnet46 = "claude-sonnet-4-6";
 
     /// <summary>
+    /// Claude Sonnet 5
+    /// </summary>
+    public const string ClaudeSonnet5 = "claude-sonnet-5";
+
+    /// <summary>
     /// Claude Opus 4
     /// </summary>
     public const string ClaudeOpus4 = "claude-opus-4";

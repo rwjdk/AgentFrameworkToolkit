@@ -9,6 +9,26 @@ namespace AgentFrameworkToolkit.OpenAI;
 public static class OpenAIChatModels
 {
     /// <summary>
+    /// GPT-5.4 (Reasoning)
+    /// </summary>
+    public const string Gpt56Sol = "gpt-5.6-sol";
+
+    /// <summary>
+    /// GPT-5.4 (Reasoning)
+    /// </summary>
+    public const string Gpt56Terra = "gpt-5.6-terra";
+
+    /// <summary>
+    /// GPT-5.4 (Reasoning)
+    /// </summary>
+    public const string Gpt56Luna = "gpt-5.6-luna";
+
+    /// <summary>
+    /// GPT-5.5 (Reasoning)
+    /// </summary>
+    public const string Gpt55 = "gpt-5.5";
+
+    /// <summary>
     /// GPT-5.4 Mini (Reasoning)
     /// </summary>
     public const string Gpt54Mini = "gpt-5.4-mini";
