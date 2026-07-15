@@ -9,7 +9,6 @@ public record Secrets(
     string AzureAiFoundryAgentEndpoint,
     string AzureAiFoundryAgentId,
     string BingApiKey,
-    string GitHubPatToken,
     string HuggingFaceApiKey,
     string OpenRouterApiKey,
     string CohereApiKey,

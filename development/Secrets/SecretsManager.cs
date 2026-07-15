@@ -48,7 +48,6 @@ public class SecretsManager
         string azureAiFoundryAgentEndpoint = configurationRoot["AzureAiFoundryAgentEndpoint"] ?? string.Empty;
         string azureAiFoundryAgentId = configurationRoot["AzureAiFoundryAgentId"] ?? string.Empty;
         string bingApiKey = configurationRoot["BingApiKey"] ?? string.Empty;
-        string githubPatToken = configurationRoot["GitHubPatToken"] ?? string.Empty;
         string huggingFaceApiKey = configurationRoot["HuggingFaceApiKey"] ?? string.Empty;
         string openRouterApiKey = configurationRoot["OpenRouterApiKey"] ?? string.Empty;
         string cohereApiKey = configurationRoot["CohereApiKey"] ?? string.Empty;
@@ -74,7 +73,6 @@ public class SecretsManager
             azureAiFoundryAgentEndpoint,
             azureAiFoundryAgentId,
             bingApiKey,
-            githubPatToken,
             huggingFaceApiKey,
             openRouterApiKey,
             cohereApiKey,

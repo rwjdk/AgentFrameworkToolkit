@@ -4,7 +4,6 @@ using AgentFrameworkToolkit.Anthropic;
 using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.Cerebras;
 using AgentFrameworkToolkit.Cohere;
-using AgentFrameworkToolkit.GitHub;
 using AgentFrameworkToolkit.Google;
 using AgentFrameworkToolkit.Mistral;
 using AgentFrameworkToolkit.OpenAI;
@@ -249,16 +248,6 @@ public abstract class TestsBase
                 {
                     AgentScenario.Simple => factory.CreateAgent(model, 2000, TestInstructions, TestName, tools),
                     _ => factory.CreateAgent(await GetAnthropicOptions(model)),
-                };
-            }
-            case AgentProvider.GitHub:
-            {
-                GitHubAgentFactory factory = new(secrets.GitHubPatToken);
-                string model = "microsoft/Phi-4-mini-instruct";
-                return scenario switch
-                {
-                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
-                    _ => factory.CreateAgent(await GetGitHubAgentOptions(model)),
                 };
             }
             case AgentProvider.Google:
@@ -519,45 +508,6 @@ public abstract class TestsBase
             });
         }
 
-        Task<GitHubAgentOptions> GetGitHubAgentOptions(string model)
-        {
-            return Task.FromResult(new GitHubAgentOptions
-            {
-                Model = model,
-                Name = TestName,
-                Description = TestDescription,
-                MaxOutputTokens = 2000,
-                Instructions = TestInstructions,
-                Tools = tools,
-                Services = serviceProvider,
-                LoggerFactory = testLogger,
-                // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-                RawHttpCallDetails = details =>
-                {
-                    Assert.Contains(model, details.RequestData);
-                    Assert.Contains("\"max_tokens\": 2000,", details.RequestData);
-                    Assert.Contains(TestInstructions, details.RequestData);
-                    Assert.Contains($"\"model\": \"{model}\"", details.RequestData);
-                    foreach (AITool tool in tools)
-                    {
-                        Assert.Contains($"\"name\": \"{tool.Name}\"", details.RequestData);
-                    }
-                },
-                ToolCallingMiddleware = async (_, context, next, token) =>
-                {
-                    if (scenario is AgentScenario.ToolCall)
-                    {
-                        Assert.True(context.Arguments.ContainsKey("city") && context.Arguments["city"]!.ToString() == "Paris");
-                        ToolCallingMiddlewareCity = context.Arguments["city"]!.ToString();
-                    }
-
-                    return await next(context, token);
-                },
-                OpenTelemetryMiddleware = new OpenTelemetryMiddleware(sourceName, agent => agent.EnableSensitiveData = true),
-                LoggingMiddleware = new LoggingMiddleware(testLogger)
-            });
-        }
-
         Task<GoogleAgentOptions> GetGoogleAgentOptions(string model)
         {
             return Task.FromResult(new GoogleAgentOptions
@@ -706,7 +656,6 @@ public enum AgentProvider
     OpenAIChatClient,
     OpenAIResponsesApi,
     Anthropic,
-    GitHub,
     Google,
     Mistral,
     AmazonBedrock,
