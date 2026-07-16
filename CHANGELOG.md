@@ -6,6 +6,7 @@
 - Added known model-names for Google (Gemini 3.5 Flash)
 - Added known model-names for xAI (Grok 4.5), 
 - Added known model-names for Anthropic (Sonnet 5) and OpenRouter (Various)
+- Updated icon to the new MAF logo
 
 ---
 
