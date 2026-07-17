@@ -6,7 +6,8 @@ using Sandbox.Providers;
 Console.Clear();
 
 Console.OutputEncoding = Encoding.UTF8;
-await Sandbox.Providers.AnthropicDemo.RunAsync();
+//await Sandbox.Providers.AnthropicDemo.RunAsync();
+await Sandbox.Providers.MicrosoftFoundry.RunAsync();
 //await Sandbox.Providers.AmazonBedrock.RunAsync();
 //await Sandbox.Providers.OpenAI.RunAsync();
 //await AzureOpenAI.RunAsync();

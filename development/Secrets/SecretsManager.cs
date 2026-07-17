@@ -7,29 +7,29 @@ public class SecretsManager
     /* This SecretsManager relies on .NET User Secrets in the following format
     ************************************************************************************************************************************************
     {
-      "OpenAiApiKey": "todo",
-      "AzureOpenAiEndpoint": "todo",
-      "AzureOpenAiKey": "todo",
-      "ChatDeploymentName": "todo",
-      "EmbeddingModelName": "todo",
-      "AzureAiFoundryAgentEndpoint" : "todo",
-      "AzureAiFoundryAgentId" : "todo",
-      "BingApiKey" : "todo",
-      "HuggingFaceApiKey": "todo",
-      "OpenRouterApiKet" : "todo",
-      "OpenRouterApiKey" : "todo",
-      "CohereApiKey" : "todo",
-      "CerebrasApiKey" : "todo",
-      "ApplicationInsightsConnectionString" : "todo",
-      "GoogleGeminiApiKey" : "todo",
-      "XAiGrokApiKey" : "todo",
-      "TrelloApiKey" : "todo",
-      "TrelloToken" : "todo",
-      "AnthropicApiKey" : "todo",
-      "MistralApiKey" : "todo",
-      "AmazonBedrockApiKey" : "todo",
-      "EmailUsername" : "todo",
-      "EmailPassword" : "todo"
+      "OpenAiApiKey": "<value>",
+      "AzureOpenAiEndpoint": "<value>",
+      "AzureOpenAiKey": "<value>",
+      "ChatDeploymentName": "<value>",
+      "EmbeddingModelName": "<value>",
+      "MicrosoftFoundryEndpoint" : "<value>",
+      "AzureAiFoundryAgentId" : "<value>",
+      "BingApiKey" : "<value>",
+      "HuggingFaceApiKey": "<value>",
+      "OpenRouterApiKet" : "<value>",
+      "OpenRouterApiKey" : "<value>",
+      "CohereApiKey" : "<value>",
+      "CerebrasApiKey" : "<value>",
+      "ApplicationInsightsConnectionString" : "<value>",
+      "GoogleGeminiApiKey" : "<value>",
+      "XAiGrokApiKey" : "<value>",
+      "TrelloApiKey" : "<value>",
+      "TrelloToken" : "<value>",
+      "AnthropicApiKey" : "<value>",
+      "MistralApiKey" : "<value>",
+      "AmazonBedrockApiKey" : "<value>",
+      "EmailUsername" : "<value>",
+      "EmailPassword" : "<value>"
     }
     ************************************************************************************************************************************************
     - See the how-to guides on how to create your Azure Resources in the ReadMe
@@ -45,7 +45,7 @@ public class SecretsManager
         string azureOpenAiKey = configurationRoot["AzureOpenAiKey"] ?? string.Empty;
         string chatDeploymentName = configurationRoot["ChatDeploymentName"] ?? string.Empty;
         string embeddingModelName = configurationRoot["EmbeddingModelName"] ?? string.Empty;
-        string azureAiFoundryAgentEndpoint = configurationRoot["AzureAiFoundryAgentEndpoint"] ?? string.Empty;
+        string azureAiFoundryAgentEndpoint = configurationRoot["MicrosoftFoundryEndpoint"] ?? string.Empty;
         string azureAiFoundryAgentId = configurationRoot["AzureAiFoundryAgentId"] ?? string.Empty;
         string bingApiKey = configurationRoot["BingApiKey"] ?? string.Empty;
         string huggingFaceApiKey = configurationRoot["HuggingFaceApiKey"] ?? string.Empty;

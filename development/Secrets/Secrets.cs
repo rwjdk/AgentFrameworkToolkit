@@ -6,7 +6,7 @@ public record Secrets(
     string AzureOpenAiKey,
     string ChatDeploymentName,
     string EmbeddingModelName,
-    string AzureAiFoundryAgentEndpoint,
+    string MicrosoftFoundryEndpoint,
     string AzureAiFoundryAgentId,
     string BingApiKey,
     string HuggingFaceApiKey,
