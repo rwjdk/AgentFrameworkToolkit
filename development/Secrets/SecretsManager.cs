@@ -20,6 +20,7 @@ public class SecretsManager
       "OpenRouterApiKey" : "<value>",
       "CohereApiKey" : "<value>",
       "CerebrasApiKey" : "<value>",
+      "GroqApiKey" : "<value>",
       "ApplicationInsightsConnectionString" : "<value>",
       "GoogleGeminiApiKey" : "<value>",
       "XAiGrokApiKey" : "<value>",
@@ -52,6 +53,7 @@ public class SecretsManager
         string openRouterApiKey = configurationRoot["OpenRouterApiKey"] ?? string.Empty;
         string cohereApiKey = configurationRoot["CohereApiKey"] ?? string.Empty;
         string cerebrasApiKey = configurationRoot["CerebrasApiKey"] ?? string.Empty;
+        string groqApiKey = configurationRoot["GroqApiKey"] ?? string.Empty;
         string applicationInsightsConnectionString = configurationRoot["ApplicationInsightsConnectionString"] ?? string.Empty;
         string googleGeminiApiKey = configurationRoot["GoogleGeminiApiKey"] ?? string.Empty;
         string xAiGrokApiKey = configurationRoot["XAiGrokApiKey"] ?? string.Empty;
@@ -77,6 +79,7 @@ public class SecretsManager
             openRouterApiKey,
             cohereApiKey,
             cerebrasApiKey,
+            groqApiKey,
             applicationInsightsConnectionString,
             googleGeminiApiKey,
             xAiGrokApiKey,

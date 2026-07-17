@@ -5,6 +5,7 @@ using AgentFrameworkToolkit.AzureOpenAI;
 using AgentFrameworkToolkit.Cerebras;
 using AgentFrameworkToolkit.Cohere;
 using AgentFrameworkToolkit.Google;
+using AgentFrameworkToolkit.Groq;
 using AgentFrameworkToolkit.Mistral;
 using AgentFrameworkToolkit.OpenAI;
 using AgentFrameworkToolkit.OpenRouter;
@@ -82,6 +83,8 @@ public abstract class TestsBase
             case AgentProvider.OpenRouterResponsesApi:
             case AgentProvider.CerebrasChatClient:
             case AgentProvider.CohereChatClient:
+            case AgentProvider.GroqChatClient:
+            case AgentProvider.GroqResponsesApi:
             case AgentProvider.XAIChatClient:
             case AgentProvider.XAIResponsesApi:
                 Assert.Contains("ClientFactory Called", testLogger.Logger.Messages);
@@ -117,6 +120,8 @@ public abstract class TestsBase
             case AgentProvider.OpenRouterResponsesApi:
             case AgentProvider.CerebrasChatClient:
             case AgentProvider.CohereChatClient:
+            case AgentProvider.GroqChatClient:
+            case AgentProvider.GroqResponsesApi:
             case AgentProvider.XAIChatClient:
             case AgentProvider.XAIResponsesApi:
                 Assert.Contains("ClientFactory Called", testLogger.Logger.Messages);
@@ -342,6 +347,34 @@ public abstract class TestsBase
                     _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, CohereConnection.DefaultEndpoint, ClientType.ChatClient)),
                 };
             }
+            case AgentProvider.GroqChatClient:
+            {
+                GroqAgentFactory factory = new(new GroqConnection
+                {
+                    ApiKey = secrets.GroqApiKey,
+                    DefaultClientType = ClientType.ChatClient
+                });
+                string model = GroqChatModels.GptOss20B;
+                return scenario switch
+                {
+                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
+                    _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, GroqConnection.DefaultEndpoint, ClientType.ChatClient)),
+                };
+            }
+            case AgentProvider.GroqResponsesApi:
+            {
+                GroqAgentFactory factory = new(new GroqConnection
+                {
+                    ApiKey = secrets.GroqApiKey,
+                    DefaultClientType = ClientType.ResponsesApi
+                });
+                string model = GroqChatModels.GptOss20B;
+                return scenario switch
+                {
+                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
+                    _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, GroqConnection.DefaultEndpoint, ClientType.ResponsesApi)),
+                };
+            }
             case AgentProvider.XAIChatClient:
             {
                 XAIAgentFactory factory = new(new XAIConnection
@@ -435,6 +468,7 @@ public abstract class TestsBase
                         case AgentProvider.OpenRouterChatClient:
                         case AgentProvider.CerebrasChatClient:
                         case AgentProvider.CohereChatClient:
+                        case AgentProvider.GroqChatClient:
                         case AgentProvider.XAIChatClient:
                         case AgentProvider.MicrosoftFoundryChatClient:
                             Assert.Contains("\"max_completion_tokens\": 2000", details.RequestData);
@@ -448,6 +482,7 @@ public abstract class TestsBase
                         case AgentProvider.AzureOpenAIResponsesApi:
                         case AgentProvider.OpenAIResponsesApi:
                         case AgentProvider.OpenRouterResponsesApi:
+                        case AgentProvider.GroqResponsesApi:
                         case AgentProvider.XAIResponsesApi:
                         case AgentProvider.MicrosoftFoundryResponsesApi:
                             Assert.Contains("\"max_output_tokens\": 2000", details.RequestData);
@@ -698,6 +733,8 @@ public enum AgentProvider
     OpenRouterResponsesApi,
     CerebrasChatClient,
     CohereChatClient,
+    GroqChatClient,
+    GroqResponsesApi,
     XAIChatClient,
     XAIResponsesApi,
     MicrosoftFoundryChatClient,

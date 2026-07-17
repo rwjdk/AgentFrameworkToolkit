@@ -13,6 +13,7 @@ public record Secrets(
     string OpenRouterApiKey,
     string CohereApiKey,
     string CerebrasApiKey,
+    string GroqApiKey,
     string ApplicationInsightsConnectionString,
     string GoogleGeminiApiKey,
     string XAiGrokApiKey,
