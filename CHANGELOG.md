@@ -1,7 +1,8 @@
 # Changelog - Agent Framework Toolkit
 
 ## Unreleased
-- Added AgentFrameworkToolkit.MicrosoftFoundry (In-Memory and Declarative Agents)
+- Added Microsoft Foundry provider (`AgentFrameworkToolkit.MicrosoftFoundry`) (In-Memory and Declarative Agents)
+- Added Groq (www.groq.com) provider (`AgentFrameworkToolkit.Groq`)
 - Removed AgentFrameworkToolkit.GitHub as the [GitHub Models Service is being retired](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026)
 - Added known model-names for OpenAI (5.6 Sol, 5.6 Terra, 5.6 Luna)
 - Added known model-names for Google (Gemini 3.5 Flash)
