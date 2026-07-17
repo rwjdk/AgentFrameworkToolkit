@@ -8,6 +8,7 @@
     <PackageVersion Include="Microsoft.Agents.AI" Version="1.13.0" />
     <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.13.0" />
     <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.13.0-preview.260703.1" />
+    <PackageVersion Include="Microsoft.Agents.AI.Foundry" Version="1.13.0-preview.260703.1" />
 
     <!-- Azure -->
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />

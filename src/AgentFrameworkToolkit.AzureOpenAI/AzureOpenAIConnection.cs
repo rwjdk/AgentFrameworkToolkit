@@ -5,12 +5,14 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace AgentFrameworkToolkit.AzureOpenAI;
 
 /// <summary>
 /// Represents a connection for Azure OpenAI
 /// </summary>
+[PublicAPI]
 public class AzureOpenAIConnection
 {
     /// <summary>
@@ -46,7 +48,7 @@ public class AzureOpenAIConnection
     }
 
     /// <summary>
-    /// The Default ClientType (ChatClient or ResponsesAPI) to use for Agents
+    /// The Default ClientType (ChatClient or ResponsesAPI) to use for Agents (ChatClient is default)
     /// </summary>
     public ClientType DefaultClientType { get; set; } = ClientType.ChatClient;
 

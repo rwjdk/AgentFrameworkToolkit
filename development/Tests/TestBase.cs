@@ -19,6 +19,8 @@ using OpenTelemetry;
 using OpenTelemetry.Trace;
 using Secrets;
 using System.Diagnostics;
+using AgentFrameworkToolkit.MicrosoftFoundry;
+using Azure.Identity;
 using JetBrains.Annotations;
 
 #pragma warning disable OPENAI001
@@ -368,6 +370,37 @@ public abstract class TestsBase
                     _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, XAIConnection.DefaultEndpoint, ClientType.ResponsesApi)),
                 };
             }
+            case AgentProvider.MicrosoftFoundryChatClient:
+            {
+                MicrosoftFoundryAgentFactory factory = new(new MicrosoftFoundryConnection
+                {
+                    Endpoint = secrets.MicrosoftFoundryEndpoint,
+                    AuthenticationTokenProvider = new AzureCliCredential(),
+                    DefaultClientType = ClientType.ChatClient
+                });
+                string model = OpenAIChatModels.Gpt5Nano;
+                return scenario switch
+                {
+                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
+                    _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, secrets.MicrosoftFoundryEndpoint, ClientType.ChatClient)),
+                };
+            }
+            case AgentProvider.MicrosoftFoundryResponsesApi:
+            {
+                MicrosoftFoundryAgentFactory factory = new(new MicrosoftFoundryConnection
+                {
+                    Endpoint = secrets.MicrosoftFoundryEndpoint,
+                    AuthenticationTokenProvider = new AzureCliCredential(),
+                    DefaultClientType = ClientType.ResponsesApi
+                });
+                string model = OpenAIChatModels.Gpt5Nano;
+                return scenario switch
+                {
+                    AgentScenario.Simple => factory.CreateAgent(model, TestInstructions, TestName, tools),
+                    _ => factory.CreateAgent(await GetOpenAiBasedAgentOptions(model, secrets.MicrosoftFoundryEndpoint, ClientType.ResponsesApi)),
+                };
+            }
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(provider), provider, null);
         }
@@ -403,6 +436,7 @@ public abstract class TestsBase
                         case AgentProvider.CerebrasChatClient:
                         case AgentProvider.CohereChatClient:
                         case AgentProvider.XAIChatClient:
+                        case AgentProvider.MicrosoftFoundryChatClient:
                             Assert.Contains("\"max_completion_tokens\": 2000", details.RequestData);
                             // ReSharper disable once AccessToModifiedClosure
                             if (assertReasoning)
@@ -415,6 +449,7 @@ public abstract class TestsBase
                         case AgentProvider.OpenAIResponsesApi:
                         case AgentProvider.OpenRouterResponsesApi:
                         case AgentProvider.XAIResponsesApi:
+                        case AgentProvider.MicrosoftFoundryResponsesApi:
                             Assert.Contains("\"max_output_tokens\": 2000", details.RequestData);
                             // ReSharper disable once AccessToModifiedClosure
                             if (assertReasoning)
@@ -665,6 +700,8 @@ public enum AgentProvider
     CohereChatClient,
     XAIChatClient,
     XAIResponsesApi,
+    MicrosoftFoundryChatClient,
+    MicrosoftFoundryResponsesApi,
 }
 
 public sealed class CustomOpenTelemetryExporter : BaseExporter<Activity>
@@ -677,7 +714,7 @@ public sealed class CustomOpenTelemetryExporter : BaseExporter<Activity>
         _onExport = onExport;
     }
 
-    public override ExportResult Export(in OpenTelemetry.Batch<Activity> batch)
+    public override ExportResult Export(in Batch<Activity> batch)
     {
         foreach (Activity activity in batch)
         {
