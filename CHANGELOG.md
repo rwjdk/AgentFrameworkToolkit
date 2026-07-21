@@ -1,6 +1,8 @@
 # Changelog - Agent Framework Toolkit
 
-## Unreleased
+## Version 1.4.0 (21st of July 2026)
+- Updated Agent Framework from 1.13.0 to 1.14.0
+- Updated all NuGet packages to the latest
 - Added Microsoft Foundry provider (`AgentFrameworkToolkit.MicrosoftFoundry`) (In-Memory and Declarative Agents)
 - Added Groq (www.groq.com) provider (`AgentFrameworkToolkit.Groq`)
 - Removed AgentFrameworkToolkit.GitHub as the [GitHub Models Service is being retired](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026)
