@@ -1,0 +1,4 @@
+interface:
+  display_name: "Upgrade MAF"
+  short_description: "Upgrade and release Microsoft Agent Framework"
+  default_prompt: "Use $upgrade-maf to upgrade this repository to the latest Microsoft Agent Framework release."
