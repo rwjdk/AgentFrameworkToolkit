@@ -1,6 +1,6 @@
 # Changelog - Agent Framework Toolkit
 
-## Version 1.4.0 (21st of July 2026)
+## Version 1.14.0 (21st of July 2026)
 - Updated Agent Framework from 1.13.0 to 1.14.0
 - Updated all NuGet packages to the latest
 - Added Microsoft Foundry provider (`AgentFrameworkToolkit.MicrosoftFoundry`) (In-Memory and Declarative Agents)
