@@ -14,7 +14,6 @@
     <PackageVersion Include="Azure.AI.OpenAI" Version="2.9.0-beta.1" />
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.5.1" />
-    <PackageVersion Include="Microsoft.Extensions.AI.AzureAIInference" Version="10.0.0-preview.1.25559.3" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
     <!-- Third-party AI SDKs -->

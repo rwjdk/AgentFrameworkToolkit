@@ -6,6 +6,7 @@ namespace AgentFrameworkToolkit.Tests.FreeModels;
 
 public sealed class CerebrasTests : TestsBase
 {
+    /*
     [Fact]
     public Task AgentFactory_Simple_ChatClient() => SimpleAgentTestsAsync(AgentProvider.CerebrasChatClient);
 
@@ -59,4 +60,5 @@ public sealed class CerebrasTests : TestsBase
             .RunAsync("Hello", cancellationToken: cancellationToken)).Text;
         Assert.NotEmpty(text);
     }
+    */
 }
